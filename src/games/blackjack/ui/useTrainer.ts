@@ -8,6 +8,7 @@ import { prepareShoe } from "../engine/scenario";
 import type { Action } from "../engine/strategy";
 import { DEALER_DELAY, DEFAULT_SETTINGS, type Settings } from "./settings";
 import { EMPTY_STATS, recordDecision, recordHand, type Stats } from "./stats";
+import { playCorrect, playWrong } from "./sound";
 import { load, save } from "./storage";
 
 const STATS_KEY = "bbc.blackjack.l1.stats";
@@ -60,6 +61,8 @@ export function useTrainer(): Trainer {
       const decision = next.decisions[next.decisions.length - 1];
       setRound(next);
       setStats((s) => recordDecision(s, decision));
+      if (decision.correct) playCorrect();
+      else playWrong();
     },
     [round],
   );

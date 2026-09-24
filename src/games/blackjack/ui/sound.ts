@@ -1,5 +1,6 @@
 /**
- * Card sounds, made in the browser with the Web Audio API — no audio files.
+ * Game sounds, made in the browser with the Web Audio API — no audio files:
+ * cards being dealt and flipped, and a chime for right / wrong moves.
  *
  * A dealt card is a short burst of noise run through a filter that sweeps
  * upward (the "fwip" of the card sliding across felt), plus a soft low thump
@@ -94,4 +95,40 @@ export function playFlip() {
   const t = c.currentTime + 0.005;
   swish(c, t, 0.045, 3000, 6500, 0.38);
   swish(c, t + 0.06, 0.05, 2400, 5200, 0.45);
+}
+
+/** A soft musical note with a quick attack and a natural fade. */
+function tone(c: AudioContext, t: number, freq: number, dur: number, volume: number, type: OscillatorType) {
+  const osc = c.createOscillator();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t);
+  const filter = c.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 3200; // round off the edges so it never sounds harsh
+  const gain = c.createGain();
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(volume, t + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  osc.connect(filter).connect(gain).connect(c.destination);
+  osc.start(t);
+  osc.stop(t + dur + 0.02);
+}
+
+/** Right move: a bright rising two-note chime (A5 → E6). */
+export function playCorrect() {
+  const c = ready();
+  if (!c) return;
+  const t = c.currentTime + 0.005;
+  tone(c, t, 880, 0.32, 0.16, "sine");
+  tone(c, t + 0.085, 1318.5, 0.45, 0.16, "sine");
+  tone(c, t + 0.085, 2637, 0.2, 0.025, "sine"); // a touch of sparkle
+}
+
+/** Wrong move: a soft, low falling "uh-oh" (E♭4 → B♭3). Gentle, not a buzzer. */
+export function playWrong() {
+  const c = ready();
+  if (!c) return;
+  const t = c.currentTime + 0.005;
+  tone(c, t, 311.1, 0.18, 0.14, "triangle");
+  tone(c, t + 0.14, 233.1, 0.34, 0.14, "triangle");
 }
