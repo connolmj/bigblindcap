@@ -1,0 +1,13 @@
+# Netlify builds the site from this repo on every push to the production branch.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Single-page app: let React Router handle every path (/games/blackjack etc.).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,0 +1,259 @@
+.sports {
+  font-size: 14px;
+}
+
+.sports__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 3px;
+  padding: 16px 0 20px;
+}
+
+.sports__tab {
+  font: 500 11px/1.4 var(--font-sans);
+  letter-spacing: 0.1em;
+  padding: 1px 6px 2px;
+  margin: 0;
+  cursor: pointer;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: oklch(0.45 0.01 265);
+}
+
+.sports__tab.is-active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.sports__rail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 40px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sports__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sports__big {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.sports__medium {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.sports__meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.is-win {
+  color: var(--accent);
+}
+
+.is-loss {
+  color: var(--loss);
+}
+
+.is-muted {
+  color: var(--muted);
+}
+
+.sports__section {
+  padding-top: 30px;
+}
+
+.sports__section--first {
+  padding-top: 26px;
+}
+
+.sports__section-title {
+  margin-bottom: 9px;
+}
+
+.sports__section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+.sports__section-head--wrap {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.sports__grid {
+  display: grid;
+  gap: 6px;
+}
+
+.sports__grid > div {
+  text-align: right;
+}
+
+.sports__grid > div:first-child,
+.sports__grid--ledger > div:nth-child(2),
+.sports__grid--ledger > div:nth-child(3),
+.sports__grid--card > div:nth-child(2) {
+  text-align: left;
+}
+
+.sports__grid--league {
+  grid-template-columns: 56px repeat(4, minmax(0, 1fr));
+}
+
+.sports__grid--card {
+  grid-template-columns: 44px minmax(0, 1fr) 52px 42px;
+  gap: 8px;
+}
+
+.sports__grid--ledger {
+  grid-template-columns: 52px 40px minmax(0, 1fr) 38px 54px;
+}
+
+.sports__grid--head {
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--ink);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sports__row {
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.sports__row--card {
+  padding: 7px 0;
+}
+
+.sports__row--ledger {
+  padding: 5px 0;
+}
+
+.sports__league {
+  font: 500 11px/1.3 var(--font-sans);
+  letter-spacing: 0.08em;
+  text-align: left;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.sports__league.is-active {
+  color: var(--accent);
+}
+
+.sports__small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.sports__num {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.sports__pick {
+  min-width: 0;
+}
+
+.sports__pick-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sports__pick-game {
+  font-size: 10px;
+  color: var(--muted);
+  padding-left: 7px;
+}
+
+.sports__lg {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.sports__ledger-pick {
+  font-size: 13px;
+  color: var(--text);
+  min-width: 0;
+}
+
+.sports__tag {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.sports__delta {
+  font-size: 11px;
+}
+
+.sports__select {
+  font: 500 10px var(--font-sans);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 2px 2px 3px;
+}
+
+.sports__pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.sports__pager-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sports__pager-btn {
+  font: 500 9px/1 var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sports__pager-btn:disabled {
+  color: var(--muted);
+  cursor: default;
+}

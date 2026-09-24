@@ -1,0 +1,170 @@
+.site {
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.site__column {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px 56px;
+}
+
+.site__column--wide {
+  max-width: 880px;
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 20px;
+  padding: 26px 0 12px;
+}
+
+.site-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.site-header__name {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.site-nav {
+  display: flex;
+  gap: 16px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.site-nav__link {
+  color: var(--muted);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+.site-nav__link.is-active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.site-rule {
+  height: 2px;
+  background: var(--ink);
+}
+
+.site-footer {
+  padding-top: 28px;
+  margin-top: 4px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.site-footer__clip {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border: 1px solid var(--rule);
+  background: var(--ink);
+}
+
+.site-footer__disclaimer {
+  margin: 0;
+  max-width: 560px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* ---- Chip logo ---- */
+.chip-logo {
+  position: relative;
+  flex: none;
+}
+
+.chip-logo__edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--paper) 0deg 13deg,
+    var(--ink) 13deg 77deg,
+    var(--paper) 77deg 103deg,
+    var(--ink) 103deg 167deg,
+    var(--paper) 167deg 193deg,
+    var(--ink) 193deg 257deg,
+    var(--paper) 257deg 283deg,
+    var(--ink) 283deg 347deg,
+    var(--paper) 347deg 360deg
+  );
+}
+
+.chip-logo__ring {
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.chip-logo__face {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip-logo__face span {
+  font-family: var(--font-serif);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--paper);
+}
+
+.chip-logo__suit {
+  position: absolute;
+  font-family: "Apple Symbols", "Segoe UI Symbol", serif;
+  font-size: 6px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.chip-logo__suit--top {
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.chip-logo__suit--right {
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.chip-logo__suit--bottom {
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.chip-logo__suit--left {
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+}
