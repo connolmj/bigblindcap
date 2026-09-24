@@ -168,14 +168,6 @@
   transform: translateY(1px);
 }
 
-.is-win {
-  color: var(--accent);
-}
-
-.is-loss {
-  color: var(--loss);
-}
-
 /* ---------- The table ---------- */
 
 .felt {

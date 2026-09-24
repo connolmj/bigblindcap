@@ -70,16 +70,6 @@
   gap: 18px;
 }
 
-.site-footer__clip {
-  display: block;
-  width: 100%;
-  max-width: 320px;
-  aspect-ratio: 16 / 9;
-  margin: 0 auto;
-  border: 1px solid var(--rule);
-  background: var(--ink);
-}
-
 .site-footer__disclaimer {
   margin: 0;
   max-width: 560px;

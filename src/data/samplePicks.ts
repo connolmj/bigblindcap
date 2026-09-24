@@ -1,5 +1,6 @@
 // Deterministic stand-in ledger shown until the sheet feed loads (or if it fails).
-import { fmtUnits, LEAGUES, type GradedPick, type PendingPick, type ResultTag } from "./ledger";
+import { fmtUnits } from "./format";
+import { LEAGUES, type GradedPick, type PendingPick, type ResultTag } from "./picks";
 
 const PICK_SEEDS: Record<string, string[]> = {
   NFL: [

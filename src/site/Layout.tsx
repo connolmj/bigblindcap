@@ -3,7 +3,8 @@ import Logo from "./Logo";
 import "./layout.css";
 
 const NAV = [
-  { to: "/", label: "Sports", end: true },
+  { to: "/", label: "Home", end: true },
+  { to: "/sports", label: "Sports", end: false },
   { to: "/equities", label: "Equities", end: false },
   { to: "/games", label: "Games", end: false },
 ];
@@ -41,17 +42,6 @@ export default function Layout() {
         </main>
 
         <footer className="site-footer">
-          {/* Was an 8 MB GIF; the same clip as a looping MP4 is ~0.5 MB. */}
-          <video
-            className="site-footer__clip"
-            src="/media/footer.mp4"
-            poster="/media/footer-poster.jpg"
-            autoPlay
-            loop
-            muted
-            playsInline
-            aria-hidden="true"
-          />
           <p className="site-footer__disclaimer">
             All content on this site is for informational and entertainment purposes only. Nothing here is investment
             advice or a solicitation to wager. Information is drawn from sources believed reliable, but no guarantee is

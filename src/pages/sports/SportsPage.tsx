@@ -1,16 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  fmtRecord,
-  fmtUnits,
-  inScope,
-  leaguesPresent,
-  parseSheet,
-  seasonsPresent,
-  SHEET_CSV_URL,
-  tally,
-  type SheetRows,
-} from "./ledger";
-import { SAMPLE_CARD, sampleLedger } from "./sampleData";
+import { useMemo, useState } from "react";
+import { useBookData } from "../../data/BookProvider";
+import { fmtPct, fmtRecord, fmtUnits } from "../../data/format";
+import { inScope, leaguesPresent, seasonsPresent, tally } from "../../data/picks";
 import "./sports.css";
 
 const ROWS_PER_PAGE = 16;
@@ -20,27 +11,7 @@ export default function SportsPage() {
   // null means "whatever the newest season in the data is"
   const [seasonChoice, setSeasonChoice] = useState<string | null>(null);
   const [ledgerPage, setLedgerPage] = useState(0);
-  const [rows, setRows] = useState<SheetRows | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch(SHEET_CSV_URL, { cache: "no-store" })
-      .then((r) => {
-        if (!r.ok) throw new Error(String(r.status));
-        return r.text();
-      })
-      .then((text) => {
-        if (!cancelled) setRows(parseSheet(text));
-      })
-      // Sheet unreachable: keep showing the sample ledger.
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const graded = rows ? rows.graded : sampleLedger();
-  const pending = rows ? rows.pending : SAMPLE_CARD;
+  const { graded, pending } = useBookData();
 
   const seasons = useMemo(() => seasonsPresent(graded, pending), [graded, pending]);
   const leagues = useMemo(() => leaguesPresent(graded, pending), [graded, pending]);
@@ -93,7 +64,7 @@ export default function SportsPage() {
           </div>
           <div className="sports__meta">
             {seasonTotals.n
-              ? `${fmtRecord(seasonTotals)} · ROI ${seasonRoi.toFixed(1)}% on ${seasonTotals.risked.toFixed(0)}u risked`
+              ? `${fmtRecord(seasonTotals)} · ROI ${fmtPct(seasonRoi)} on ${seasonTotals.risked.toFixed(0)}u risked`
               : pendingInScope
                 ? `${pendingInScope} ${pendingInScope === 1 ? "pick on the card" : "picks on the card"}, none graded yet`
                 : "Season not started"}
@@ -104,7 +75,7 @@ export default function SportsPage() {
           <div className="sports__medium">{allTotals.n ? fmtUnits(allTotals.u) : "—"}</div>
           <div className="sports__meta">
             {allTotals.risked
-              ? `${fmtRecord(allTotals)} · ROI ${roi.toFixed(1)}% on ${allTotals.risked.toFixed(0)}u risked`
+              ? `${fmtRecord(allTotals)} · ROI ${fmtPct(roi)} on ${allTotals.risked.toFixed(0)}u risked`
               : pendingInScope
                 ? "Nothing graded yet"
                 : "No record yet"}
@@ -112,7 +83,27 @@ export default function SportsPage() {
         </div>
       </div>
 
-      <section className="sports__section sports__section--first">
+      {todayPicks.length > 0 && (
+        <section className="sports__section sports__section--first">
+          <div className="sports__section-head">
+            <div className="eyebrow">On the card</div>
+            <div className="eyebrow">{todayPicks[0].dateLabel}</div>
+          </div>
+          {todayPicks.map((p, i) => (
+            <div key={i} className="sports__grid sports__grid--card sports__row sports__row--card">
+              <div className="sports__small sports__left">{p.time}</div>
+              <div className="sports__pick">
+                <span className="sports__pick-name">{p.pick}</span>
+                <span className="sports__pick-game">{p.game}</span>
+              </div>
+              <div className="sports__small">{p.line}</div>
+              <div className="sports__num">{p.units}</div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      <section className="sports__section">
         <div className="eyebrow sports__section-title">By league</div>
         <div className="sports__grid sports__grid--league sports__grid--head">
           <div>Lg</div>
@@ -141,26 +132,6 @@ export default function SportsPage() {
           );
         })}
       </section>
-
-      {todayPicks.length > 0 && (
-        <section className="sports__section">
-          <div className="sports__section-head">
-            <div className="eyebrow">On the card</div>
-            <div className="eyebrow">{todayPicks[0].dateLabel}</div>
-          </div>
-          {todayPicks.map((p, i) => (
-            <div key={i} className="sports__grid sports__grid--card sports__row sports__row--card">
-              <div className="sports__small sports__left">{p.time}</div>
-              <div className="sports__pick">
-                <span className="sports__pick-name">{p.pick}</span>
-                <span className="sports__pick-game">{p.game}</span>
-              </div>
-              <div className="sports__small">{p.line}</div>
-              <div className="sports__num">{p.units}</div>
-            </div>
-          ))}
-        </section>
-      )}
 
       <section className="sports__section">
         <div className="sports__section-head sports__section-head--wrap">

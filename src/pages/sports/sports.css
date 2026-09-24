@@ -63,14 +63,6 @@
   color: var(--muted);
 }
 
-.is-win {
-  color: var(--accent);
-}
-
-.is-loss {
-  color: var(--loss);
-}
-
 .is-muted {
   color: var(--muted);
 }

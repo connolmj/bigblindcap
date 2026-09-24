@@ -1,10 +1,12 @@
-// Data layer for the Sports page: reads the picks Google Sheet (as CSV)
-// and reduces it to the numbers the page shows. No React in here.
+// Sports picks: parse the picks tab of the sheet and reduce it to records and units.
+
+import { normalizeDate, parseCsv } from "./csv";
+import { fmtUnits } from "./format";
 
 export const LEAGUES = ["NFL", "NCAAF", "MLB", "NBA", "NCAAB", "NHL"];
 export const CURRENT_SEASON = "2026";
-export const SHEET_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/1MXI-E8nCXdapBxh6hl3f2-Lb-NYeTbTISQX_zhzK5og/gviz/tq?tqx=out:csv&gid=1393032348";
+/** Sports bankroll at day one, in units. */
+export const SPORTS_START = 150;
 
 export type ResultTag = "WIN" | "LOSS" | "PUSH";
 
@@ -58,75 +60,11 @@ const FIELD_ALIASES: Record<string, string[]> = {
   time: ["time", "start", "kickoff", "first pitch"],
 };
 
-export function fmtUnits(u: number): string {
-  return (u > 0 ? "+" : u < 0 ? "−" : "") + Math.abs(u).toFixed(2) + "u";
-}
-
-export function fmtRecord(t: Tally): string {
-  return t.w + "–" + t.l + (t.p ? "–" + t.p : "");
-}
-
 // -110 -> 0.909 profit per unit; +124 -> 1.24. Blank falls back to -110.
 export function payout(line: string): number {
   const n = parseFloat(String(line).replace(/[^0-9+\-.]/g, ""));
   if (!isFinite(n) || n === 0) return 0.909;
   return n > 0 ? n / 100 : 100 / Math.abs(n);
-}
-
-export function parseCsv(text: string): string[][] {
-  const out: string[][] = [];
-  let row: string[] = [];
-  let field = "";
-  let quoted = false;
-  const src = text.replace(/\r\n?/g, "\n");
-  for (let i = 0; i < src.length; i++) {
-    const c = src[i];
-    if (quoted) {
-      if (c === '"' && src[i + 1] === '"') {
-        field += '"';
-        i++;
-      } else if (c === '"') quoted = false;
-      else field += c;
-    } else if (c === '"') quoted = true;
-    else if (c === ",") {
-      row.push(field);
-      field = "";
-    } else if (c === "\n") {
-      row.push(field);
-      out.push(row);
-      row = [];
-      field = "";
-    } else field += c;
-  }
-  if (field.length || row.length) {
-    row.push(field);
-    out.push(row);
-  }
-  return out.filter((r) => r.some((c) => c.trim() !== ""));
-}
-
-export function normalizeDate(raw: string) {
-  const s = String(raw).trim();
-  let y: number, m: number, d: number;
-  let mt = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-  if (mt) {
-    y = +mt[1];
-    m = +mt[2];
-    d = +mt[3];
-  } else {
-    mt = s.match(/^(\d{1,2})[/.](\d{1,2})[/.](\d{2,4})$/);
-    if (!mt) return null;
-    m = +mt[1];
-    d = +mt[2];
-    y = +mt[3];
-    if (y < 100) y += 2000;
-  }
-  if (!m || !d) return null;
-  return {
-    label: String(m).padStart(2, "0") + "/" + String(d).padStart(2, "0") + "/" + String(y).slice(2),
-    sortKey: y * 10000 + m * 100 + d,
-    season: String(m >= 8 ? y : y - 1),
-  };
 }
 
 export function parseSheet(text: string): SheetRows {
@@ -187,6 +125,11 @@ export function parseSheet(text: string): SheetRows {
   graded.sort((a, b) => b.sortKey - a.sortKey);
   pending.sort((a, b) => a.sortKey - b.sortKey);
   return { graded, pending };
+}
+
+/** Sports bankroll just before date key `k` (picks graded on earlier days). */
+export function sportsBefore(graded: GradedPick[], k: number): number {
+  return SPORTS_START + graded.reduce((s, p) => s + (p.sortKey && p.sortKey < k ? p.u : 0), 0);
 }
 
 // Every headline figure is a reduction of the ledger below it.

@@ -1,8 +1,11 @@
 # Big Blind Capital — bigblindcap.com
 
-The whole site as one React + TypeScript app: **Sports** (picks ledger fed from a
-Google Sheet), **Equities**, and **Games** — starting with
-*Level 1: Basic Blackjack Strategy*.
+The whole site as one React + TypeScript app: **Home** (total book), **Sports**
+(picks ledger), **Equities** (positions, allocation, research library) and
+**Games** — starting with *Level 1: Basic Blackjack Strategy*.
+
+Sports and Equities read live from the Google Sheet (tabs: picks, `Equities`,
+and optional `History`). Update the sheet and the site updates — no redeploy.
 
 ## Run it locally
 
@@ -27,9 +30,16 @@ pull request gets its own preview URL.
 ## Where things live
 
 ```
+public/
+  docs/                 Research PDFs linked from Equities → Library
+  media/                Home page clip
+  og-image.png          Link-preview image for X / iMessage / Slack
 src/
+  data/                 Google Sheet loading + all the book math (tested)
   site/                 Header, nav, footer shared by every page
-  pages/sports/         Sports page + ledger.ts (Google Sheet → numbers)
+  pages/home/           Total book
+  pages/sports/         Picks ledger
+  pages/equities/       Book, allocation donut, library (add PDFs here)
   pages/games/          Games index and the Blackjack page wrapper
   games/blackjack/
     engine/             Pure TypeScript — no React. The rules of the game.

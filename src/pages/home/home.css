@@ -1,0 +1,148 @@
+.home {
+  padding: 34px 0 80px;
+}
+
+.home__intro {
+  max-width: 470px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  font-size: 14px;
+  line-height: 1.62;
+  color: oklch(0.34 0.012 265);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.home__intro p {
+  margin: 0;
+}
+
+.home__intro strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.home__clip {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 16 / 9;
+  margin: 6px auto 0;
+  border: 1px solid var(--rule);
+  background: var(--ink);
+}
+
+.home__book {
+  padding-top: 34px;
+}
+
+.home__book-title {
+  margin-bottom: 11px;
+  text-align: center;
+}
+
+.home__totals {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0 22px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule-soft);
+  text-align: center;
+}
+
+.home__total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.home__total-value {
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.home__trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.home__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.home__stat-value {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.home__split-note {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.home__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 14px 12px 16px;
+  border-bottom: 1px solid var(--rule-soft);
+  color: inherit;
+}
+
+.home__card + .home__card {
+  border-left: 1px solid var(--rule-soft);
+}
+
+.home__card:hover {
+  color: inherit;
+  background: oklch(0.975 0.004 260);
+}
+
+.home__card-value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.home__card-roi {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.home__card-meta {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.is-faint {
+  color: oklch(0.72 0.01 260);
+}

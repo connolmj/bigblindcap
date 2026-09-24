@@ -59,3 +59,23 @@ button {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* Up / down colouring for numbers */
+.is-win {
+  color: var(--accent);
+}
+
+.is-loss {
+  color: var(--loss);
+}
+
+/* Text link with a quiet underline */
+.underlined {
+  color: var(--ink);
+  border-bottom: 1px solid oklch(0.72 0.01 260);
+}
+
+.underlined:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
