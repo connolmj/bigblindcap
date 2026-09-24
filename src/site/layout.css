@@ -3,14 +3,15 @@
   background: var(--paper);
 }
 
+/* 720px of content plus 20px gutters, same as the original page. */
 .site__column {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 0 20px 56px;
 }
 
 .site__column--wide {
-  max-width: 880px;
+  max-width: 920px;
 }
 
 .site-header {
