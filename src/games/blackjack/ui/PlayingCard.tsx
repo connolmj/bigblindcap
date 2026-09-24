@@ -1,5 +1,6 @@
-import type { CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { isRed, SUIT_SYMBOL, type Card } from "../engine/cards";
+import { playDeal, playFlip } from "./sound";
 
 interface Props {
   card: Card;
@@ -14,6 +15,20 @@ export default function PlayingCard({ card, faceDown = false, dealDelay = 0 }: P
   const suit = SUIT_SYMBOL[card.suit];
   const style = { "--deal-delay": `${dealDelay}ms` } as CSSProperties;
   const label = faceDown ? "Face-down card" : `${card.rank} of ${card.suit}`;
+
+  // Sound when the card lands (timed with its deal animation)...
+  useEffect(() => {
+    const t = setTimeout(playDeal, dealDelay);
+    return () => clearTimeout(t);
+    // Only on mount: a card is dealt once.
+  }, []);
+
+  // ...and when a face-down card is turned over.
+  const wasDown = useRef(faceDown);
+  useEffect(() => {
+    if (wasDown.current && !faceDown) playFlip();
+    wasDown.current = faceDown;
+  }, [faceDown]);
 
   return (
     <div className="pcard" style={style} role="img" aria-label={label}>

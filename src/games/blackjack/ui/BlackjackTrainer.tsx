@@ -5,6 +5,7 @@ import ActionBar from "./ActionBar";
 import Feedback from "./Feedback";
 import Modal from "./Modal";
 import Progress from "./Progress";
+import { setSoundEnabled, unlockAudio } from "./sound";
 import SettingsPanel from "./SettingsPanel";
 import StatsRail from "./StatsRail";
 import StrategyChart, { type ChartSpot } from "./StrategyChart";
@@ -27,6 +28,17 @@ export default function BlackjackTrainer() {
     setDialog("chart");
   };
 
+  // Sound follows the setting; the browser only allows audio after your first click or key press.
+  useEffect(() => setSoundEnabled(settings.sound), [settings.sound]);
+  useEffect(() => {
+    window.addEventListener("pointerdown", unlockAudio);
+    window.addEventListener("keydown", unlockAudio);
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, []);
+
   // Keyboard shortcuts. A ref keeps the listener pointed at the latest handlers.
   const handlers = useRef({ trainer, openChart, dialog });
   handlers.current = { trainer, openChart, dialog };
@@ -46,6 +58,8 @@ export default function BlackjackTrainer() {
         trainer.nextHand();
       } else if (key === "c") {
         openChart();
+      } else if (key === "m") {
+        trainer.updateSettings({ sound: !trainer.settings.sound });
       }
     };
     window.addEventListener("keydown", onKey);
@@ -65,7 +79,13 @@ export default function BlackjackTrainer() {
         <p className="bj__rules">{RULES_SUMMARY}</p>
       </header>
 
-      <StatsRail stats={stats} onChart={() => openChart()} onSettings={() => setDialog("settings")} />
+      <StatsRail
+        stats={stats}
+        sound={settings.sound}
+        onToggleSound={() => trainer.updateSettings({ sound: !settings.sound })}
+        onChart={() => openChart()}
+        onSettings={() => setDialog("settings")}
+      />
 
       <Table key={trainer.roundId} round={round} theme={settings.theme} />
 
@@ -76,7 +96,8 @@ export default function BlackjackTrainer() {
       <p className="bj__keys">
         Keyboard: <span className="kbd">H</span> hit · <span className="kbd">S</span> stand ·{" "}
         <span className="kbd">D</span> double · <span className="kbd">P</span> split ·{" "}
-        <span className="kbd">Space</span> next hand · <span className="kbd">C</span> chart
+        <span className="kbd">Space</span> next hand · <span className="kbd">C</span> chart ·{" "}
+        <span className="kbd">M</span> sound
       </p>
 
       <Progress stats={stats} />

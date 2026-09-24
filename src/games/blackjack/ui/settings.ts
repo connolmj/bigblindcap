@@ -7,9 +7,10 @@ export interface Settings {
   theme: TableTheme;
   dealMode: DealMode;
   speed: Speed;
+  sound: boolean;
 }
 
-export const DEFAULT_SETTINGS: Settings = { theme: "felt", dealMode: "focus", speed: "normal" };
+export const DEFAULT_SETTINGS: Settings = { theme: "felt", dealMode: "focus", speed: "normal", sound: true };
 
 export const THEMES: { id: TableTheme; name: string; blurb: string }[] = [
   { id: "felt", name: "Classic felt", blurb: "Casino green" },

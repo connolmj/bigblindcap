@@ -5,9 +5,11 @@ interface Props {
   stats: Stats;
   onChart: () => void;
   onSettings: () => void;
+  sound: boolean;
+  onToggleSound: () => void;
 }
 
-export default function StatsRail({ stats, onChart, onSettings }: Props) {
+export default function StatsRail({ stats, onChart, onSettings, sound, onToggleSound }: Props) {
   const accuracy = pct(stats.correct, stats.decisions);
   return (
     <div className="rail">
@@ -44,6 +46,15 @@ export default function StatsRail({ stats, onChart, onSettings }: Props) {
         </div>
       </div>
       <div className="rail__tools">
+        <button
+          className="tool-btn tool-btn--icon"
+          onClick={onToggleSound}
+          aria-pressed={sound}
+          aria-label={sound ? "Sound on — click to mute" : "Sound off — click to unmute"}
+          title={sound ? "Mute (M)" : "Unmute (M)"}
+        >
+          <SpeakerIcon on={sound} />
+        </button>
         <button className="tool-btn" onClick={onChart} aria-keyshortcuts="C">
           <ChartIcon /> Chart
         </button>
@@ -70,5 +81,22 @@ const GearIcon = () => (
       strokeWidth="1.3"
       strokeLinecap="round"
     />
+  </svg>
+);
+
+const SpeakerIcon = ({ on }: { on: boolean }) => (
+  <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+    <path d="M2.5 6h2.5l3.5-3v10l-3.5-3H2.5z" fill="currentColor" />
+    {on ? (
+      <path
+        d="M10.5 5.5a3.5 3.5 0 0 1 0 5M12.3 3.7a6 6 0 0 1 0 8.6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+    ) : (
+      <path d="M10.5 6l4 4M14.5 6l-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    )}
   </svg>
 );

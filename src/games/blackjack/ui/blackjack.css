@@ -160,6 +160,14 @@
     transform 0.1s;
 }
 
+.tool-btn--icon {
+  padding: 8px 10px;
+}
+
+.tool-btn[aria-pressed="false"] {
+  color: var(--muted);
+}
+
 .tool-btn:hover {
   border-color: var(--ink);
 }
@@ -1295,6 +1303,10 @@
   .tool-btn {
     flex: 1;
     justify-content: center;
+  }
+
+  .tool-btn--icon {
+    flex: 0 0 auto;
   }
 
   .felt {

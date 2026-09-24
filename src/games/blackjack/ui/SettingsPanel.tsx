@@ -83,6 +83,22 @@ export default function SettingsPanel({ settings, onChange, onResetStats }: Prop
       </fieldset>
 
       <fieldset className="settings__group">
+        <legend className="eyebrow">Card sounds</legend>
+        <div className="segmented">
+          {[true, false].map((on) => (
+            <button
+              key={String(on)}
+              className={settings.sound === on ? "segmented__btn is-selected" : "segmented__btn"}
+              onClick={() => onChange({ sound: on })}
+              aria-pressed={settings.sound === on}
+            >
+              {on ? "On" : "Off"}
+            </button>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset className="settings__group">
         <legend className="eyebrow">Your stats</legend>
         {confirming ? (
           <div className="settings__confirm">
