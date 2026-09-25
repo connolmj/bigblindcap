@@ -113,15 +113,45 @@ export default function Donut({ positions, total }: { positions: Position[]; tot
             </div>
           </div>
         </div>
-        <div className="donut__legend">
-          {groups.map((g) => (
-            <div key={g.kind} className="donut__legend-row">
-              <span className="donut__swatch" style={{ background: g.fill }} />
-              <span className="donut__legend-name">{g.name}</span>
-              <span className="donut__legend-pct">{g.pct}</span>
+        <div className="hold" onMouseLeave={() => setHover(null)}>
+          {/* Stocks in one column; crypto and cash in the other. */}
+          {[groups.slice(0, 1), groups.slice(1)].map((col, ci) => (
+            <div key={ci} className="hold__col">
+              {col.map((g) => (
+                <div key={g.kind} className="hold__group">
+                  <div className="hold__head">
+                    <span className="donut__swatch" style={{ background: g.fill }} />
+                    <span className="hold__name">{g.name}</span>
+                    <span className="hold__pct">{g.pct}</span>
+                  </div>
+                  {slices
+                    .filter((sl) => sl.kind === g.kind)
+                    .map((sl) => (
+                      <button
+                        key={sl.ticker}
+                        className={[
+                          "hold__row",
+                          active === sl.ticker ? "is-active" : "",
+                          selected === sl.ticker ? "is-selected" : "",
+                        ].join(" ")}
+                        onMouseEnter={() => setHover(sl.ticker)}
+                        onFocus={() => setHover(sl.ticker)}
+                        onClick={() => setSelected(selected === sl.ticker ? null : sl.ticker)}
+                        title={`${sl.ticker} · ${sl.units.toFixed(2)}u`}
+                      >
+                        <span className="hold__dot" style={{ background: sl.fill }} />
+                        <span className="hold__ticker">{sl.ticker}</span>
+                        <span className="hold__weight">{(sl.frac * 100).toFixed(1)}%</span>
+                        <span className={`hold__ret ${Math.round(sl.ret * 10) === 0 ? "" : toneClass(sl.delta)}`}>
+                          {Math.round(sl.ret * 10) === 0 ? "—" : (sl.ret > 0 ? "+" : "") + fmtPct(sl.ret)}
+                        </span>
+                      </button>
+                    ))}
+                </div>
+              ))}
             </div>
           ))}
-          <div className="donut__hint">Hover a slice to see the position. Click it for detail.</div>
+          <p className="hold__foot">Share of the book · return since start · click a position for detail</p>
         </div>
       </div>
 

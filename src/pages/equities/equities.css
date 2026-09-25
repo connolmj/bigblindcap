@@ -73,9 +73,10 @@
 
 .donut {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 18px;
+  gap: 18px 28px;
   padding: 16px 0;
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--rule-soft);
@@ -125,42 +126,120 @@
   color: var(--muted);
 }
 
-.donut__legend {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 260px;
-}
-
-.donut__legend-row {
-  display: grid;
-  grid-template-columns: 10px minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-}
-
 .donut__swatch {
   width: 10px;
   height: 10px;
+  flex: none;
 }
 
-.donut__legend-name {
-  font-size: 13px;
+/* ---- Holdings list (doubles as the chart's legend) ---- */
+
+.hold {
+  flex: 1 1 380px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 22px;
+  max-width: 440px;
+}
+
+.hold__col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hold__head {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.hold__name {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--ink);
 }
 
-.donut__legend-pct {
+.hold__pct {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.hold__row {
+  display: grid;
+  grid-template-columns: 6px minmax(0, 1fr) 44px 50px;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  padding: 4px 2px;
+  border: none;
+  border-bottom: 1px solid var(--rule-soft);
+  background: none;
+  text-align: left;
   font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.hold__row.is-active {
+  background: oklch(0.955 0.004 260);
+}
+
+.hold__row.is-selected .hold__ticker {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hold__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.hold__ticker {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.hold__weight,
+.hold__ret {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.hold__weight {
+  color: var(--ink);
+}
+
+.hold__ret {
+  font-size: 11px;
   color: var(--muted);
 }
 
-.donut__hint {
-  margin-top: 4px;
+.hold__foot {
+  grid-column: 1 / -1;
+  margin: 10px 0 0;
   font-size: 11px;
-  line-height: 1.5;
   color: var(--muted);
-  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .hold {
+    flex-basis: 100%;
+    gap: 0 14px;
+  }
+
+  .hold__row {
+    grid-template-columns: 6px minmax(0, 1fr) 40px 44px;
+    gap: 6px;
+    font-size: 11px;
+  }
 }
 
 .donut__detail {
