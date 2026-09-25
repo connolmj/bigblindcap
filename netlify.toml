@@ -6,7 +6,12 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# The Games section was renamed Tools; keep old links working.
+# Renamed sections; keep old links working.
+[[redirects]]
+  from = "/equities"
+  to = "/portfolio"
+  status = 301
+
 [[redirects]]
   from = "/games/*"
   to = "/tools/:splat"

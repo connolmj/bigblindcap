@@ -106,7 +106,7 @@ export default function Donut({ positions, total }: { positions: Position[]; tot
             ))}
           </svg>
           <div className="donut__center">
-            <div className="eyebrow">{act ? act.kind : "Equities"}</div>
+            <div className="eyebrow">{act ? act.kind : "Portfolio"}</div>
             <div className="donut__title">{act ? act.ticker : fmtBig(total)}</div>
             <div className="donut__sub">
               {act ? `${act.units.toFixed(2)}u · ${(act.frac * 100).toFixed(1)}%` : `${slices.length} positions`}

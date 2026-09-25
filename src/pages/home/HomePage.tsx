@@ -49,7 +49,7 @@ export default function HomePage() {
             <Stat value={fmtPct(book.allRoi)} tone={book.allUp} label="All-time ROI" />
           </div>
           <div className="home__split-note">
-            Sports {fmtBig(book.sportsNow)} · Equities {fmtBig(book.eqNow)}
+            Sports {fmtBig(book.sportsNow)} · Portfolio {fmtBig(book.eqNow)}
           </div>
         </div>
 
@@ -66,8 +66,8 @@ export default function HomePage() {
               {sports.n ? `${fmtRecord(sports)} · ${sports.risked.toFixed(0)}u risked` : "No graded picks yet"}
             </div>
           </Link>
-          <Link to="/equities" className="home__card">
-            <div className="eyebrow">Equities</div>
+          <Link to="/portfolio" className="home__card">
+            <div className="eyebrow">Portfolio</div>
             <div className={`home__card-value ${toneClass(book.eqDelta)}`}>{fmtUnits(book.eqDelta)}</div>
             <div className={`home__card-roi ${toneClass(book.eqDelta)}`}>ROI {fmtPct(book.eqRoi)}</div>
             <div className="home__card-meta">Since {book.trackKey ? fmtKeyDate(book.trackKey) : "Sep 22, 2026"}</div>

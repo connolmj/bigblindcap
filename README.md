@@ -1,10 +1,10 @@
 # Big Blind Capital — bigblindcap.com
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
-(picks ledger), **Equities** (positions, allocation, research library) and
+(picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
 **Tools** — *Level 1: Basic Blackjack Strategy* and the *NFL Survivor Grid*.
 
-Sports and Equities read live from the Google Sheet (tabs: picks, `Equities`,
+Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
 and optional `History`). Update the sheet and the site updates — no redeploy.
 
 ## Run it locally
@@ -31,7 +31,7 @@ pull request gets its own preview URL.
 
 ```
 public/
-  docs/                 Research PDFs linked from Equities → Library
+  docs/                 Research PDFs linked from Portfolio → Library
   media/                Home page clip
   og-image.png          Link-preview image for X / iMessage / Slack
 src/
@@ -39,7 +39,7 @@ src/
   site/                 Header, nav, footer shared by every page
   pages/home/           Total book
   pages/sports/         Picks ledger
-  pages/equities/       Book, allocation donut, library (add PDFs here)
+  pages/portfolio/      Book, allocation donut + holdings, library (add PDFs here)
   pages/tools/          Tools index and page wrappers
   tools/survivor/
     model/              Ratings, win %, pick % estimate, season planner (tested)

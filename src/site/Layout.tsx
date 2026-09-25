@@ -5,7 +5,7 @@ import "./layout.css";
 const NAV = [
   { to: "/", label: "Home", end: true },
   { to: "/sports", label: "Sports", end: false },
-  { to: "/equities", label: "Equities", end: false },
+  { to: "/portfolio", label: "Portfolio", end: false },
   { to: "/tools", label: "Tools", end: false },
 ];
 

@@ -3,7 +3,7 @@ import { computeBook } from "../../data/book";
 import { useBookData } from "../../data/BookProvider";
 import { fmtBig, fmtNum, fmtPct, fmtUnits, toneClass } from "../../data/format";
 import Donut from "./Donut";
-import "./equities.css";
+import "./portfolio.css";
 
 // Add new write-ups here; put the PDF in public/docs/.
 const LIBRARY = [
@@ -27,7 +27,7 @@ const FEED_NOTE = {
   loading: "Loading positions…",
 };
 
-export default function EquitiesPage() {
+export default function PortfolioPage() {
   const data = useBookData();
   const book = useMemo(() => computeBook(data), [data]);
   const tone = toneClass(book.eqDelta);
@@ -40,7 +40,7 @@ export default function EquitiesPage() {
       </div>
 
       <section className="eq__section">
-        <div className="eyebrow eq__label">Equities book</div>
+        <div className="eyebrow eq__label">Portfolio book</div>
         <div className="eq__book">
           <div>
             <div className="eq__big">{fmtBig(book.eqNow)}</div>
