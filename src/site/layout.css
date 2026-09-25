@@ -1,6 +1,8 @@
 .site {
   min-height: 100vh;
   background: var(--paper);
+  /* Lets wide tables break out of the column without a sideways page scroll. */
+  overflow-x: clip;
 }
 
 /* 720px of content plus 20px gutters, same as the original page. */

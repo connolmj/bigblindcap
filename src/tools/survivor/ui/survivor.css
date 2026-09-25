@@ -216,7 +216,11 @@
 /* ---------- The table ---------- */
 
 .st {
-  --w0: 74px; /* team */
+  /* Break out of the page column so all 18 weeks fit on a wide screen. */
+  --st-width: min(1320px, calc(100vw - 40px));
+  width: max(100%, var(--st-width));
+  margin-left: min(0px, calc((100% - var(--st-width)) / 2));
+  --w0: 104px; /* team (+ "W5" tag) */
   --w1: 50px; /* line */
   --w2: 44px; /* win */
   --w3: 44px; /* pick */
@@ -272,6 +276,7 @@
 }
 
 .st__table {
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 11px;
@@ -294,6 +299,7 @@
 
 .st__f0 {
   left: 0;
+  width: var(--w0);
   min-width: var(--w0);
   max-width: var(--w0);
   padding: 0 8px !important;
@@ -302,21 +308,25 @@
 
 .st__f1 {
   left: var(--w0);
+  width: var(--w1);
   min-width: var(--w1);
 }
 
 .st__f2 {
   left: calc(var(--w0) + var(--w1));
+  width: var(--w2);
   min-width: var(--w2);
 }
 
 .st__f3 {
   left: calc(var(--w0) + var(--w1) + var(--w2));
+  width: var(--w3);
   min-width: var(--w3);
 }
 
 .st__f4 {
   left: calc(var(--w0) + var(--w1) + var(--w2) + var(--w3));
+  width: var(--w4);
   min-width: var(--w4);
   box-shadow:
     1px 0 0 var(--rule),
@@ -601,22 +611,61 @@ thead .st__f {
 }
 
 .st__cell.is-crossed {
-  background: var(--paper) !important;
+  position: relative;
+  background: repeating-linear-gradient(
+    135deg,
+    oklch(0.965 0.003 260) 0 4px,
+    oklch(0.925 0.005 260) 4px 8px
+  ) !important;
+  filter: none;
+  opacity: 1;
+  color: oklch(0.8 0.005 260);
 }
 
 .st__cell.is-crossed button {
-  opacity: 0.28;
-  text-decoration: line-through;
+  opacity: 0.3;
 }
 
-tr.is-used .st__team .tchip,
+/* One continuous line through the row */
+.st__cell.is-crossed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: -1px;
+  top: 50%;
+  height: 1.5px;
+  background: oklch(0.55 0.01 265 / 0.55);
+  pointer-events: none;
+}
+
+/* A team you've picked: the whole row is struck through and greyed out,
+   except the week you picked it, which stays solid. */
+tr.is-used .st__f {
+  background: oklch(0.955 0.004 260);
+}
+
 tr.is-used .st__num,
-tr.is-used .st__fv {
-  opacity: 0.4;
+tr.is-used .st__fv,
+tr.is-used .st__byestats {
+  opacity: 0.35;
 }
 
-tr.is-used .st__team .tchip {
+tr.is-used .tchip__code {
   text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+.st__usedtag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: 1px;
 }
 
 /* ---------- How it works ---------- */
@@ -666,7 +715,7 @@ tr.is-used .st__team .tchip {
 
   /* Narrower frozen columns on phones so ~3 weeks still fit beside them. */
   .st {
-    --w0: 54px;
+    --w0: 58px;
     --w1: 40px;
     --w2: 36px;
     --w3: 36px;
@@ -675,6 +724,14 @@ tr.is-used .st__team .tchip {
 
   .st__f0 {
     padding: 0 6px !important;
+  }
+
+  .st__usedtag {
+    display: block;
+    width: fit-content;
+    margin: 2px 0 0 10px;
+    padding: 0 4px;
+    font-size: 8px;
   }
 
   .st__num,

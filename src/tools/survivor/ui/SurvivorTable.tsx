@@ -196,6 +196,11 @@ export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
                 <tr key={team} className={used !== undefined ? "is-used" : ""}>
                   <th scope="row" className="st__f st__f0 st__team">
                     <TeamChip team={team} />
+                    {used !== undefined && (
+                      <span className="st__usedtag" title={`You picked ${team} in week ${used}`}>
+                        W{used}
+                      </span>
+                    )}
                   </th>
                   {g ? (
                     <>
@@ -228,7 +233,10 @@ export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
                     const tw = s.slate[w]?.[team];
                     if (!tw) {
                       return (
-                        <td key={w} className={`st__cell is-bye${w === week ? " is-selected" : ""}`}>
+                        <td
+                          key={w}
+                          className={`st__cell is-bye${w === week ? " is-selected" : ""}${used !== undefined ? " is-crossed" : ""}`}
+                        >
                           BYE
                         </td>
                       );
