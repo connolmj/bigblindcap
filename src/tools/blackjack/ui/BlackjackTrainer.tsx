@@ -39,6 +39,20 @@ export default function BlackjackTrainer() {
     };
   }, []);
 
+  // After each move (and when a hand ends), make sure the result box is on
+  // screen — scrolling down just enough, but never past the stats bar.
+  const railRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const rail = railRef.current;
+    const fb = feedbackRef.current;
+    if (!rail || !fb || (round.decisions.length === 0 && round.phase !== "settled")) return;
+    const overflow = fb.getBoundingClientRect().bottom + 12 - window.innerHeight;
+    const room = rail.getBoundingClientRect().top - 8;
+    const by = Math.min(overflow, room);
+    if (by > 0) window.scrollBy({ top: by, behavior: "smooth" });
+  }, [round.decisions.length, round.phase]);
+
   // Keyboard shortcuts. A ref keeps the listener pointed at the latest handlers.
   const handlers = useRef({ trainer, openChart, dialog });
   handlers.current = { trainer, openChart, dialog };
@@ -79,19 +93,23 @@ export default function BlackjackTrainer() {
         <p className="bj__rules">{RULES_SUMMARY}</p>
       </header>
 
-      <StatsRail
-        stats={stats}
-        sound={settings.sound}
-        onToggleSound={() => trainer.updateSettings({ sound: !settings.sound })}
-        onChart={() => openChart()}
-        onSettings={() => setDialog("settings")}
-      />
+      <div ref={railRef}>
+        <StatsRail
+          stats={stats}
+          sound={settings.sound}
+          onToggleSound={() => trainer.updateSettings({ sound: !settings.sound })}
+          onChart={() => openChart()}
+          onSettings={() => setDialog("settings")}
+        />
+      </div>
 
       <Table key={trainer.roundId} round={round} theme={settings.theme} />
 
       <ActionBar phase={round.phase} legal={trainer.legal} onAct={trainer.act} onNext={trainer.nextHand} />
 
-      <Feedback round={round} onShowChart={(rec) => openChart(rec)} />
+      <div ref={feedbackRef}>
+        <Feedback round={round} onShowChart={(rec) => openChart(rec)} />
+      </div>
 
       <p className="bj__keys">
         Keyboard: <span className="kbd">H</span> hit · <span className="kbd">S</span> stand ·{" "}
