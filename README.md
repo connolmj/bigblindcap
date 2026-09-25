@@ -65,7 +65,7 @@ with a persistent shoe instead of a fresh one each hand.
 
 `public/data/survivor.json` is rebuilt from the free [nflverse](https://github.com/nflverse/nfldata)
 schedule/odds file by `scripts/update-survivor.ts`. A GitHub Action
-(`.github/workflows/update-survivor.yml`) runs it Tue/Thu/Sat/Sun mornings and
+(`.github/workflows/update-survivor.yml`) runs it every morning and
 commits the file when the numbers change, which triggers a Netlify deploy.
 Run it by hand any time with `npm run update-survivor`, or from the repo's
 **Actions** tab → *Update survivor data* → *Run workflow*.

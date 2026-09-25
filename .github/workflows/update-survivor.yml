@@ -4,12 +4,9 @@ name: Update survivor data
 
 on:
   schedule:
-    # Times are UTC. Roughly: Tue 9am ET (after Monday night), Thu 9am ET
-    # (before Thursday night), Sat 9am ET, Sun 10am ET (final injury news).
-    - cron: "0 13 * * 2"
-    - cron: "0 13 * * 4"
-    - cron: "0 13 * * 6"
-    - cron: "0 14 * * 0"
+    # Once a day at 13:17 UTC (9:17am ET in season; 8:17am after clocks change).
+    # Off the top of the hour because GitHub delays jobs scheduled at :00.
+    - cron: "17 13 * * *"
   workflow_dispatch: # lets you run it by hand from the Actions tab
 
 permissions:
