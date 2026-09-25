@@ -61,19 +61,32 @@ const FIELD_ALIASES: Record<string, string[]> = {
   time: ["time", "start", "kickoff", "first pitch"],
 };
 
+// Sheet line as a number. Typographic minus/dash count as minus signs.
+function oddsNumber(line: string): number {
+  return parseFloat(
+    String(line)
+      .replace(/[\u2212\u2013]/g, "-")
+      .replace(/[^0-9+\-.]/g, ""),
+  );
+}
+
 // -110 -> 0.909 profit per unit; +124 -> 1.24. Blank falls back to -110.
 export function payout(line: string): number {
-  const n = parseFloat(String(line).replace(/[^0-9+\-.]/g, ""));
+  const n = oddsNumber(line);
   if (!isFinite(n) || n === 0) return 0.909;
   return n > 0 ? n / 100 : 100 / Math.abs(n);
 }
 
 // Display form of the sheet's line: 150 -> "+150", -110 -> "−110", blank -> "—".
-// Sheets turns a typed "+150" into the number 150, so the sign is added back here.
+// Sheets turns a typed "+150" into the number 150, so any unsigned number is
+// read as plus-money. Anything that isn't a bare number is shown as typed.
 export function fmtOdds(line: string): string {
-  const n = parseFloat(String(line).replace(/[^0-9+\-.]/g, ""));
-  if (!isFinite(n) || n === 0) return "—";
-  return n > 0 ? "+" + n : "−" + Math.abs(n);
+  const raw = String(line).trim();
+  if (!raw) return "—";
+  if (!/^[+\-\u2212\u2013]?\d+(\.\d+)?$/.test(raw)) return raw;
+  const n = oddsNumber(raw);
+  if (!isFinite(n) || n === 0) return raw;
+  return n > 0 ? "+" + n : "\u2212" + Math.abs(n);
 }
 
 export function parseSheet(text: string): SheetRows {
@@ -111,7 +124,7 @@ export function parseSheet(text: string): SheetRows {
         league,
         pick,
         game: cell(r, "game"),
-        line: line || "—",
+        line: fmtOdds(line),
         units: stake.toFixed(1) + "u",
         dateLabel: when ? when.label : "",
         sortKey: when ? when.sortKey : 0,

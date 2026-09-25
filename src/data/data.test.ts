@@ -3,7 +3,7 @@ import { computeBook } from "./book";
 import { parseCsv } from "./csv";
 import { kindOf, parseEquities, parseHistory } from "./equities";
 import { fmtPct, fmtUnits } from "./format";
-import { parseSheet, tally } from "./picks";
+import { fmtOdds, parseSheet, payout, tally } from "./picks";
 
 test("parseCsv handles quoted commas", () => {
   expect(parseCsv('a,b\n"1,5",x')).toEqual([
@@ -68,4 +68,19 @@ test("computeBook: starts come from History day one", () => {
   expect(book.eqDelta).toBe(100);
   expect(book.eqRoi).toBe(10);
   expect(book.totalNow).toBe(1250); // 1100 equities + 150 sports bankroll
+});
+
+describe("odds", () => {
+  test("adds the plus sign to unsigned plus-money lines", () => {
+    expect(fmtOdds("150")).toBe("+150");
+    expect(fmtOdds("+150")).toBe("+150");
+    expect(fmtOdds("-110")).toBe("−110");
+    expect(fmtOdds("−110")).toBe("−110");
+    expect(fmtOdds("")).toBe("—");
+    expect(fmtOdds("PK")).toBe("PK");
+  });
+  test("pays typographic-minus lines as minus odds", () => {
+    expect(payout("−110")).toBeCloseTo(0.909, 3);
+    expect(payout("150")).toBe(1.5);
+  });
 });
