@@ -118,7 +118,7 @@
 }
 
 .sports__grid--ledger {
-  grid-template-columns: 52px 40px minmax(0, 1fr) 38px 54px;
+  grid-template-columns: 52px 40px minmax(0, 1fr) 40px 38px 54px;
 }
 
 .sports__grid--head {

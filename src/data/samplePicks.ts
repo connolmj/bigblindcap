@@ -85,6 +85,7 @@ export function sampleLedger(): GradedPick[] {
           sortKey: y * 10000 + m * 100 + day,
           league,
           pick,
+          odds: "−110",
           tag,
           stake,
           u,
