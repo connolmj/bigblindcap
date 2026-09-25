@@ -10,7 +10,7 @@
   --double: oklch(0.56 0.13 155);
   --split: oklch(0.56 0.13 255);
   --gold: oklch(0.82 0.13 85);
-  --card-w: clamp(58px, 12vw, 86px);
+  --card-w: clamp(50px, 8vw, 64px);
   --radius: 14px;
 
   padding-bottom: 36px;
@@ -92,8 +92,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 14px 30px;
-  padding: 16px 0 18px;
+  gap: 10px 30px;
+  padding: 10px 0 12px;
   border-top: 1px solid var(--rule);
 }
 
@@ -104,7 +104,7 @@
 }
 
 .rail__big {
-  font-size: 40px;
+  font-size: 32px;
   font-weight: 600;
   line-height: 0.95;
   letter-spacing: -0.03em;
@@ -192,8 +192,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 420px;
-  padding: 22px 16px 26px;
+  min-height: 0;
+  padding: 10px 16px 14px;
   border: 10px solid var(--felt-rail);
   border-radius: 26px 26px 50% 50% / 26px 26px 34% 34%;
   background: radial-gradient(ellipse 80% 70% at 50% 40%, var(--felt-center), var(--felt-edge));
@@ -253,7 +253,7 @@
   position: relative;
   flex: 1;
   width: 100%;
-  min-height: 96px;
+  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -351,8 +351,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
+  gap: 6px;
+  padding: 4px 8px;
   border-radius: 14px;
   transition:
     opacity 0.25s,
@@ -608,7 +608,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
-  margin: 18px 0 14px;
+  margin: 12px 0 10px;
 }
 
 .actions__btn {
@@ -619,7 +619,7 @@
   align-items: center;
   column-gap: 8px;
   row-gap: 2px;
-  padding: 14px 14px 12px;
+  padding: 10px 14px 9px;
   border: 1.5px solid var(--rule);
   border-radius: var(--radius);
   background: #fff;
@@ -764,7 +764,7 @@
 .feedback {
   --tone: var(--rule);
   position: relative;
-  padding: 14px 16px 14px 18px;
+  padding: 10px 14px 10px 16px;
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   background: #fff;
@@ -832,7 +832,7 @@
 }
 
 .feedback__why {
-  margin: 8px 0 6px;
+  margin: 6px 0 0;
   font-size: 14px;
   line-height: 1.55;
   color: var(--text);
@@ -1284,7 +1284,7 @@
 
 @media (max-width: 560px) {
   .bj {
-    --card-w: clamp(52px, 16vw, 70px);
+    --card-w: clamp(48px, 14vw, 60px);
   }
 
   .rail {
@@ -1310,8 +1310,8 @@
   }
 
   .felt {
-    min-height: 360px;
-    padding: 16px 8px 22px;
+    min-height: 0;
+    padding: 10px 8px 16px;
     border-width: 7px;
     border-radius: 22px 22px 46% 46% / 22px 22px 24% 24%;
   }
@@ -1330,7 +1330,7 @@
   }
 
   .felt__middle {
-    min-height: 84px;
+    min-height: 56px;
   }
 
   .felt__arc {
@@ -1360,6 +1360,11 @@
 
   .feedback__spot {
     margin-left: 0;
+  }
+
+  .feedback__why {
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   .settings__themes {

@@ -72,11 +72,11 @@ function DecisionCard({ decision, onShowChart }: { decision: Decision; onShowCha
           )}
         </span>
         <span className="feedback__spot">{spot}</span>
+        <button className="linkish" onClick={() => onShowChart(decision.recommendation)}>
+          See it on the chart →
+        </button>
       </div>
       <p className="feedback__why">{why}</p>
-      <button className="linkish" onClick={() => onShowChart(decision.recommendation)}>
-        See it on the chart →
-      </button>
     </div>
   );
 }
