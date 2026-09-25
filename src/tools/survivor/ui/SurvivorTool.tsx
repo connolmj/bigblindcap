@@ -47,15 +47,14 @@ function Loaded({ data }: { data: SurvivorData }) {
         <div className="sv__stat">
           <div className="eyebrow">Weeks picked</div>
           <div className="sv__big">{picked}</div>
+          <div className="sv__meta">of 18</div>
         </div>
         <div className="sv__stat">
           <div className="eyebrow">Odds to survive week {s.current}–18</div>
           <div className="sv__big">
             {s.survival > 0 ? (s.survival < 0.001 ? "<0.1%" : (s.survival * 100).toFixed(1) + "%") : "—"}
           </div>
-          <div className="sv__meta">
-            {showPlan ? "Your picks + the suggested plan" : "Your picks + the suggested plan (hidden)"}
-          </div>
+          <div className="sv__meta">Your picks + the suggested plan</div>
         </div>
         <div className="sv__actions">
           <button
@@ -146,7 +145,8 @@ function Loaded({ data }: { data: SurvivorData }) {
           <dt>Future value & the suggested plan</dt>
           <dd>
             The plan finds the one-team-per-week path with the best odds of surviving every remaining week. Future value
-            is how much worse that path gets if you use a team now — lots of stars means save it for later.
+            is how much worse that path gets if you use a team now, scored 0–100 for the week you're viewing: 100 is the
+            team most worth saving, 0 means saving it doesn't help. Hover a score to see the actual boost to your odds.
           </dd>
         </dl>
         <p className="sv__disclaimer">For entertainment and planning only. Not betting advice.</p>

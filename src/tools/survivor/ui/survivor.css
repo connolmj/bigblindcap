@@ -61,7 +61,7 @@
 .sv__summary {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 16px 40px;
   padding: 18px 0 20px;
   border-bottom: 1px solid var(--rule);
@@ -91,6 +91,7 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-left: auto;
+  align-self: center;
 }
 
 .sv__btn {
@@ -219,7 +220,7 @@
   --w1: 50px; /* line */
   --w2: 44px; /* win */
   --w3: 44px; /* pick */
-  --w4: 52px; /* save */
+  --w4: 72px; /* future value */
 }
 
 .st__legend {
@@ -400,12 +401,25 @@ thead .st__f {
 .st__fv {
   padding: 0 6px !important;
   text-align: right;
-  font-size: 11px;
-  color: oklch(0.7 0.13 80);
+  color: var(--muted);
 }
 
-.st__star-off {
-  color: var(--rule);
+/* 0–100 future value: the pill gets more golden as the score rises. */
+.st__fvscore {
+  display: inline-block;
+  min-width: 30px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, oklch(0.8 0.14 80) calc(var(--fv) * 1%), var(--rule-soft));
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.st__label-short {
+  display: none;
 }
 
 .st__byestats {
@@ -673,9 +687,18 @@ tr.is-used .st__team .tchip {
     font-size: 11px;
   }
 
-  .st__fv {
-    font-size: 8px;
-    letter-spacing: -0.05em;
+  .st__fvscore {
+    min-width: 26px;
+    padding: 2px 3px;
+    font-size: 10px;
+  }
+
+  .st__label {
+    display: none;
+  }
+
+  .st__label-short {
+    display: inline;
   }
 
   .st__sort {

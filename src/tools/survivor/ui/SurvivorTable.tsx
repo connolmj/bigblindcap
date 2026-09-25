@@ -3,21 +3,26 @@
  * week's numbers (line, win %, pick %, future value); the right side is the
  * whole season, one column per week. Click a cell to pick that team that week.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { TEAM_CODES } from "../model/teams";
 import type { Survivor } from "./useSurvivor";
-import { fmtSpread, fvStars, pct, teamName } from "./format";
+import { fmtSpread, fvScores, pct, teamName } from "./format";
 import TeamChip from "./TeamChip";
 
 const WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
 
 type SortKey = "team" | "spread" | "win" | "pick" | "fv";
 
-const STATS: { key: Exclude<SortKey, "team">; label: string; title: string }[] = [
-  { key: "spread", label: "Line", title: "Points favoured by (− = favourite)" },
-  { key: "win", label: "Win", title: "Chance to win" },
-  { key: "pick", label: "Pick", title: "Estimated share of survivor entries picking this team" },
-  { key: "fv", label: "Save", title: "Future value: how much saving this team helps your later weeks" },
+const STATS: { key: Exclude<SortKey, "team">; label: string; short: string; title: string }[] = [
+  { key: "spread", label: "Line", short: "Line", title: "Points favoured by (− = favourite)" },
+  { key: "win", label: "Win", short: "Win", title: "Chance to win" },
+  { key: "pick", label: "Pick", short: "Pick", title: "Estimated share of survivor entries picking this team" },
+  {
+    key: "fv",
+    label: "Future value",
+    short: "FV",
+    title: "Future value, 0–100: how much saving this team helps your later weeks (100 = the team most worth saving)",
+  },
 ];
 
 /** Win % → cell shade. Greens above 50%, faint reds below. */
@@ -40,6 +45,7 @@ interface Props {
 export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: "win", desc: true });
   const fv = useMemo(() => s.futureValue(week), [s, week]);
+  const fvScore = useMemo(() => fvScores(fv), [fv]);
   const scroller = useRef<HTMLDivElement>(null);
   const heads = useRef<Record<number, HTMLTableCellElement | null>>({});
   const lastSticky = useRef<HTMLTableCellElement>(null);
@@ -82,13 +88,14 @@ export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
     });
   }, [s.slate, week, sort, fv]);
 
-  const sortBtn = (key: SortKey, label: string, title: string) => (
+  const sortBtn = (key: SortKey, label: string, title: string, short = label) => (
     <button
       className={sort.key === key ? "st__sort is-active" : "st__sort"}
       title={title}
       onClick={() => setSort((p) => ({ key, desc: p.key === key ? !p.desc : key !== "team" }))}
     >
-      {label}
+      <span className="st__label">{label}</span>
+      <span className="st__label-short">{short}</span>
       {sort.key === key && <span aria-hidden="true">{sort.desc ? "↓" : "↑"}</span>}
     </button>
   );
@@ -128,7 +135,7 @@ export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
                   ref={i === STATS.length - 1 ? lastSticky : undefined}
                   aria-sort={sort.key === c.key ? (sort.desc ? "descending" : "ascending") : "none"}
                 >
-                  {sortBtn(c.key, c.label, c.title)}
+                  {sortBtn(c.key, c.label, c.title, c.short)}
                 </th>
               ))}
               {WEEKS.map((w) => (
@@ -184,7 +191,7 @@ export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
             {teams.map((team) => {
               const used = s.usedWeek[team];
               const g = s.slate[week]?.[team];
-              const stars = fvStars(fv[team] ?? 0);
+              const score = fvScore[team];
               return (
                 <tr key={team} className={used !== undefined ? "is-used" : ""}>
                   <th scope="row" className="st__f st__f0 st__team">
@@ -203,8 +210,13 @@ export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
                             : undefined
                         }
                       >
-                        {"★★★".slice(0, stars)}
-                        <span className="st__star-off">{"★★★".slice(stars)}</span>
+                        {score === undefined ? (
+                          "—"
+                        ) : (
+                          <span className="st__fvscore" style={{ "--fv": score } as CSSProperties}>
+                            {score}
+                          </span>
+                        )}
                       </td>
                     </>
                   ) : (

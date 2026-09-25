@@ -11,7 +11,13 @@ export function fmtSpread(spread: number): string {
 
 export const teamName = (t: string) => `${TEAMS[t]?.name ?? t} ${TEAMS[t]?.nick ?? ""}`.trim();
 
-/** Future value → 0–3 stars. */
-export function fvStars(fv: number): number {
-  return fv >= 0.2 ? 3 : fv >= 0.08 ? 2 : fv >= 0.02 ? 1 : 0;
+/**
+ * Future value → a 0–100 score for the week you're looking at.
+ * 100 = the team most worth saving; 0 = saving it doesn't help your later weeks.
+ */
+export function fvScores(fv: Record<string, number>): Record<string, number> {
+  const max = Math.max(0, ...Object.values(fv));
+  return Object.fromEntries(
+    Object.entries(fv).map(([t, v]) => [t, max > 0 ? Math.round((Math.max(v, 0) / max) * 100) : 0]),
+  );
 }
