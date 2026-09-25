@@ -644,9 +644,15 @@ tr.is-used .st__f {
   background: oklch(0.955 0.004 260);
 }
 
+/* Fade the text, not the cells: these columns are frozen, and a see-through
+   background would let the grid show through when it scrolls under them. */
 tr.is-used .st__num,
 tr.is-used .st__fv,
 tr.is-used .st__byestats {
+  color: oklch(0.78 0.005 260);
+}
+
+tr.is-used .st__fvscore {
   opacity: 0.35;
 }
 

@@ -263,7 +263,7 @@ export default function SurvivorTable({ s, week, onWeek, showPlan }: Props) {
                             {tw.home ? "" : "@"}
                             {tw.opp}
                           </span>
-                          <span className="st__cellwin">{picked ? "✓" : Math.round(tw.win * 100)}</span>
+                          <span className="st__cellwin">{picked ? "✓" : Math.round(tw.win * 100) + "%"}</span>
                         </button>
                       </td>
                     );
