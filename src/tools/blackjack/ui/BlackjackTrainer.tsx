@@ -69,7 +69,7 @@ export default function BlackjackTrainer() {
   return (
     <div className="bj">
       <header className="bj__intro">
-        <div className="eyebrow">Games · Blackjack</div>
+        <div className="eyebrow">Tools · Blackjack</div>
         <h1 className="bj__title">
           <span className="bj__level">Level 1:</span> Basic Blackjack Strategy
         </h1>

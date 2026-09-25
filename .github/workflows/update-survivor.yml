@@ -1,0 +1,50 @@
+# Refreshes the NFL Survivor Grid data (public/data/survivor.json) from nflverse.
+# If the numbers changed, commits the new file to main, and Netlify redeploys.
+name: Update survivor data
+
+on:
+  schedule:
+    # Times are UTC. Roughly: Tue 9am ET (after Monday night), Thu 9am ET
+    # (before Thursday night), Sat 9am ET, Sun 10am ET (final injury news).
+    - cron: "0 13 * * 2"
+    - cron: "0 13 * * 4"
+    - cron: "0 13 * * 6"
+    - cron: "0 14 * * 0"
+  workflow_dispatch: # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-survivor
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Rebuild survivor data
+        run: npx tsx scripts/update-survivor.ts
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- public/data/survivor.json; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "survivor-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/survivor.json
+          git commit -m "Update survivor data ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+          git push

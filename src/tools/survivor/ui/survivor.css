@@ -1,0 +1,768 @@
+/* NFL Survivor Grid — same editorial style as the rest of the site. */
+
+.sv {
+  padding-bottom: 40px;
+}
+
+.sv__intro {
+  padding: 26px 0 16px;
+}
+
+.sv__title {
+  margin: 8px 0;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(28px, 5vw, 38px);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.sv__lede {
+  margin: 0 0 10px;
+  max-width: 600px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.sv__rules {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 9px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.sv__notice {
+  padding: 30px 0;
+  color: var(--muted);
+}
+
+.sv__status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 10px 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.sv__status strong {
+  color: var(--ink);
+}
+
+.sv__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 40px;
+  padding: 18px 0 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sv__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sv__big {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.sv__meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.sv__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.sv__btn {
+  padding: 8px 13px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sv__btn:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+.sv__btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.sv__btn.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.sv__btn--danger {
+  background: var(--loss);
+  border-color: var(--loss);
+  color: #fff;
+}
+
+.sv__confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.sv__section {
+  padding-top: 26px;
+}
+
+.sv__section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 10px;
+}
+
+.sv__h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.sv__weeknav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sv__weeknav button,
+.sv__weeknav select {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #fff;
+  font: 500 12px var(--font-sans);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sv__weeknav button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.sv__hint {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in oklch, var(--accent) 7%, #fff);
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* ---------- Team chip ---------- */
+
+.tchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.tchip__swatch {
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.tchip__code {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.tchip__nick {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Week table ---------- */
+
+.wt {
+  position: relative; /* keeps hidden labels inside the scroll box */
+  overflow-x: auto;
+}
+
+.wt__opp-inline,
+.wt__label-short {
+  display: none;
+}
+
+.wt__more {
+  margin-top: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.wt__more:hover {
+  text-decoration: underline;
+}
+
+.wt__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.wt__table th {
+  padding: 0 6px 6px;
+  border-bottom: 1px solid var(--ink);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.wt__table th:first-child,
+.wt__opp-head {
+  text-align: left !important;
+}
+
+.wt__sort {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.wt__sort:hover,
+.wt__sort.is-active {
+  color: var(--ink);
+}
+
+.wt__arrow {
+  display: inline-block;
+  width: 10px;
+}
+
+.wt__table td {
+  padding: 7px 6px;
+  border-bottom: 1px solid var(--rule-soft);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.wt__table td:first-child,
+.wt__opp {
+  text-align: left !important;
+}
+
+.wt__opp {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.wt__num {
+  font-variant-numeric: tabular-nums;
+}
+
+.wt__muted {
+  color: var(--muted);
+}
+
+.wt__proj {
+  margin-left: 4px;
+  padding: 0 4px;
+  border: 1px dashed var(--rule);
+  border-radius: 4px;
+  font-size: 9px;
+  color: var(--muted);
+  vertical-align: 1px;
+}
+
+.wt__win {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.wt__bar {
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--rule-soft);
+  overflow: hidden;
+}
+
+.wt__bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.wt__fv {
+  letter-spacing: 0.08em;
+  color: oklch(0.7 0.13 80);
+}
+
+.wt__star-off {
+  color: var(--rule);
+}
+
+.wt__action > * + * {
+  margin-left: 8px;
+}
+
+.wt__btn {
+  min-width: 78px;
+  padding: 5px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.wt__btn:hover {
+  border-color: var(--ink);
+}
+
+.wt__btn.is-picked {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.wt__btn.is-used {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.wt__row.is-picked td {
+  background: color-mix(in oklch, var(--accent) 7%, transparent);
+}
+
+.wt__row.is-used td:not(.wt__action) {
+  opacity: 0.4;
+}
+
+.wt__row.is-used .tchip__code {
+  text-decoration: line-through;
+}
+
+.wt__result {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.wt__result.is-W {
+  color: var(--accent);
+}
+
+.wt__result.is-L,
+.wt__result.is-T {
+  color: var(--loss);
+}
+
+.wt__byes {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Season grid ---------- */
+
+.grid__bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px 20px;
+  margin-bottom: 10px;
+}
+
+.segmented--small {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--rule-soft);
+}
+
+.segmented--small button {
+  padding: 5px 11px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.segmented--small button.is-selected {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1px 3px oklch(0 0 0 / 0.15);
+}
+
+.grid__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.grid__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 14px;
+  margin-left: 8px;
+  border-radius: 3px;
+}
+
+.grid__key--proj {
+  width: auto;
+  padding: 0 4px;
+  border: 1px dashed var(--rule);
+  font-size: 9px;
+  font-style: italic;
+}
+
+.grid__scroll {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.grid__table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11px;
+}
+
+.grid__table th,
+.grid__table td {
+  padding: 0;
+  border-right: 1px solid oklch(1 0 0);
+  border-bottom: 1px solid oklch(1 0 0);
+}
+
+.grid__corner,
+.grid__team {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 78px;
+  padding: 0 8px !important;
+  background: #fff;
+  text-align: left;
+  box-shadow: 1px 0 0 var(--rule);
+}
+
+.grid__corner {
+  z-index: 3;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.grid__week button {
+  width: 100%;
+  height: 28px;
+  border: none;
+  background: none;
+  font: 600 11px var(--font-sans);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.grid__week.is-past button {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.grid__week.is-current button {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.grid__week.is-selected:not(.is-current) button {
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+.grid__picks td {
+  height: 30px;
+  text-align: center;
+  border-bottom: 1px solid var(--rule) !important;
+}
+
+.grid__pick {
+  display: inline-block;
+  min-width: 38px;
+  padding: 3px 4px;
+  border-radius: 5px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.grid__pick.is-won {
+  background: var(--accent);
+}
+
+.grid__pick.is-lost {
+  background: var(--loss);
+}
+
+.grid__pick.is-plan {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  border: none;
+}
+
+.grid__pick.is-empty {
+  background: transparent;
+  color: var(--rule);
+}
+
+.grid__cell {
+  min-width: 46px;
+  height: 36px;
+}
+
+.grid__cell button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 100%;
+  height: 36px;
+  padding: 0 2px;
+  border: none;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.grid__cell button:hover {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.grid__opp {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.grid__win {
+  font-size: 10px;
+  line-height: 1;
+  color: oklch(0.35 0.02 265);
+}
+
+.grid__cell.is-proj .grid__win {
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.grid__cell.is-bye {
+  background: var(--paper);
+  color: var(--rule);
+  font-size: 9px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.grid__cell.is-past {
+  filter: saturate(0.3);
+  opacity: 0.7;
+}
+
+.grid__cell.is-picked {
+  background: var(--ink) !important;
+  filter: none;
+  opacity: 1;
+}
+
+.grid__cell.is-picked button,
+.grid__cell.is-picked .grid__win {
+  color: var(--paper);
+}
+
+.grid__cell.is-plan button {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.grid__cell.is-crossed {
+  background: var(--paper) !important;
+}
+
+.grid__cell.is-crossed button {
+  opacity: 0.28;
+  text-decoration: line-through;
+}
+
+tr.is-used .grid__team .tchip {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+/* ---------- How it works ---------- */
+
+.sv__how {
+  margin-top: 30px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.sv__how summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sv__how dl {
+  margin: 14px 0 0;
+  max-width: 640px;
+}
+
+.sv__how dt {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sv__how dd {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.sv__disclaimer {
+  margin: 16px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .tchip__nick,
+  .wt__bar,
+  .wt__opp,
+  .wt__opp-head {
+    display: none;
+  }
+
+  .wt__label {
+    display: none;
+  }
+
+  .wt__label-short {
+    display: inline;
+  }
+
+  .wt__table {
+    font-size: 12px;
+  }
+
+  .wt__table th {
+    letter-spacing: 0.06em;
+  }
+
+  .wt__win {
+    font-weight: 600;
+  }
+
+  .wt__opp-inline {
+    display: block;
+    margin: 2px 0 0 10px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .wt__btn {
+    min-width: 0;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .wt__table td,
+  .wt__table th {
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+  }
+
+  .wt__fv {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+
+  .wt__proj {
+    display: none;
+  }
+
+  .sv__actions {
+    margin-left: 0;
+  }
+
+  .wt__table td,
+  .wt__table th {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+}

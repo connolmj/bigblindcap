@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import BlackjackTrainer from "../../games/blackjack/ui/BlackjackTrainer";
+import BlackjackTrainer from "../../tools/blackjack/ui/BlackjackTrainer";
 
 export default function BlackjackPage() {
   useEffect(() => {

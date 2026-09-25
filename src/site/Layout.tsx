@@ -6,12 +6,12 @@ const NAV = [
   { to: "/", label: "Home", end: true },
   { to: "/sports", label: "Sports", end: false },
   { to: "/equities", label: "Equities", end: false },
-  { to: "/games", label: "Games", end: false },
+  { to: "/tools", label: "Tools", end: false },
 ];
 
 export default function Layout() {
-  // Games get a little more room than the text-heavy pages.
-  const wide = useLocation().pathname.startsWith("/games");
+  // Tools get a little more room than the text-heavy pages.
+  const wide = useLocation().pathname.startsWith("/tools");
 
   return (
     <div className="site">

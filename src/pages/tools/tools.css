@@ -1,8 +1,8 @@
-.games__intro {
+.tools__intro {
   padding: 26px 0 22px;
 }
 
-.games__title {
+.tools__title {
   margin: 8px 0 8px;
   font-family: var(--font-serif);
   font-weight: 500;
@@ -10,13 +10,13 @@
   color: var(--ink);
 }
 
-.games__lede {
+.tools__lede {
   margin: 0;
   font-size: 14px;
   color: var(--muted);
 }
 
-.games__list {
+.tools__list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
@@ -122,4 +122,30 @@ a.game-card:hover {
 
 .game-card.is-soon {
   opacity: 0.8;
+}
+
+.game-card__art--grid {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 26px);
+  gap: 4px;
+}
+
+.mini-grid span {
+  height: 18px;
+  border-radius: 3px;
+  background: oklch(0.75 0.12 150);
+}
+
+.mini-grid .is-pick {
+  background: var(--ink);
+}
+
+.mini-grid .is-used {
+  background: var(--rule);
+  opacity: 0.7;
 }
