@@ -1,0 +1,655 @@
+/* Bankroll Management — same editorial style as the rest of the site. */
+
+.br {
+  padding-bottom: 40px;
+}
+
+.br__intro {
+  padding: 26px 0 18px;
+}
+
+.br__title {
+  margin: 8px 0;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(28px, 5vw, 38px);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.br__lede {
+  margin: 0;
+  max-width: 620px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ---------- Inputs ---------- */
+
+.br__inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 18px 28px;
+  padding: 18px 0 20px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
+.br__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.br__field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.br__value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.br__field input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+.br__help {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.br__help strong {
+  color: var(--ink);
+}
+
+.br__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.br__num {
+  width: 72px;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #fff;
+  font: 500 13px var(--font-sans);
+  color: var(--ink);
+}
+
+.br__num--wide {
+  width: 120px;
+}
+
+.br__num:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+
+.br__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.br__chip {
+  min-width: 36px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.br__chip:hover {
+  border-color: var(--ink);
+}
+
+.br__chip.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.br__seg {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 2px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: #fff;
+}
+
+.br__seg button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.br__seg button.is-on {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.br__edge {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.br__edge strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.br__edge strong.is-win {
+  color: var(--accent);
+}
+
+.br__edge strong.is-loss {
+  color: var(--loss);
+}
+
+/* ---------- Headline numbers ---------- */
+
+.br__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px 28px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+  transition: opacity 0.15s;
+}
+
+.br__stats.is-stale {
+  opacity: 0.6;
+}
+
+.br__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.br__big {
+  font-size: clamp(26px, 7vw, 34px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.br__meta {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.br__takeaway {
+  margin: 20px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in oklch, var(--accent) 7%, #fff);
+}
+
+.br__takeaway p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.br__takeaway p + p {
+  margin-top: 6px;
+}
+
+/* ---------- Charts ---------- */
+
+.br__section {
+  padding-top: 30px;
+}
+
+.br__section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 6px;
+}
+
+.br__h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.br__sub {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.br__btn {
+  padding: 7px 13px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.br__btn:hover {
+  border-color: var(--ink);
+}
+
+.br__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.br__key {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 10px;
+  border-radius: 3px;
+}
+
+.br__key:first-child {
+  margin-left: 0;
+}
+
+.br__key--up {
+  background: var(--br-up);
+}
+
+.br__key--down {
+  background: var(--br-down);
+}
+
+.br {
+  --br-up: oklch(0.55 0.11 150);
+  --br-down: oklch(0.6 0.15 25);
+}
+
+.br-chart {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.br-chart svg {
+  display: block;
+}
+
+.br-grid {
+  stroke: var(--rule-soft);
+  stroke-width: 1;
+}
+
+.br-base {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.br-axis {
+  font-size: 10px;
+  fill: var(--muted);
+}
+
+.br-note {
+  font-size: 10px;
+  font-weight: 500;
+  fill: var(--muted);
+}
+
+.br-note--ink {
+  fill: var(--ink);
+}
+
+.br-bar {
+  transition: opacity 0.1s;
+}
+
+.br-bar.is-up {
+  fill: var(--br-up);
+}
+
+.br-bar.is-down {
+  fill: var(--br-down);
+}
+
+.br-bar.is-hover {
+  opacity: 0.75;
+}
+
+.br-zero {
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.br-mean {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.br-start {
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.br-cross {
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+
+.br-dot {
+  fill: var(--ink);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.br-tip {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--paper);
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+
+/* Pinned inside the plot rather than above a mark. */
+.br-tip.is-pinned {
+  transform: translate(-50%, 0);
+}
+
+.br-tip strong {
+  font-weight: 600;
+}
+
+/* ---------- How it works ---------- */
+
+.br__how {
+  margin-top: 30px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.br__how summary {
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.br__how dt {
+  margin-top: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.br__how dd {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+.br__disclaimer {
+  margin: 14px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ---------- One season ---------- */
+
+.br__run {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.br__primary {
+  padding: 10px 18px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.br__primary:hover {
+  background: oklch(0.3 0.012 265);
+}
+
+.br__run-hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.br__season {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.br__season-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 28px;
+}
+
+.br__season-result {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.br__fact {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.br__fact strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.br-season {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.br-season.is-up {
+  stroke: var(--br-up);
+}
+
+.br-season.is-down {
+  stroke: var(--br-down);
+}
+
+.br-bust {
+  fill: var(--loss);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.br-note--loss {
+  fill: var(--loss);
+}
+
+.br-bar.is-mark {
+  fill: var(--ink);
+}
+
+.br__key--mark {
+  background: var(--ink);
+}
+
+/* ---------- Bet size × win rate table ---------- */
+
+.br__table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.br__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: 13px;
+}
+
+.br__table th {
+  padding: 8px 6px 6px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.br__table th small {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.br__table thead th {
+  border-bottom: 1px solid var(--ink);
+}
+
+.br__table th.is-you,
+.br__table th.is-you small {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.br__table tbody th {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.br__corner {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left !important;
+  color: var(--muted) !important;
+}
+
+.br__cell {
+  min-width: 64px;
+  height: 38px;
+  border-radius: 4px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.br__cell.is-you {
+  box-shadow: inset 0 0 0 2px var(--ink);
+  font-weight: 700;
+}
+
+.br__table-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.br__table-note strong {
+  color: var(--ink);
+}
+
+.br__section.is-stale {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+@media (max-width: 480px) {
+  .br__table {
+    font-size: 11px;
+    border-spacing: 1px;
+  }
+
+  .br__table th {
+    padding: 6px 2px 4px;
+  }
+
+  .br__table tbody th {
+    padding-left: 6px;
+  }
+
+  .br__cell {
+    min-width: 0;
+    height: 34px;
+  }
+
+  .br__corner {
+    font-size: 8px;
+  }
+}

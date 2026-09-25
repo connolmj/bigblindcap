@@ -1,5 +1,6 @@
 // Cloudflare Workers config: serve the Vite build in dist/ as static assets.
 // Cloudflare runs `npm run build`, then `npx wrangler deploy`, on every push to main.
+// Pushes to any other branch get a preview build (Settings → Builds → Previews): its own URL, not the live site.
 {
   "name": "bigblindcap",
   "compatibility_date": "2026-09-01",
@@ -7,5 +8,7 @@
     "directory": "./dist",
     // Any path that isn't a real file gets index.html, so React Router handles it.
     "not_found_handling": "single-page-application"
-  }
+  },
+  // Needed by `npx wrangler preview` for branch preview builds. Empty is fine.
+  "previews": {}
 }

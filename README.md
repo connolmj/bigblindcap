@@ -2,7 +2,7 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy* and the *NFL Survivor Grid*.
+**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid* and *Bankroll Management*.
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
 and optional `History`). Update the sheet and the site updates — no redeploy.
@@ -28,6 +28,10 @@ assets; `wrangler.jsonc` holds the config. One-time setup:
 
 After that, every push to `main` redeploys automatically.
 
+**Previewing a branch.** With *Settings → Builds → Previews Base → Builds for Preview branches*
+on, every push to any other branch gets its own
+preview link under the Worker's **Deployments** tab. It never touches bigblindcap.com.
+
 Redirects live in `public/_redirects`. Any path that isn't a real file serves
 `index.html` (`not_found_handling` in `wrangler.jsonc`), so React Router handles
 `/tools/blackjack` etc.
@@ -50,6 +54,9 @@ src/
   tools/survivor/
     model/              Ratings, win %, pick % estimate, season planner (tested)
     ui/                 The Survivor Grid page
+  tools/bankroll/
+    model/              Monte Carlo seasons, odds/Kelly math, histogram bins (tested)
+    ui/                 The Bankroll Management page, its charts and the bet-size table
   tools/blackjack/
     engine/             Pure TypeScript — no React. The rules of the game.
       rules.ts          Table rules (6 decks, S17, DAS, 3:2)

@@ -149,3 +149,25 @@ a.game-card:hover {
   background: var(--rule);
   opacity: 0.7;
 }
+
+.game-card__art--dist {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.mini-dist {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 90px;
+}
+
+.mini-dist span {
+  width: 12px;
+  border-radius: 3px 3px 0 0;
+  background: oklch(0.55 0.11 150);
+}
+
+.mini-dist .is-down {
+  background: oklch(0.6 0.15 25);
+}

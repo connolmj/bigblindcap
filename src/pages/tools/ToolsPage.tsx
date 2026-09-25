@@ -10,6 +10,9 @@ const MINI_GRID = [
   [1, 1, 0, 0, 1, 2],
 ];
 
+// Bar heights for the little outcome histogram on the bankroll card.
+const MINI_DIST = [6, 12, 22, 36, 52, 70, 88, 100, 92, 76, 58, 40, 26, 15, 8];
+
 export default function ToolsPage() {
   return (
     <div className="tools">
@@ -60,6 +63,25 @@ export default function ToolsPage() {
             <p className="game-card__desc">
               Every team's odds for every week, estimated pick popularity, future value, and a planner that maps out
               your season one team at a time.
+            </p>
+            <span className="game-card__cta">Open →</span>
+          </div>
+        </Link>
+
+        <Link to="/tools/bankroll" className="game-card">
+          <div className="game-card__art game-card__art--dist" aria-hidden="true">
+            <div className="mini-dist">
+              {MINI_DIST.map((h, i) => (
+                <span key={i} className={i < 5 ? "is-down" : ""} style={{ height: `${h}%` }} />
+              ))}
+            </div>
+          </div>
+          <div className="game-card__body">
+            <div className="eyebrow">Betting · Bankroll</div>
+            <div className="game-card__name">Bankroll Management</div>
+            <p className="game-card__desc">
+              Set your win rate, line, bet count and bet size, then see thousands of seasons play out — how often a
+              winning bettor still finishes down, or goes broke.
             </p>
             <span className="game-card__cta">Open →</span>
           </div>
