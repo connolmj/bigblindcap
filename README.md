@@ -16,20 +16,21 @@ npm test           # engine unit tests (Vitest)
 npm run build      # type-check + production build into dist/
 ```
 
-## Deploying (Cloudflare Pages)
+## Deploying (Cloudflare Workers)
 
-One-time setup:
+The site is a Cloudflare Worker that serves the built `dist/` folder as static
+assets; `wrangler.jsonc` holds the config. One-time setup:
 
-1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick this repo.
-2. Production branch `main`, framework preset **None**, build command `npm run build`,
-   build output directory `dist`. Node 22 comes from `.nvmrc`.
-3. After the first deploy: the project → **Custom domains** → add `bigblindcap.com`
-   (and `www`), then follow the DNS prompts.
+1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** → pick this repo.
+2. Build command `npm run build`, deploy command `npx wrangler deploy` (the defaults).
+   Node 22 comes from `.nvmrc`.
+3. The Worker → **Settings → Domains & Routes** → add `bigblindcap.com` and `www.bigblindcap.com`.
 
 After that, every push to `main` redeploys automatically.
 
 Redirects live in `public/_redirects`. Any path that isn't a real file serves
-`index.html`, so React Router handles `/tools/blackjack` etc.
+`index.html` (`not_found_handling` in `wrangler.jsonc`), so React Router handles
+`/tools/blackjack` etc.
 
 ## Where things live
 
@@ -37,7 +38,7 @@ Redirects live in `public/_redirects`. Any path that isn't a real file serves
 public/
   docs/                 Research PDFs linked from Portfolio → Library
   media/                Home page clip
-  _redirects            Old URLs → new ones (Cloudflare Pages)
+  _redirects            Old URLs → new ones
   og-image.png          Link-preview image for X / iMessage / Slack
 src/
   data/                 Google Sheet loading + all the book math (tested)
@@ -71,6 +72,6 @@ with a persistent shoe instead of a fresh one each hand.
 `public/data/survivor.json` is rebuilt from the free [nflverse](https://github.com/nflverse/nfldata)
 schedule/odds file by `scripts/update-survivor.ts`. A GitHub Action
 (`.github/workflows/update-survivor.yml`) runs it every morning and
-commits the file when the numbers change, which triggers a Cloudflare Pages deploy.
+commits the file when the numbers change, which triggers a Cloudflare deploy.
 Run it by hand any time with `npm run update-survivor`, or from the repo's
 **Actions** tab → *Update survivor data* → *Run workflow*.
