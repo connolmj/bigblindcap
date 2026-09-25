@@ -16,6 +16,7 @@ export interface GradedPick {
   sortKey: number;
   league: string;
   pick: string;
+  odds: string;
   tag: ResultTag;
   stake: number;
   u: number;
@@ -67,6 +68,14 @@ export function payout(line: string): number {
   return n > 0 ? n / 100 : 100 / Math.abs(n);
 }
 
+// Display form of the sheet's line: 150 -> "+150", -110 -> "−110", blank -> "—".
+// Sheets turns a typed "+150" into the number 150, so the sign is added back here.
+export function fmtOdds(line: string): string {
+  const n = parseFloat(String(line).replace(/[^0-9+\-.]/g, ""));
+  if (!isFinite(n) || n === 0) return "—";
+  return n > 0 ? "+" + n : "−" + Math.abs(n);
+}
+
 export function parseSheet(text: string): SheetRows {
   const table = parseCsv(text);
   const graded: GradedPick[] = [];
@@ -116,6 +125,7 @@ export function parseSheet(text: string): SheetRows {
       sortKey: when ? when.sortKey : 0,
       league,
       pick,
+      odds: fmtOdds(line),
       tag,
       stake,
       u,

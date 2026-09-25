@@ -159,6 +159,7 @@ export default function SportsPage() {
           <div>Date</div>
           <div>Lg</div>
           <div>Pick</div>
+          <div>Odds</div>
           <div>Res</div>
           <div>Units</div>
         </div>
@@ -169,6 +170,7 @@ export default function SportsPage() {
               <div className="sports__small sports__left">{r.date}</div>
               <div className="sports__lg">{r.league}</div>
               <div className="sports__ledger-pick">{r.pick}</div>
+              <div className="sports__small">{r.odds}</div>
               <div className={`sports__tag ${tone || "is-muted"}`}>{r.tag}</div>
               <div className={`sports__delta ${tone}`}>{r.delta}</div>
             </div>
