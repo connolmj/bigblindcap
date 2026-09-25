@@ -212,252 +212,27 @@
   color: var(--muted);
 }
 
-/* ---------- Week table ---------- */
+/* ---------- The table ---------- */
 
-.wt {
-  position: relative; /* keeps hidden labels inside the scroll box */
-  overflow-x: auto;
+.st {
+  --w0: 74px; /* team */
+  --w1: 50px; /* line */
+  --w2: 44px; /* win */
+  --w3: 44px; /* pick */
+  --w4: 52px; /* save */
 }
 
-.wt__opp-inline,
-.wt__label-short {
-  display: none;
-}
-
-.wt__more {
-  margin-top: 10px;
-  padding: 0;
-  border: none;
-  background: none;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  cursor: pointer;
-}
-
-.wt__more:hover {
-  text-decoration: underline;
-}
-
-.wt__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.wt__table th {
-  padding: 0 6px 6px;
-  border-bottom: 1px solid var(--ink);
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: right;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-.wt__table th:first-child,
-.wt__opp-head {
-  text-align: left !important;
-}
-
-.wt__sort {
-  padding: 0;
-  border: none;
-  background: none;
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-.wt__sort:hover,
-.wt__sort.is-active {
-  color: var(--ink);
-}
-
-.wt__arrow {
-  display: inline-block;
-  width: 10px;
-}
-
-.wt__table td {
-  padding: 7px 6px;
-  border-bottom: 1px solid var(--rule-soft);
-  text-align: right;
-  white-space: nowrap;
-}
-
-.wt__table td:first-child,
-.wt__opp {
-  text-align: left !important;
-}
-
-.wt__opp {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.wt__num {
-  font-variant-numeric: tabular-nums;
-}
-
-.wt__muted {
-  color: var(--muted);
-}
-
-.wt__proj {
-  margin-left: 4px;
-  padding: 0 4px;
-  border: 1px dashed var(--rule);
-  border-radius: 4px;
-  font-size: 9px;
-  color: var(--muted);
-  vertical-align: 1px;
-}
-
-.wt__win {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.wt__bar {
-  width: 48px;
-  height: 5px;
-  border-radius: 999px;
-  background: var(--rule-soft);
-  overflow: hidden;
-}
-
-.wt__bar span {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-}
-
-.wt__fv {
-  letter-spacing: 0.08em;
-  color: oklch(0.7 0.13 80);
-}
-
-.wt__star-off {
-  color: var(--rule);
-}
-
-.wt__action > * + * {
-  margin-left: 8px;
-}
-
-.wt__btn {
-  min-width: 78px;
-  padding: 5px 10px;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.wt__btn:hover {
-  border-color: var(--ink);
-}
-
-.wt__btn.is-picked {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
-}
-
-.wt__btn.is-used {
-  color: var(--muted);
-  font-weight: 500;
-}
-
-.wt__row.is-picked td {
-  background: color-mix(in oklch, var(--accent) 7%, transparent);
-}
-
-.wt__row.is-used td:not(.wt__action) {
-  opacity: 0.4;
-}
-
-.wt__row.is-used .tchip__code {
-  text-decoration: line-through;
-}
-
-.wt__result {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.wt__result.is-W {
-  color: var(--accent);
-}
-
-.wt__result.is-L,
-.wt__result.is-T {
-  color: var(--loss);
-}
-
-.wt__byes {
-  margin: 10px 0 0;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* ---------- Season grid ---------- */
-
-.grid__bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px 20px;
-  margin-bottom: 10px;
-}
-
-.segmented--small {
-  display: inline-flex;
-  padding: 3px;
-  border-radius: 999px;
-  background: var(--rule-soft);
-}
-
-.segmented--small button {
-  padding: 5px 11px;
-  border: none;
-  border-radius: 999px;
-  background: transparent;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.segmented--small button.is-selected {
-  background: #fff;
-  color: var(--ink);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.15);
-}
-
-.grid__legend {
+.st__legend {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 6px;
+  margin-bottom: 10px;
   font-size: 11px;
   color: var(--muted);
 }
 
-.grid__key {
+.st__key {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -467,7 +242,15 @@
   border-radius: 3px;
 }
 
-.grid__key--proj {
+.st__key:first-child {
+  margin-left: 0;
+}
+
+.st__tip {
+  margin-left: auto;
+}
+
+.st__key--proj {
   width: auto;
   padding: 0 4px;
   border: 1px dashed var(--rule);
@@ -475,49 +258,183 @@
   font-style: italic;
 }
 
-.grid__scroll {
+.st__key--plan {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.st__scroll {
+  position: relative;
   overflow-x: auto;
   border: 1px solid var(--rule);
   border-radius: 10px;
   background: #fff;
 }
 
-.grid__table {
+.st__table {
   border-collapse: separate;
   border-spacing: 0;
   font-size: 11px;
 }
 
-.grid__table th,
-.grid__table td {
+.st__table th,
+.st__table td {
   padding: 0;
-  border-right: 1px solid oklch(1 0 0);
-  border-bottom: 1px solid oklch(1 0 0);
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  white-space: nowrap;
 }
 
-.grid__corner,
-.grid__team {
+/* Frozen columns: team + the selected week's numbers */
+.st__f {
   position: sticky;
-  left: 0;
   z-index: 2;
-  min-width: 78px;
-  padding: 0 8px !important;
   background: #fff;
-  text-align: left;
-  box-shadow: 1px 0 0 var(--rule);
 }
 
-.grid__corner {
+.st__f0 {
+  left: 0;
+  min-width: var(--w0);
+  max-width: var(--w0);
+  padding: 0 8px !important;
+  text-align: left;
+}
+
+.st__f1 {
+  left: var(--w0);
+  min-width: var(--w1);
+}
+
+.st__f2 {
+  left: calc(var(--w0) + var(--w1));
+  min-width: var(--w2);
+}
+
+.st__f3 {
+  left: calc(var(--w0) + var(--w1) + var(--w2));
+  min-width: var(--w3);
+}
+
+.st__f4 {
+  left: calc(var(--w0) + var(--w1) + var(--w2) + var(--w3));
+  min-width: var(--w4);
+  box-shadow:
+    1px 0 0 var(--rule),
+    4px 0 8px -4px oklch(0 0 0 / 0.12);
+}
+
+thead .st__f {
   z-index: 3;
+}
+
+.st__group {
+  padding: 6px 8px 0 !important;
   font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  text-align: left;
+  color: var(--ink);
+  box-shadow:
+    1px 0 0 var(--rule),
+    4px 0 8px -4px oklch(0 0 0 / 0.12);
+}
+
+.st__group--season {
+  padding-left: 10px !important;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  box-shadow: none;
+}
+
+.st__sort {
+  width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border: none;
+  background: none;
+  font: 500 9px var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.st__teamhead .st__sort {
+  padding: 0;
+  text-align: left;
+}
+
+.st__sort:hover,
+.st__sort.is-active {
+  color: var(--ink);
+}
+
+.st__sort span {
+  margin-left: 2px;
+}
+
+.st__stathead,
+.st__teamhead {
+  border-bottom: 1px solid var(--ink) !important;
+}
+
+.st__num {
+  padding: 0 6px !important;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.st__win {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.st__muted {
   color: var(--muted);
 }
 
-.grid__week button {
+.st__fv {
+  padding: 0 6px !important;
+  text-align: right;
+  font-size: 11px;
+  color: oklch(0.7 0.13 80);
+}
+
+.st__star-off {
+  color: var(--rule);
+}
+
+.st__byestats {
+  padding: 0 8px !important;
+  font-size: 10px;
+  color: var(--muted);
+  box-shadow:
+    1px 0 0 var(--rule),
+    4px 0 8px -4px oklch(0 0 0 / 0.12);
+}
+
+.st__pickstat {
+  padding: 0 8px !important;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow:
+    1px 0 0 var(--rule),
+    4px 0 8px -4px oklch(0 0 0 / 0.12);
+}
+
+.st__team {
+  height: 36px;
+}
+
+/* Week headers */
+.st__week button {
   width: 100%;
+  min-width: 46px;
   height: 28px;
   border: none;
   background: none;
@@ -526,27 +443,42 @@
   cursor: pointer;
 }
 
-.grid__week.is-past button {
+.st__week {
+  border-bottom: 1px solid var(--ink) !important;
+}
+
+.st__week.is-past button {
   color: var(--muted);
   font-weight: 500;
 }
 
-.grid__week.is-current button {
+.st__week.is-current button {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.st__week.is-selected button {
   background: var(--ink);
   color: var(--paper);
 }
 
-.grid__week.is-selected:not(.is-current) button {
-  box-shadow: inset 0 -2px 0 var(--ink);
-}
-
-.grid__picks td {
+/* "Your pick" row */
+.st__picks td,
+.st__picks th {
   height: 30px;
   text-align: center;
   border-bottom: 1px solid var(--rule) !important;
 }
 
-.grid__pick {
+.st__picks th {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.st__pick {
   display: inline-block;
   min-width: 38px;
   padding: 3px 4px;
@@ -557,32 +489,32 @@
   font-weight: 700;
 }
 
-.grid__pick.is-won {
+.st__pick.is-won {
   background: var(--accent);
 }
 
-.grid__pick.is-lost {
+.st__pick.is-lost {
   background: var(--loss);
 }
 
-.grid__pick.is-plan {
+.st__pick.is-plan {
   background: transparent;
   color: var(--accent);
   box-shadow: inset 0 0 0 1.5px var(--accent);
-  border: none;
 }
 
-.grid__pick.is-empty {
+.st__pick.is-empty {
   background: transparent;
   color: var(--rule);
 }
 
-.grid__cell {
+/* Season cells */
+.st__cell {
   min-width: 46px;
   height: 36px;
 }
 
-.grid__cell button {
+.st__cell button {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -597,28 +529,28 @@
   cursor: pointer;
 }
 
-.grid__cell button:hover {
+.st__cell button:hover {
   box-shadow: inset 0 0 0 2px var(--ink);
 }
 
-.grid__opp {
+.st__opp {
   font-size: 10px;
   font-weight: 600;
   line-height: 1;
 }
 
-.grid__win {
+.st__cellwin {
   font-size: 10px;
   line-height: 1;
   color: oklch(0.35 0.02 265);
 }
 
-.grid__cell.is-proj .grid__win {
+.st__cell.is-proj .st__cellwin {
   font-style: italic;
   opacity: 0.75;
 }
 
-.grid__cell.is-bye {
+.st__cell.is-bye {
   background: var(--paper);
   color: var(--rule);
   font-size: 9px;
@@ -626,37 +558,50 @@
   text-align: center;
 }
 
-.grid__cell.is-past {
+.st__cell.is-past {
   filter: saturate(0.3);
   opacity: 0.7;
 }
 
-.grid__cell.is-picked {
+/* The selected week's column gets a frame */
+.st__cell.is-selected,
+.st__picks td.is-selected {
+  box-shadow:
+    inset 1.5px 0 0 var(--ink),
+    inset -1.5px 0 0 var(--ink);
+}
+
+.st__cell.is-picked {
   background: var(--ink) !important;
   filter: none;
   opacity: 1;
 }
 
-.grid__cell.is-picked button,
-.grid__cell.is-picked .grid__win {
+.st__cell.is-picked button,
+.st__cell.is-picked .st__cellwin {
   color: var(--paper);
 }
 
-.grid__cell.is-plan button {
+.st__cell.is-plan button {
   box-shadow: inset 0 0 0 2px var(--accent);
 }
 
-.grid__cell.is-crossed {
+.st__cell.is-crossed {
   background: var(--paper) !important;
 }
 
-.grid__cell.is-crossed button {
+.st__cell.is-crossed button {
   opacity: 0.28;
   text-decoration: line-through;
 }
 
-tr.is-used .grid__team .tchip {
-  opacity: 0.45;
+tr.is-used .st__team .tchip,
+tr.is-used .st__num,
+tr.is-used .st__fv {
+  opacity: 0.4;
+}
+
+tr.is-used .st__team .tchip {
   text-decoration: line-through;
 }
 
@@ -701,68 +646,50 @@ tr.is-used .grid__team .tchip {
 }
 
 @media (max-width: 600px) {
-  .tchip__nick,
-  .wt__bar,
-  .wt__opp,
-  .wt__opp-head {
-    display: none;
-  }
-
-  .wt__label {
-    display: none;
-  }
-
-  .wt__label-short {
-    display: inline;
-  }
-
-  .wt__table {
-    font-size: 12px;
-  }
-
-  .wt__table th {
-    letter-spacing: 0.06em;
-  }
-
-  .wt__win {
-    font-weight: 600;
-  }
-
-  .wt__opp-inline {
-    display: block;
-    margin: 2px 0 0 10px;
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  .wt__btn {
-    min-width: 0;
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-
-  .wt__table td,
-  .wt__table th {
-    padding-left: 3px !important;
-    padding-right: 3px !important;
-  }
-
-  .wt__fv {
-    font-size: 10px;
-    letter-spacing: 0;
-  }
-
-  .wt__proj {
-    display: none;
-  }
-
   .sv__actions {
     margin-left: 0;
   }
 
-  .wt__table td,
-  .wt__table th {
-    padding-left: 4px;
-    padding-right: 4px;
+  /* Narrower frozen columns on phones so ~3 weeks still fit beside them. */
+  .st {
+    --w0: 54px;
+    --w1: 40px;
+    --w2: 36px;
+    --w3: 36px;
+    --w4: 40px;
+  }
+
+  .st__f0 {
+    padding: 0 6px !important;
+  }
+
+  .st__num,
+  .st__fv,
+  .st__sort {
+    padding: 0 3px !important;
+  }
+
+  .st__num {
+    font-size: 11px;
+  }
+
+  .st__fv {
+    font-size: 8px;
+    letter-spacing: -0.05em;
+  }
+
+  .st__sort {
+    letter-spacing: 0.04em;
+  }
+
+  .st__group--season {
+    font-size: 8px;
+  }
+
+  .st__picks th {
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    white-space: normal;
+    line-height: 1.1;
   }
 }

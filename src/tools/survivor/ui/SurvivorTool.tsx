@@ -1,6 +1,5 @@
 import { useState } from "react";
-import SeasonGrid from "./SeasonGrid";
-import WeekTable from "./WeekTable";
+import SurvivorTable from "./SurvivorTable";
 import { useSurvivor, useSurvivorData } from "./useSurvivor";
 import type { SurvivorData } from "../model/types";
 import "./survivor.css";
@@ -113,18 +112,10 @@ function Loaded({ data }: { data: SurvivorData }) {
         {showPlan && s.plan.picks[week] && !s.picks[week] && (
           <p className="sv__hint">
             Suggested for week {week}: <strong>{s.plan.picks[week]}</strong> — the pick that gives your whole season the
-            best odds.
+            best odds. Click any cell to pick a team; it's crossed out for the rest of the season.
           </p>
         )}
-        <WeekTable s={s} week={week} />
-      </section>
-
-      <section className="sv__section">
-        <div className="sv__section-head">
-          <h2 className="sv__h2">Season grid</h2>
-          <span className="sv__meta">Click a cell to pick that team for that week. Used teams are crossed out.</span>
-        </div>
-        <SeasonGrid s={s} showPlan={showPlan} week={week} onWeek={setWeek} />
+        <SurvivorTable s={s} week={week} onWeek={setWeek} showPlan={showPlan} />
       </section>
 
       <details className="sv__how">
