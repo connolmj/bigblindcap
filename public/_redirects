@@ -1,0 +1,8 @@
+# Cloudflare Pages redirects (copied into dist/ by the build).
+# Renamed sections; keep old links working.
+/equities  /portfolio      301
+/games     /tools          301
+/games/*   /tools/:splat   301
+
+# No catch-all needed: with no 404.html in dist/, Cloudflare Pages serves
+# index.html for every other path and React Router takes it from there.

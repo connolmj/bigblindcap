@@ -16,16 +16,20 @@ npm test           # engine unit tests (Vitest)
 npm run build      # type-check + production build into dist/
 ```
 
-## Deploying (Netlify)
+## Deploying (Cloudflare Pages)
 
-`netlify.toml` tells Netlify how to build. One-time setup:
+One-time setup:
 
-1. Netlify → **Add new site → Import an existing project** → pick this GitHub repo.
-2. Build command and publish directory come from `netlify.toml` (`npm run build`, `dist`).
-3. Move the `bigblindcap.com` domain from the old site to this one (Site settings → Domain management).
+1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick this repo.
+2. Production branch `main`, framework preset **None**, build command `npm run build`,
+   build output directory `dist`. Node 22 comes from `.nvmrc`.
+3. After the first deploy: the project → **Custom domains** → add `bigblindcap.com`
+   (and `www`), then follow the DNS prompts.
 
-After that, every push to the production branch redeploys automatically, and every
-pull request gets its own preview URL.
+After that, every push to `main` redeploys automatically.
+
+Redirects live in `public/_redirects`. Any path that isn't a real file serves
+`index.html`, so React Router handles `/tools/blackjack` etc.
 
 ## Where things live
 
@@ -33,6 +37,7 @@ pull request gets its own preview URL.
 public/
   docs/                 Research PDFs linked from Portfolio → Library
   media/                Home page clip
+  _redirects            Old URLs → new ones (Cloudflare Pages)
   og-image.png          Link-preview image for X / iMessage / Slack
 src/
   data/                 Google Sheet loading + all the book math (tested)
@@ -66,6 +71,6 @@ with a persistent shoe instead of a fresh one each hand.
 `public/data/survivor.json` is rebuilt from the free [nflverse](https://github.com/nflverse/nfldata)
 schedule/odds file by `scripts/update-survivor.ts`. A GitHub Action
 (`.github/workflows/update-survivor.yml`) runs it every morning and
-commits the file when the numbers change, which triggers a Netlify deploy.
+commits the file when the numbers change, which triggers a Cloudflare Pages deploy.
 Run it by hand any time with `npm run update-survivor`, or from the repo's
 **Actions** tab → *Update survivor data* → *Run workflow*.
