@@ -8,5 +8,7 @@
     "directory": "./dist",
     // Any path that isn't a real file gets index.html, so React Router handles it.
     "not_found_handling": "single-page-application"
-  }
+  },
+  // Needed by `npx wrangler preview` for branch preview builds. Empty is fine.
+  "previews": {}
 }
