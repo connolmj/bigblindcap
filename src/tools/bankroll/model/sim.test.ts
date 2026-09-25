@@ -1,6 +1,18 @@
 import { describe, expect, test } from "vitest";
 import { binProfits, ticks } from "./bins";
-import { breakEven, flatEdge, kelly, payout, probProfitFlat, roi, simulate, type SimInput } from "./sim";
+import {
+  breakEven,
+  exactOdds,
+  flatEdge,
+  kelly,
+  maxSafeUnit,
+  payout,
+  probProfitFlat,
+  roi,
+  simulate,
+  simulateSeason,
+  type SimInput,
+} from "./sim";
 
 const base: SimInput = {
   winRate: 0.56,
@@ -65,18 +77,6 @@ describe("simulate", () => {
     expect(r.pBust).toBeGreaterThan(0.1);
     expect(r.finals[0]).toBeGreaterThan(0);
   });
-
-  test("bands are ordered and sized to the checkpoints", () => {
-    const r = simulate({ ...base, bets: 500, seasons: 4000 });
-    expect(r.bands.p50.length).toBe(201);
-    for (let i = 0; i < r.bands.p50.length; i++) {
-      expect(r.bands.p5[i]).toBeLessThanOrEqual(r.bands.p25[i]);
-      expect(r.bands.p25[i]).toBeLessThanOrEqual(r.bands.p50[i]);
-      expect(r.bands.p50[i]).toBeLessThanOrEqual(r.bands.p75[i]);
-      expect(r.bands.p75[i]).toBeLessThanOrEqual(r.bands.p95[i]);
-    }
-    expect(r.samples[0].length).toBe(501);
-  });
 });
 
 describe("histogram bins", () => {
@@ -97,5 +97,49 @@ describe("histogram bins", () => {
   test("ticks", () => {
     expect(ticks(0, 1000, 5)).toEqual([0, 200, 400, 600, 800, 1000]);
     expect(ticks(-130, 260, 4)).toEqual([-100, 0, 100, 200]);
+  });
+});
+
+describe("exact odds", () => {
+  test("flat staking with (almost) no chance of ruin matches the binomial", () => {
+    const e = exactOdds(base);
+    expect(e.pBust).toBeLessThan(1e-6);
+    expect(e.pProfit).toBeCloseTo(probProfitFlat(0.56, -110, 100), 6);
+  });
+
+  test("agrees with the simulation when busts are common", () => {
+    for (const sizing of ["flat", "percent"] as const) {
+      const input = { ...base, unit: 0.25, bets: 300, sizing };
+      const e = exactOdds(input);
+      const r = simulate({ ...input, seasons: 20000 });
+      expect(Math.abs(e.pBust - r.pBust)).toBeLessThan(0.015);
+      expect(Math.abs(e.pProfit - r.pProfit)).toBeLessThan(0.015);
+    }
+  });
+
+  test("a coin-flip bettor at 50% of bankroll a bet goes broke quickly", () => {
+    // Two straight losses at even money with $500 bets from $1,000 is broke: 25% within two bets, more after.
+    const e = exactOdds({ ...base, winRate: 0.5, odds: 100, unit: 0.5, bets: 2 });
+    expect(e.pBust).toBeCloseTo(0.25, 10);
+  });
+});
+
+describe("one season", () => {
+  test("record, path and the bust bet line up", () => {
+    const s = simulateSeason({ ...base, unit: 0.25, bets: 200 }, 3);
+    expect(s.path.length).toBe(201);
+    if (s.bustAt == null) expect(s.wins + s.losses).toBe(200);
+    else expect(s.wins + s.losses).toBe(s.bustAt);
+    expect(simulateSeason({ ...base }, 9)).toEqual(simulateSeason({ ...base }, 9));
+  });
+});
+
+describe("safe bet size", () => {
+  test("the answer is under the risk line and one step up is over it", () => {
+    const input = { winRate: 0.56, odds: -110, bets: 500, bankroll: 1000, sizing: "flat" as const };
+    const u = maxSafeUnit(input, 0.01);
+    expect(u).toBeGreaterThan(0);
+    expect(exactOdds({ ...input, unit: u }).pBust).toBeLessThan(0.01);
+    expect(exactOdds({ ...input, unit: u + 0.005 }).pBust).toBeGreaterThanOrEqual(0.01);
   });
 });

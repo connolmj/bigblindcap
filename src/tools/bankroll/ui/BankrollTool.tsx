@@ -1,14 +1,28 @@
 import { useDeferredValue, useMemo, useState } from "react";
 import { binProfits } from "../model/bins";
-import { breakEven, flatEdge, kelly, payout, roi, simulate, type Sizing } from "../model/sim";
-import { BankrollPaths, OutcomeHistogram } from "./Charts";
+import {
+  breakEven,
+  exactOdds,
+  flatEdge,
+  kelly,
+  maxSafeUnit,
+  payout,
+  roi,
+  simulate,
+  simulateSeason,
+  type Season,
+  type Sizing,
+} from "../model/sim";
+import { OutcomeHistogram, SeasonLine } from "./Charts";
 import { fmtMoney, fmtOdds, fmtPct, fmtSigned } from "./format";
 import "./bankroll.css";
 
 const SEASONS = 10000;
-const ODDS_PRESETS = [-120, -110, -105, 100, 150];
+const ODDS_PRESETS = [-120, -115, -110, -105, 100];
 const BET_PRESETS = [50, 100, 250, 500, 1000];
-const UNIT_PRESETS = [1, 2, 5, 10, 25];
+const UNIT_PRESETS = [1, 2, 3, 5, 10, 25];
+/** Win-rate columns in the table, in points either side of yours. */
+const WIN_OFFSETS = [-4, -2, 0, 2, 4];
 
 interface Inputs {
   winRate: number; // percent
@@ -17,8 +31,16 @@ interface Inputs {
   bankroll: number;
   unit: number; // percent of bankroll
   sizing: Sizing;
-  seed: number;
 }
+
+const staking = (i: Inputs, winRate = i.winRate, unit = i.unit) => ({
+  winRate: winRate / 100,
+  odds: i.odds,
+  bets: i.bets,
+  bankroll: i.bankroll,
+  unit: unit / 100,
+  sizing: i.sizing,
+});
 
 /** Roughly how many flat bets before you're 95% sure to be ahead (normal approximation). */
 function betsToBeSure(p: number, odds: number): number | null {
@@ -29,6 +51,25 @@ function betsToBeSure(p: number, odds: number): number | null {
   return Math.ceil(Math.pow((1.645 * sd) / mu, 2));
 }
 
+/** Risk of ruin: "0%" once it rounds away, one decimal while small. */
+function fmtRisk(x: number): string {
+  if (x < 0.0005) return "0%";
+  if (x > 0.9995) return "100%";
+  return fmtPct(x, x < 0.1 ? 1 : 0);
+}
+
+/** Share of sorted values strictly below v. */
+function shareBelow(sorted: Float64Array, v: number): number {
+  let lo = 0;
+  let hi = sorted.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (sorted[mid] < v - 1e-9) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo / sorted.length;
+}
+
 export default function BankrollTool() {
   const [inp, setInp] = useState<Inputs>({
     winRate: 56,
@@ -37,26 +78,14 @@ export default function BankrollTool() {
     bankroll: 1000,
     unit: 2,
     sizing: "flat",
-    seed: 1,
   });
   const [oddsText, setOddsText] = useState("-110");
+  const [season, setSeason] = useState<{ for: Inputs; s: Season } | null>(null);
   const set = (patch: Partial<Inputs>) => setInp((s) => ({ ...s, ...patch }));
   const run = useDeferredValue(inp);
 
-  const result = useMemo(
-    () =>
-      simulate({
-        winRate: run.winRate / 100,
-        odds: run.odds,
-        bets: run.bets,
-        bankroll: run.bankroll,
-        unit: run.unit / 100,
-        sizing: run.sizing,
-        seasons: SEASONS,
-        seed: run.seed,
-      }),
-    [run],
-  );
+  const result = useMemo(() => simulate({ ...staking(run), seasons: SEASONS, seed: 1 }), [run]);
+  const exact = useMemo(() => exactOdds(staking(run)), [run]);
 
   const stake = (run.unit / 100) * run.bankroll;
   const { edge, lattice } =
@@ -65,7 +94,8 @@ export default function BankrollTool() {
     () =>
       binProfits(
         result.finals.map((f) => f - run.bankroll),
-        { edge, lattice },
+        // % staking has a very long right tail; fold more of it into the last bar.
+        { edge, lattice, trim: run.sizing === "percent" ? 0.02 : 0.005 },
       ),
     [result, run.bankroll, run.sizing, edge, lattice],
   );
@@ -74,8 +104,10 @@ export default function BankrollTool() {
   const be = breakEven(inp.odds);
   const ev = roi(p, inp.odds);
   const k = kelly(p, inp.odds);
-  const sure = betsToBeSure(p, inp.odds);
   const stale = run !== inp;
+  const mySeason = season && season.for === inp ? season.s : null;
+
+  const runSeason = () => setSeason({ for: inp, s: simulateSeason(staking(inp), (Math.random() * 2 ** 32) >>> 0) });
 
   return (
     <div className="br">
@@ -223,6 +255,25 @@ export default function BankrollTool() {
         </Field>
       </section>
 
+      <div className="br__run">
+        <button className="br__primary" onClick={runSeason}>
+          {mySeason ? "Run another season" : "Simulate one season"}
+        </button>
+        <span className="br__run-hint">
+          {mySeason
+            ? "Every click is a brand-new season with the same edge."
+            : `Play ${inp.bets} bets at your edge and see how this season would have gone.`}
+        </span>
+      </div>
+
+      {mySeason && (
+        <SeasonCard
+          season={mySeason}
+          inp={inp}
+          rank={stale ? null : shareBelow(result.finals, mySeason.path.at(-1)!)}
+        />
+      )}
+
       <div className="br__edge">
         <span>
           Edge <strong className={p > be ? "is-win" : "is-loss"}>{fmtSigned0((p - be) * 100)} pts</strong>
@@ -238,13 +289,13 @@ export default function BankrollTool() {
       <section className={stale ? "br__stats is-stale" : "br__stats"}>
         <Stat
           label="Finish the season ahead"
-          value={fmtPct(result.pProfit)}
-          meta={`${fmtPct(result.pLoss)} finish down`}
+          value={fmtPct(exact.pProfit)}
+          meta={`${fmtPct(exact.pLoss)} finish down`}
         />
         <Stat
           label="Go broke"
-          value={fmtPct(result.pBust, result.pBust > 0 && result.pBust < 0.1 ? 1 : 0)}
-          tone={result.pBust >= 0.01 ? "loss" : undefined}
+          value={fmtRisk(exact.pBust)}
+          tone={exact.pBust >= 0.01 ? "loss" : undefined}
           meta={`${fmtPct(result.pHalf)} lose half the bankroll along the way`}
         />
         <Stat
@@ -261,12 +312,12 @@ export default function BankrollTool() {
 
       <Takeaway
         inp={run}
-        pLoss={result.pLoss}
-        pBust={result.pBust}
+        pLoss={exact.pLoss}
+        pBust={exact.pBust}
         mean={result.mean}
         median={result.median}
         kellyFrac={kelly(run.winRate / 100, run.odds)}
-        sure={sure}
+        sure={betsToBeSure(run.winRate / 100, run.odds)}
       />
 
       <section className="br__section">
@@ -275,38 +326,36 @@ export default function BankrollTool() {
           <div className="br__legend">
             <span className="br__key br__key--up" /> Finished ahead
             <span className="br__key br__key--down" /> Finished down
+            {mySeason && !stale && (
+              <>
+                <span className="br__key br__key--mark" /> Your season
+              </>
+            )}
           </div>
         </div>
         <p className="br__sub">
           Profit or loss at the end of each of {SEASONS.toLocaleString("en-US")} simulated seasons.
         </p>
-        <OutcomeHistogram bins={bins} seasons={SEASONS} edge={edge} mean={result.mean - run.bankroll} />
+        <OutcomeHistogram
+          bins={bins}
+          seasons={SEASONS}
+          edge={edge}
+          mean={result.mean - run.bankroll}
+          mark={mySeason && !stale ? mySeason.path.at(-1)! - run.bankroll : undefined}
+        />
       </section>
 
-      <section className="br__section">
-        <div className="br__section-head">
-          <h2 className="br__h2">Your bankroll, bet by bet</h2>
-          <button className="br__btn" onClick={() => set({ seed: inp.seed + 1 })}>
-            Deal new seasons
-          </button>
-        </div>
-        <div className="br__legend">
-          <span className="br__key br__key--line" /> Median
-          <span className="br__key br__key--inner" /> Middle 50%
-          <span className="br__key br__key--outer" /> Middle 90%
-          <span className="br__key br__key--path" /> {result.samples.length} sample seasons (red ended down)
-        </div>
-        <BankrollPaths result={result} bets={run.bets} bankroll={run.bankroll} />
-      </section>
+      <RiskTable inp={run} stale={stale} />
 
       <details className="br__how">
         <summary>How this works</summary>
         <dl>
           <dt>The simulation</dt>
           <dd>
-            Every bet wins with your win-rate chance and pays at your average line. Pushes are left out. We play{" "}
-            {SEASONS.toLocaleString("en-US")} seasons with the same inputs; press <em>Deal new seasons</em> to reshuffle
-            them.
+            Every bet wins with your win-rate chance and pays at your average line. Pushes are left out. The chart and
+            the expected-profit and rough-patch numbers come from {SEASONS.toLocaleString("en-US")} simulated seasons.
+            The chances of finishing ahead and of going broke, including every cell in the table, are worked out
+            exactly.
           </dd>
           <dt>Going broke</dt>
           <dd>
@@ -353,6 +402,184 @@ function Stat({ label, value, meta, tone }: { label: string; value: string; meta
   );
 }
 
+// ---------- One simulated season ----------
+
+function SeasonCard({ season, inp, rank }: { season: Season; inp: Inputs; rank: number | null }) {
+  const final = season.path.at(-1)!;
+  const profit = final - inp.bankroll;
+  const played = season.wins + season.losses;
+  return (
+    <section className="br__season" aria-label="Your simulated season">
+      <div className="br__season-facts">
+        <div>
+          <div className="eyebrow">This season</div>
+          <div className={`br__season-result ${profit > 0.5 ? "is-win" : profit < -0.5 ? "is-loss" : ""}`}>
+            {fmtSigned(profit)}
+          </div>
+        </div>
+        <span className="br__fact">
+          Record{" "}
+          <strong>
+            {season.wins}–{season.losses}
+          </strong>{" "}
+          ({fmtPct(played ? season.wins / played : 0, 1)})
+        </span>
+        <span className="br__fact">
+          Ended with <strong>{fmtMoney(final)}</strong>
+        </span>
+        <span className="br__fact">
+          Worst drop <strong>−{fmtMoney(season.worstDrop)}</strong>
+        </span>
+        <span className="br__fact">
+          Longest losing run <strong>{season.longestLosingRun}</strong>
+        </span>
+        {season.bustAt != null ? (
+          <span className="br__fact">
+            <strong className="is-loss">Went broke on bet {season.bustAt}</strong>
+          </span>
+        ) : (
+          rank != null && (
+            <span className="br__fact">
+              Better than <strong>{fmtPct(rank)}</strong> of seasons
+            </span>
+          )
+        )}
+      </div>
+      <SeasonLine path={season.path} bankroll={inp.bankroll} bustAt={season.bustAt} />
+    </section>
+  );
+}
+
+// ---------- Bet size × win rate ----------
+
+function RiskTable({ inp, stale }: { inp: Inputs; stale: boolean }) {
+  const [metric, setMetric] = useState<"bust" | "profit">("bust");
+  const cols = useMemo(
+    () => [...new Set(WIN_OFFSETS.map((d) => Math.min(75, Math.max(40, inp.winRate + d))))],
+    [inp.winRate],
+  );
+  const rows = useMemo(() => [...new Set([...UNIT_PRESETS, inp.unit])].sort((a, b) => a - b), [inp.unit]);
+  const grid = useMemo(() => rows.map((u) => cols.map((w) => exactOdds(staking(inp, w, u)))), [rows, cols, inp]);
+  const safe = useMemo(() => {
+    const { unit: _, ...rest } = staking(inp);
+    return maxSafeUnit(rest, 0.01) * 100;
+  }, [inp]);
+  const be = breakEven(inp.odds);
+  const k = kelly(inp.winRate / 100, inp.odds) * 100;
+  const mine = grid[rows.indexOf(inp.unit)][cols.indexOf(inp.winRate)];
+
+  return (
+    <section className={stale ? "br__section is-stale" : "br__section"}>
+      <div className="br__section-head">
+        <h2 className="br__h2">Bet size vs. win rate</h2>
+        <div className="br__seg" role="radiogroup" aria-label="Show">
+          <button
+            role="radio"
+            aria-checked={metric === "bust"}
+            className={metric === "bust" ? "is-on" : ""}
+            onClick={() => setMetric("bust")}
+          >
+            Chance of going broke
+          </button>
+          <button
+            role="radio"
+            aria-checked={metric === "profit"}
+            className={metric === "profit" ? "is-on" : ""}
+            onClick={() => setMetric("profit")}
+          >
+            Chance of finishing ahead
+          </button>
+        </div>
+      </div>
+      <p className="br__sub">
+        Over {inp.bets.toLocaleString("en-US")} bets at {fmtOdds(inp.odds)},{" "}
+        {inp.sizing === "flat" ? "flat units" : "% of current bankroll"}. Your spot is outlined.
+      </p>
+      <div className="br__table-wrap">
+        <table className="br__table">
+          <thead>
+            <tr>
+              <th className="br__corner">Bet size</th>
+              {cols.map((w) => {
+                const edgePts = w - be * 100;
+                return (
+                  <th key={w} className={w === inp.winRate ? "is-you" : ""}>
+                    {w}% win
+                    <small>
+                      {edgePts > 0.05 ? "+" : edgePts < -0.05 ? "−" : ""}
+                      {Math.abs(edgePts).toFixed(1)} edge
+                    </small>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((u, i) => (
+              <tr key={u}>
+                <th className={u === inp.unit ? "is-you" : ""}>
+                  {u}%<small>{fmtMoney((u / 100) * inp.bankroll)} a bet</small>
+                </th>
+                {cols.map((w, j) => {
+                  const v = metric === "bust" ? grid[i][j].pBust : grid[i][j].pProfit;
+                  const you = u === inp.unit && w === inp.winRate;
+                  return (
+                    <td
+                      key={w}
+                      className={you ? "br__cell is-you" : "br__cell"}
+                      style={{ background: cellTint(metric, v) }}
+                    >
+                      {metric === "bust" ? fmtRisk(v) : fmtPct(v)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="br__table-note">
+        <p>
+          At <strong>{inp.winRate}%</strong> and <strong>{inp.unit}% a bet</strong>, you have a{" "}
+          <strong>{fmtRisk(mine.pBust)}</strong> chance of going broke and a <strong>{fmtPct(mine.pProfit)}</strong>{" "}
+          chance of finishing ahead.
+        </p>
+        {k > 0 ? (
+          <p>
+            {safe >= 30 ? (
+              <>Even 30% a bet keeps your risk of going broke under 1% over this many bets.</>
+            ) : safe > 0 ? (
+              <>
+                To keep the risk of going broke under 1% over {inp.bets.toLocaleString("en-US")} bets, bet no more than{" "}
+                <strong>
+                  {safe}% ({fmtMoney((safe / 100) * inp.bankroll)})
+                </strong>
+                .
+              </>
+            ) : (
+              <>At this edge, even 0.5% a bet carries more than a 1% risk of going broke over this many bets.</>
+            )}{" "}
+            Full Kelly is {k.toFixed(1)}%; many pros bet half of that ({(k / 2).toFixed(1)}%) or less.
+          </p>
+        ) : (
+          <p>
+            With no edge at {inp.winRate}%, no bet size is safe — the only question is how fast the bankroll shrinks.
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/** Red that deepens with risk of ruin, or green that deepens with the chance of finishing ahead. */
+function cellTint(metric: "bust" | "profit", v: number): string {
+  if (metric === "bust") {
+    if (v < 0.0005) return "transparent";
+    return `oklch(0.62 0.16 25 / ${(0.08 + 0.55 * Math.sqrt(v)).toFixed(3)})`;
+  }
+  return `oklch(0.6 0.12 150 / ${(0.04 + 0.5 * v * v).toFixed(3)})`;
+}
+
 function Takeaway({
   inp,
   pLoss,
@@ -392,7 +619,7 @@ function Takeaway({
       );
     if (pBust >= 0.01)
       lines.push(
-        `Betting ${inp.unit}% a bet, ${fmtPct(pBust, pBust < 0.1 ? 1 : 0)} of seasons go broke before they're over. A winning bettor who's broke can't collect on the edge.`,
+        `Betting ${inp.unit}% a bet, ${fmtRisk(pBust)} of seasons go broke before they're over. A winning bettor who's broke can't collect on the edge.`,
       );
     if (mean > inp.bankroll && median < inp.bankroll)
       lines.push(

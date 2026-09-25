@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Bin } from "../model/bins";
 import { ticks } from "../model/bins";
-import { checkpoints, type SimResult } from "../model/sim";
 import { fmtMoney, fmtPct, fmtSigned } from "./format";
 
 const H = 250;
@@ -49,11 +48,14 @@ export function OutcomeHistogram({
   seasons,
   edge,
   mean,
+  mark,
 }: {
   bins: Bin[];
   seasons: number;
   edge: number;
   mean: number;
+  /** Profit of the season you just ran; its bar is drawn in ink. */
+  mark?: number;
 }) {
   const [ref, W] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
@@ -73,6 +75,9 @@ export function OutcomeHistogram({
   const bw = iw / bins.length;
   const gap = bw > 6 ? 2 : bw > 3 ? 1 : 0;
   const h = hover != null ? bins[hover] : null;
+  // Seasons past either end of the chart sit in the end bars, same as in the counts.
+  const found = mark == null ? -1 : bins.findIndex((b) => mark < b.hi);
+  const markBin = mark == null ? -1 : found === -1 ? bins.length - 1 : found;
 
   return (
     <div className="br-chart" ref={ref}>
@@ -91,7 +96,7 @@ export function OutcomeHistogram({
           return (
             <path
               key={i}
-              className={`br-bar ${win ? "is-up" : "is-down"}${hover === i ? " is-hover" : ""}`}
+              className={`br-bar ${i === markBin ? "is-mark" : win ? "is-up" : "is-down"}${hover === i ? " is-hover" : ""}`}
               d={barPath(x(b.lo) + gap / 2, top, Math.max(1, bw - gap), T + ih - top)}
             />
           );
@@ -151,6 +156,7 @@ export function OutcomeHistogram({
                 : `${fmtSigned(h.lo)} to ${fmtSigned(h.hi)}`}
           </strong>
           <span>{fmtPct(h.count / seasons, 1)} of seasons</span>
+          {hover === markBin && <span>Your season landed here</span>}
         </Tip>
       )}
     </div>
@@ -164,59 +170,35 @@ function barPath(x: number, y: number, w: number, h: number): string {
   return `M${x} ${y + h}V${y + r}Q${x} ${y} ${x + r} ${y}H${x + w - r}Q${x + w} ${y} ${x + w} ${y + r}V${y + h}Z`;
 }
 
-// ---------- Bankroll over the season ----------
+// ---------- One season, bet by bet ----------
 
-export function BankrollPaths({ result, bets, bankroll }: { result: SimResult; bets: number; bankroll: number }) {
+export function SeasonLine({ path, bankroll, bustAt }: { path: number[]; bankroll: number; bustAt: number | null }) {
   const [ref, W] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
-  const { bands, samples } = result;
-  const at = checkpoints(bets);
-
+  const SH = 170;
+  const bets = path.length - 1;
   const iw = W - M.left - M.right;
-  const ih = H - M.top - M.bottom;
-  const lo = Math.min(0, ...bands.p5);
-  const hi = Math.max(bankroll * 1.2, ...bands.p95);
-  const yTicks = ticks(lo, hi, 5);
-  const y0 = Math.min(lo, yTicks[0]);
-  const y1 = Math.max(hi, yTicks[yTicks.length - 1]);
+  const ih = SH - M.top - M.bottom;
+  const yTicks = ticks(Math.min(0, ...path), Math.max(bankroll * 1.1, ...path), 4);
+  const y0 = Math.min(0, yTicks[0]);
+  const y1 = Math.max(...path, yTicks[yTicks.length - 1]);
   const x = (t: number) => M.left + (t / bets) * iw;
   const y = (v: number) => M.top + ih - ((v - y0) / (y1 - y0)) * ih;
-  const xTicks = ticks(0, bets, W < 480 ? 4 : 6);
-
-  const area = (upper: number[], lower: number[]) =>
-    upper.map((v, i) => `${i ? "L" : "M"}${x(at[i]).toFixed(1)} ${y(v).toFixed(1)}`).join("") +
-    lower
-      .map((_, i) => {
-        const j = lower.length - 1 - i;
-        return `L${x(at[j]).toFixed(1)} ${y(lower[j]).toFixed(1)}`;
-      })
-      .join("") +
-    "Z";
-  const line = (vals: number[], idx: (i: number) => number) =>
-    vals.map((v, i) => `${i ? "L" : "M"}${x(idx(i)).toFixed(1)} ${y(v).toFixed(1)}`).join("");
-  // Thin each sample path to the checkpoints so long seasons stay light.
-  const sampleLine = (p: number[]) =>
-    line(
-      at.map((t) => p[t]),
-      (i) => at[i],
-    );
+  const end = bustAt ?? bets;
+  const d = path
+    .slice(0, end + 1)
+    .map((v, t) => `${t ? "L" : "M"}${x(t).toFixed(1)} ${y(v).toFixed(1)}`)
+    .join("");
+  const up = path[bets] > bankroll;
 
   const onMove = (e: React.PointerEvent<SVGRectElement>) => {
     const box = e.currentTarget.getBoundingClientRect();
-    const t = ((e.clientX - box.left) / box.width) * bets;
-    let best = 0;
-    for (let i = 1; i < at.length; i++) if (Math.abs(at[i] - t) < Math.abs(at[best] - t)) best = i;
-    setHover(best);
+    setHover(Math.min(end, Math.max(0, Math.round(((e.clientX - box.left) / box.width) * bets))));
   };
 
   return (
     <div className="br-chart" ref={ref}>
-      <svg width={W} height={H} role="img" aria-label="Bankroll over the season: percentile bands and sample seasons">
-        <defs>
-          <clipPath id="br-plot">
-            <rect x={M.left} y={M.top} width={iw} height={ih} />
-          </clipPath>
-        </defs>
+      <svg width={W} height={SH} role="img" aria-label="Bankroll after each bet of this season">
         {yTicks.map((t) => (
           <g key={t}>
             <line className="br-grid" x1={M.left} x2={W - M.right} y1={y(t)} y2={y(t)} />
@@ -225,25 +207,31 @@ export function BankrollPaths({ result, bets, bankroll }: { result: SimResult; b
             </text>
           </g>
         ))}
-        <g clipPath="url(#br-plot)">
-          <path className="br-band br-band--outer" d={area(bands.p95, bands.p5)} />
-          <path className="br-band br-band--inner" d={area(bands.p75, bands.p25)} />
-          {samples.map((p, i) => (
-            <path key={i} className={p[p.length - 1] < bankroll ? "br-path is-down" : "br-path"} d={sampleLine(p)} />
-          ))}
-          <line className="br-start" x1={M.left} x2={W - M.right} y1={y(bankroll)} y2={y(bankroll)} />
-          <path className="br-median" d={line(bands.p50, (i) => at[i])} />
-        </g>
+        <line className="br-start" x1={M.left} x2={W - M.right} y1={y(bankroll)} y2={y(bankroll)} />
+        <path className={up ? "br-season is-up" : "br-season is-down"} d={d} />
+        {bustAt != null && (
+          <g>
+            <circle className="br-bust" cx={x(bustAt)} cy={y(path[bustAt])} r={5} />
+            <text
+              className="br-note br-note--loss"
+              x={x(bustAt) + (bustAt > bets * 0.75 ? -8 : 8)}
+              y={y(path[bustAt]) - 8}
+              textAnchor={bustAt > bets * 0.75 ? "end" : "start"}
+            >
+              Broke on bet {bustAt}
+            </text>
+          </g>
+        )}
         <line className="br-base" x1={M.left} x2={W - M.right} y1={M.top + ih} y2={M.top + ih} />
-        {xTicks.map((t) => (
-          <text key={t} className="br-axis" x={x(t)} y={H - 10} textAnchor="middle">
+        {ticks(0, bets, W < 480 ? 4 : 6).map((t) => (
+          <text key={t} className="br-axis" x={x(t)} y={SH - 10} textAnchor="middle">
             {t === 0 ? "Bet 0" : t}
           </text>
         ))}
         {hover != null && (
           <g>
-            <line className="br-cross" x1={x(at[hover])} x2={x(at[hover])} y1={M.top} y2={M.top + ih} />
-            <circle className="br-dot" cx={x(at[hover])} cy={y(bands.p50[hover])} r={4} />
+            <line className="br-cross" x1={x(hover)} x2={x(hover)} y1={M.top} y2={M.top + ih} />
+            <circle className="br-dot" cx={x(hover)} cy={y(path[hover])} r={4} />
           </g>
         )}
         <rect
@@ -257,14 +245,10 @@ export function BankrollPaths({ result, bets, bankroll }: { result: SimResult; b
         />
       </svg>
       {hover != null && (
-        <Tip x={x(at[hover])} y={M.top + 4} w={W} pinned>
-          <strong>After bet {at[hover]}</strong>
-          <span>Median {fmtMoney(bands.p50[hover])}</span>
+        <Tip x={x(hover)} y={y(path[hover]) - 10} w={W}>
+          <strong>{hover === 0 ? "Start" : `After bet ${hover}`}</strong>
           <span>
-            Middle half {fmtMoney(bands.p25[hover])}–{fmtMoney(bands.p75[hover])}
-          </span>
-          <span>
-            90% range {fmtMoney(bands.p5[hover])}–{fmtMoney(bands.p95[hover])}
+            {fmtMoney(path[hover])} · {fmtSigned(path[hover] - bankroll)}
           </span>
         </Tip>
       )}
