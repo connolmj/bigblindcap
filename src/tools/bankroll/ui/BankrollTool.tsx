@@ -117,8 +117,8 @@ export default function BankrollTool() {
         <p className="br__lede">
           The purpose of this tool is to illustrate the importance of bankroll management. A bettor with an edge can
           still go through periods of losses and have down seasons. Use this tool to determine your bet sizing,
-          visualize the possibilities of returns over a time period, reduce likelihood of "going broke" and
-          understanding your chances of finishing ahead.
+          visualize the possibilities of returns over a time period, reduce likelihood of "going broke" and understand
+          your chances of finishing ahead.
         </p>
       </header>
 
