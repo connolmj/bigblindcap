@@ -113,10 +113,12 @@ export default function BankrollTool() {
     <div className="br">
       <header className="br__intro">
         <div className="eyebrow">Tools · Bankroll</div>
-        <h1 className="br__title">Edge vs. Variance</h1>
+        <h1 className="br__title">Bankroll Management</h1>
         <p className="br__lede">
-          A winning bettor can still lose a season. Set your win rate, price, number of bets and bet size, and we'll
-          play out {SEASONS.toLocaleString("en-US")} seasons to show every way yours could end — including broke.
+          The purpose of this tool is to illustrate the importance of bankroll management. A bettor with an edge can
+          still go through periods of losses and have down seasons. Use this tool to determine your bet sizing,
+          visualize the possibilities of returns over a time period, reduce likelihood of "going broke" and
+          understanding your chances of finishing ahead.
         </p>
       </header>
 

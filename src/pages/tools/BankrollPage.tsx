@@ -3,7 +3,7 @@ import BankrollTool from "../../tools/bankroll/ui/BankrollTool";
 
 export default function BankrollPage() {
   useEffect(() => {
-    document.title = "Edge vs. Variance · Big Blind Capital";
+    document.title = "Bankroll Management · Big Blind Capital";
     return () => {
       document.title = "Big Blind Capital";
     };

@@ -2,8 +2,7 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid* and *Edge vs. Variance*
-(bankroll management).
+**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid* and *Bankroll Management*.
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
 and optional `History`). Update the sheet and the site updates — no redeploy.
@@ -57,7 +56,7 @@ src/
     ui/                 The Survivor Grid page
   tools/bankroll/
     model/              Monte Carlo seasons, odds/Kelly math, histogram bins (tested)
-    ui/                 The Edge vs. Variance page and its two charts
+    ui/                 The Bankroll Management page, its charts and the bet-size table
   tools/blackjack/
     engine/             Pure TypeScript — no React. The rules of the game.
       rules.ts          Table rules (6 decks, S17, DAS, 3:2)

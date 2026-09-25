@@ -78,7 +78,7 @@ export default function ToolsPage() {
           </div>
           <div className="game-card__body">
             <div className="eyebrow">Betting · Bankroll</div>
-            <div className="game-card__name">Edge vs. Variance</div>
+            <div className="game-card__name">Bankroll Management</div>
             <p className="game-card__desc">
               Set your win rate, line, bet count and bet size, then see thousands of seasons play out — how often a
               winning bettor still finishes down, or goes broke.
