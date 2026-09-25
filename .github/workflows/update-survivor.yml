@@ -1,5 +1,5 @@
 # Refreshes the NFL Survivor Grid data (public/data/survivor.json) from nflverse.
-# If the numbers changed, commits the new file to main, and Netlify redeploys.
+# If the numbers changed, commits the new file to main, and Cloudflare Pages redeploys.
 name: Update survivor data
 
 on:
