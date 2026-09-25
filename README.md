@@ -29,8 +29,8 @@ assets; `wrangler.jsonc` holds the config. One-time setup:
 
 After that, every push to `main` redeploys automatically.
 
-**Previewing a branch.** With *Settings → Build → Branch control → Builds for non-production
-branches* on (and *Domains → Preview URLs* enabled), every push to any other branch gets its own
+**Previewing a branch.** With *Settings → Builds → Previews Base → Builds for Preview branches*
+on, every push to any other branch gets its own
 preview link under the Worker's **Deployments** tab. It never touches bigblindcap.com.
 
 Redirects live in `public/_redirects`. Any path that isn't a real file serves
