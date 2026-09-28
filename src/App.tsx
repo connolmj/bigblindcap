@@ -7,6 +7,7 @@ import ToolsPage from "./pages/tools/ToolsPage";
 import BlackjackPage from "./pages/tools/BlackjackPage";
 import SurvivorPage from "./pages/tools/SurvivorPage";
 import BankrollPage from "./pages/tools/BankrollPage";
+import SquaresPage from "./pages/tools/SquaresPage";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="tools/blackjack" element={<BlackjackPage />} />
         <Route path="tools/survivor" element={<SurvivorPage />} />
         <Route path="tools/bankroll" element={<BankrollPage />} />
+        <Route path="tools/squares" element={<SquaresPage />} />
         {/* Old addresses from when this section was called Games */}
         <Route path="games" element={<Navigate to="/tools" replace />} />
         <Route path="games/blackjack" element={<Navigate to="/tools/blackjack" replace />} />

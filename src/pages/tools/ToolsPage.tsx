@@ -13,6 +13,16 @@ const MINI_GRID = [
 // Bar heights for the little outcome histogram on the bankroll card.
 const MINI_DIST = [6, 12, 22, 36, 52, 70, 88, 100, 92, 76, 58, 40, 26, 15, 8];
 
+// Shading for the little squares grid: 0 = cold box … 3 = hot box.
+const MINI_SQUARES = [
+  [3, 1, 0, 2, 2, 0, 1, 3],
+  [1, 0, 0, 1, 1, 0, 0, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [2, 1, 0, 1, 1, 0, 1, 2],
+  [2, 1, 0, 1, 1, 0, 0, 1],
+  [3, 1, 0, 2, 1, 0, 1, 3],
+];
+
 export default function ToolsPage() {
   return (
     <div className="tools">
@@ -82,6 +92,23 @@ export default function ToolsPage() {
             <p className="game-card__desc">
               Set your win rate, line, bet count and bet size, then see thousands of seasons play out — how often a
               winning bettor still finishes down, or goes broke.
+            </p>
+            <span className="game-card__cta">Open →</span>
+          </div>
+        </Link>
+
+        <Link to="/tools/squares" className="game-card">
+          <div className="game-card__art game-card__art--grid" aria-hidden="true">
+            <div className="mini-squares">
+              {MINI_SQUARES.map((row, i) => row.map((v, j) => <span key={`${i}-${j}`} className={`is-${v}`} />))}
+            </div>
+          </div>
+          <div className="game-card__body">
+            <div className="eyebrow">NFL · Super Bowl Squares</div>
+            <div className="game-card__name">Super Bowl Squares</div>
+            <p className="game-card__desc">
+              How often every box has hit each quarter — across every NFL game or just Super Bowls — and what your box
+              is worth against what you paid.
             </p>
             <span className="game-card__cta">Open →</span>
           </div>

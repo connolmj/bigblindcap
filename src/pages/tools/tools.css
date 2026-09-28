@@ -171,3 +171,27 @@ a.game-card:hover {
 .mini-dist .is-down {
   background: oklch(0.6 0.15 25);
 }
+
+.mini-squares {
+  display: grid;
+  grid-template-columns: repeat(8, 18px);
+  gap: 3px;
+}
+
+.mini-squares span {
+  height: 18px;
+  border-radius: 3px;
+  background: var(--rule-soft);
+}
+
+.mini-squares .is-1 {
+  background: oklch(0.85 0.06 150);
+}
+
+.mini-squares .is-2 {
+  background: oklch(0.72 0.1 150);
+}
+
+.mini-squares .is-3 {
+  background: oklch(0.55 0.11 150);
+}
