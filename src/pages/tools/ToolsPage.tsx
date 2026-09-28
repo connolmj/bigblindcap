@@ -1,26 +1,73 @@
 import { Link } from "react-router-dom";
 import "./tools.css";
 
-// 0 = strong cell, 1 = weak, 2 = your pick, 3 = crossed out
-const MINI_GRID = [
-  [0, 1, 2, 1, 0, 1],
-  [3, 3, 3, 3, 3, 3],
-  [1, 0, 1, 1, 2, 0],
-  [0, 2, 0, 1, 1, 1],
-  [1, 1, 0, 0, 1, 2],
-];
+type Icon = "blackjack" | "counting" | "survivor" | "squares" | "bankroll" | "runs";
 
-// Bar heights for the little outcome histogram on the bankroll card.
-const MINI_DIST = [6, 12, 22, 36, 52, 70, 88, 100, 92, 76, 58, 40, 26, 15, 8];
+interface Tool {
+  name: string;
+  desc: string;
+  icon: Icon;
+  /** Leave out for a tool that's coming soon. */
+  to?: string;
+}
 
-// Shading for the little squares grid: 0 = cold box … 3 = hot box.
-const MINI_SQUARES = [
-  [3, 1, 0, 2, 2, 0, 1, 3],
-  [1, 0, 0, 1, 1, 0, 0, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [2, 1, 0, 1, 1, 0, 1, 2],
-  [2, 1, 0, 1, 1, 0, 0, 1],
-  [3, 1, 0, 2, 1, 0, 1, 3],
+/** Add a tool by adding a row here — groups show in this order. */
+const GROUPS: { title: string; tools: Tool[] }[] = [
+  {
+    title: "Betting",
+    tools: [
+      {
+        name: "Bankroll Management",
+        to: "/tools/bankroll",
+        icon: "bankroll",
+        desc: "Thousands of simulated seasons at your win rate and bet size — how often a winner still ends down.",
+      },
+    ],
+  },
+  {
+    title: "NFL",
+    tools: [
+      {
+        name: "Survivor Grid",
+        to: "/tools/survivor",
+        icon: "survivor",
+        desc: "Every team's odds each week, pick popularity, future value and a season planner.",
+      },
+      {
+        name: "Super Bowl Squares",
+        to: "/tools/squares",
+        icon: "squares",
+        desc: "How often every box has hit each quarter, and what yours is worth against what you paid.",
+      },
+    ],
+  },
+  {
+    title: "MLB",
+    tools: [
+      {
+        name: "Run Scoring Odds",
+        to: "/tools/runs",
+        icon: "runs",
+        desc: "Chance a run scores, and runs expected, for every base-out situation since 2000.",
+      },
+    ],
+  },
+  {
+    title: "Blackjack",
+    tools: [
+      {
+        name: "Basic Strategy",
+        to: "/tools/blackjack",
+        icon: "blackjack",
+        desc: "Play hands and learn the right move — hit, stand, double or split — with the reason why.",
+      },
+      {
+        name: "Card Counting",
+        icon: "counting",
+        desc: "Track the shoe and adjust your play as cards come out.",
+      },
+    ],
+  },
 ];
 
 export default function ToolsPage() {
@@ -32,119 +79,123 @@ export default function ToolsPage() {
         <p className="tools__lede">Free tools and drills for the math behind the bets. No sign-up.</p>
       </div>
 
-      <div className="tools__list">
-        <Link to="/tools/blackjack" className="game-card">
-          <div className="game-card__art" aria-hidden="true">
-            <span className="game-card__card">
-              A<small>♠</small>
-            </span>
-            <span className="game-card__card game-card__card--red">
-              7<small>♥</small>
-            </span>
-          </div>
-          <div className="game-card__body">
-            <div className="eyebrow">Blackjack · Level 1</div>
-            <div className="game-card__name">Basic Blackjack Strategy</div>
-            <p className="game-card__desc">
-              Play hands against the dealer and learn the right move — hit, stand, double or split — with the reason
-              behind every one.
-            </p>
-            <span className="game-card__cta">Play →</span>
-          </div>
-        </Link>
-
-        <Link to="/tools/survivor" className="game-card">
-          <div className="game-card__art game-card__art--grid" aria-hidden="true">
-            <div className="mini-grid">
-              {MINI_GRID.map((row, i) =>
-                row.map((v, j) => (
-                  <span
-                    key={`${i}-${j}`}
-                    className={v === 2 ? "is-pick" : v === 3 ? "is-used" : ""}
-                    style={{ opacity: v === 1 ? 0.35 : undefined }}
-                  />
-                )),
-              )}
-            </div>
-          </div>
-          <div className="game-card__body">
-            <div className="eyebrow">NFL · Survivor pools</div>
-            <div className="game-card__name">Survivor Grid</div>
-            <p className="game-card__desc">
-              Every team's odds for every week, estimated pick popularity, future value, and a planner that maps out
-              your season one team at a time.
-            </p>
-            <span className="game-card__cta">Open →</span>
-          </div>
-        </Link>
-
-        <Link to="/tools/bankroll" className="game-card">
-          <div className="game-card__art game-card__art--dist" aria-hidden="true">
-            <div className="mini-dist">
-              {MINI_DIST.map((h, i) => (
-                <span key={i} className={i < 5 ? "is-down" : ""} style={{ height: `${h}%` }} />
-              ))}
-            </div>
-          </div>
-          <div className="game-card__body">
-            <div className="eyebrow">Betting · Bankroll</div>
-            <div className="game-card__name">Bankroll Management</div>
-            <p className="game-card__desc">
-              Set your win rate, line, bet count and bet size, then see thousands of seasons play out — how often a
-              winning bettor still finishes down, or goes broke.
-            </p>
-            <span className="game-card__cta">Open →</span>
-          </div>
-        </Link>
-
-        <Link to="/tools/squares" className="game-card">
-          <div className="game-card__art game-card__art--grid" aria-hidden="true">
-            <div className="mini-squares">
-              {MINI_SQUARES.map((row, i) => row.map((v, j) => <span key={`${i}-${j}`} className={`is-${v}`} />))}
-            </div>
-          </div>
-          <div className="game-card__body">
-            <div className="eyebrow">NFL · Super Bowl Squares</div>
-            <div className="game-card__name">Super Bowl Squares</div>
-            <p className="game-card__desc">
-              How often every box has hit each quarter — across every NFL game or just Super Bowls — and what your box
-              is worth against what you paid.
-            </p>
-            <span className="game-card__cta">Open →</span>
-          </div>
-        </Link>
-
-        <Link to="/tools/runs" className="game-card">
-          <div className="game-card__art game-card__art--grid" aria-hidden="true">
-            <svg className="mini-diamond" viewBox="0 0 40 30" width="120" height="90">
-              <rect x="26" y="13" width="8" height="8" transform="rotate(45 30 17)" className="is-on" />
-              <rect x="16" y="3" width="8" height="8" transform="rotate(45 20 7)" />
-              <rect x="6" y="13" width="8" height="8" transform="rotate(45 10 17)" className="is-on" />
-            </svg>
-          </div>
-          <div className="game-card__body">
-            <div className="eyebrow">MLB · Base-out states</div>
-            <div className="game-card__name">Run Scoring Odds</div>
-            <p className="game-card__desc">
-              The chance a run scores — and how many to expect — with runners on any base and zero, one or two out, from
-              every big-league play since 2000.
-            </p>
-            <span className="game-card__cta">Open →</span>
-          </div>
-        </Link>
-
-        <div className="game-card is-soon" aria-disabled="true">
-          <div className="game-card__art game-card__art--soon" aria-hidden="true">
-            <span className="game-card__count">+1</span>
-          </div>
-          <div className="game-card__body">
-            <div className="eyebrow">Blackjack · Level 2</div>
-            <div className="game-card__name">Card Counting</div>
-            <p className="game-card__desc">Track the shoe and adjust your play as cards come out.</p>
-            <span className="game-card__cta is-muted">Coming soon</span>
-          </div>
-        </div>
-      </div>
+      {GROUPS.map((g) => (
+        <section key={g.title} className="tools__group">
+          <h2 className="tools__group-title eyebrow">{g.title}</h2>
+          <ul className="tools__list">
+            {g.tools.map((t) => (
+              <li key={t.name}>
+                <ToolRow tool={t} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   );
+}
+
+function ToolRow({ tool }: { tool: Tool }) {
+  const soon = !tool.to;
+  const body = (
+    <>
+      <span className="tool-row__icon" aria-hidden="true">
+        <ToolIcon icon={tool.icon} />
+      </span>
+      <span className="tool-row__text">
+        <span className="tool-row__name">
+          {tool.name}
+          {soon && <span className="tool-row__soon">Coming soon</span>}
+        </span>
+        <span className="tool-row__desc">{tool.desc}</span>
+      </span>
+      {!soon && (
+        <span className="tool-row__go" aria-hidden="true">
+          →
+        </span>
+      )}
+    </>
+  );
+  return soon ? (
+    <div className="tool-row is-soon" aria-disabled="true">
+      {body}
+    </div>
+  ) : (
+    <Link to={tool.to!} className="tool-row">
+      {body}
+    </Link>
+  );
+}
+
+/** Little 28×28 pictures of each tool. */
+function ToolIcon({ icon }: { icon: Icon }) {
+  switch (icon) {
+    case "blackjack":
+      return (
+        <svg viewBox="0 0 28 28">
+          <rect x="7" y="4" width="14" height="20" rx="2" className="i-card" />
+          <text x="14" y="16" className="i-text">
+            A
+          </text>
+        </svg>
+      );
+    case "counting":
+      return (
+        <svg viewBox="0 0 28 28">
+          <text x="14" y="18" className="i-text i-text--muted">
+            +1
+          </text>
+        </svg>
+      );
+    case "survivor":
+      return (
+        <svg viewBox="0 0 28 28">
+          {[0, 1, 2].flatMap((r) =>
+            [0, 1, 2].map((c) => (
+              <rect
+                key={`${r}${c}`}
+                x={4 + c * 7}
+                y={4 + r * 7}
+                width="6"
+                height="6"
+                rx="1"
+                className={r === 1 && c === 2 ? "i-ink" : r === 0 ? "i-off" : "i-on"}
+              />
+            )),
+          )}
+        </svg>
+      );
+    case "squares":
+      return (
+        <svg viewBox="0 0 28 28">
+          {[3, 1, 0, 2, 1, 0, 0, 1, 0, 0, 0, 0, 2, 1, 0, 3].map((v, i) => (
+            <rect
+              key={i}
+              x={4 + (i % 4) * 5.25}
+              y={4 + Math.floor(i / 4) * 5.25}
+              width="4.5"
+              height="4.5"
+              rx="0.8"
+              className={`i-heat-${v}`}
+            />
+          ))}
+        </svg>
+      );
+    case "bankroll":
+      return (
+        <svg viewBox="0 0 28 28">
+          {[4, 8, 14, 18, 13, 7].map((h, i) => (
+            <rect key={i} x={4 + i * 3.5} y={24 - h} width="2.6" height={h} className={i < 2 ? "i-loss" : "i-on"} />
+          ))}
+        </svg>
+      );
+    case "runs":
+      return (
+        <svg viewBox="0 0 28 28">
+          <rect x="17" y="12" width="6" height="6" transform="rotate(45 20 15)" className="i-on" />
+          <rect x="11" y="6" width="6" height="6" transform="rotate(45 14 9)" className="i-base" />
+          <rect x="5" y="12" width="6" height="6" transform="rotate(45 8 15)" className="i-on" />
+        </svg>
+      );
+  }
 }
