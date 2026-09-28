@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { applyPlay, parseTeams, SeasonReducer, stateIndex, type State } from "./retro";
-import { afterBunt, combine, stealBreakEven, value } from "./odds";
+import { combine, value } from "./odds";
 import type { Season } from "./types";
 
 const at = (bases: number, outs = 0): State => ({ bases, outs });
@@ -124,18 +124,5 @@ describe("odds", () => {
     expect(value(t, 0, 0, "score")).toBeCloseTo(0.4);
     expect(value(t, 7, 2, "runs")).toBeCloseTo(0.6);
     expect(value(t, 0, 3, "runs")).toBe(0);
-  });
-
-  test("steal break-even and bunts", () => {
-    const re: Record<string, number> = { "1-0": 0.9, "2-0": 1.1, "0-1": 0.25 };
-    const t = combine([season(2024, (i) => [100, 0, (re[`${i & 7}-${i >> 3}`] ?? 0) * 100])], 2024, 2024);
-    expect(stealBreakEven(t, 1, 0, "runs")).toBeCloseTo((0.9 - 0.25) / (1.1 - 0.25));
-    expect(stealBreakEven(t, 4, 0, "runs")).toBeNull(); // runner on third: nowhere to steal
-    expect(stealBreakEven(t, 5, 0, "runs")).toBeNull(); // runner on first & third: the lead is on third
-    expect(stealBreakEven(t, 0, 0, "runs")).toBeNull();
-    expect(afterBunt(1, 0)).toEqual({ bases: 2, outs: 1 });
-    expect(afterBunt(3, 1)).toEqual({ bases: 6, outs: 2 });
-    expect(afterBunt(4, 0)).toBeNull();
-    expect(afterBunt(1, 2)).toBeNull();
   });
 });

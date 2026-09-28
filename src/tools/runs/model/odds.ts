@@ -64,27 +64,3 @@ export function value(t: Table, bases: number, outs: number, metric: Metric): nu
   if (!t.n[i]) return 0;
   return (metric === "score" ? t.scored[i] : t.runs[i]) / t.n[i];
 }
-
-/**
- * How often a steal has to work to be worth trying, by the metric: success moves the
- * lead runner up a base, failure erases him for an out. Null when there's no base to
- * steal (the next one is taken) or the runner is on third.
- */
-export function stealBreakEven(t: Table, bases: number, outs: number, metric: Metric): number | null {
-  const lead = bases & 2 ? 2 : bases & 1 ? 1 : 0;
-  if (!lead || bases & (lead << 1)) return null;
-  const now = value(t, bases, outs, metric);
-  const safe = value(t, (bases & ~lead) | (lead << 1), outs, metric);
-  const out = value(t, bases & ~lead, outs + 1, metric);
-  if (safe <= out) return null;
-  return Math.min(1, Math.max(0, (now - out) / (safe - out)));
-}
-
-/**
- * A successful sacrifice bunt: every runner moves up one, the batter is out. Only with
- * nobody on third (that's a squeeze) and fewer than two outs.
- */
-export function afterBunt(bases: number, outs: number): { bases: number; outs: number } | null {
-  if (!bases || bases & 4 || outs >= 2) return null;
-  return { bases: (bases << 1) & 7, outs: outs + 1 };
-}
