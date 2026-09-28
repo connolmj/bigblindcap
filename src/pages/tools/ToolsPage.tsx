@@ -114,6 +114,25 @@ export default function ToolsPage() {
           </div>
         </Link>
 
+        <Link to="/tools/runs" className="game-card">
+          <div className="game-card__art game-card__art--grid" aria-hidden="true">
+            <svg className="mini-diamond" viewBox="0 0 40 30" width="120" height="90">
+              <rect x="26" y="13" width="8" height="8" transform="rotate(45 30 17)" className="is-on" />
+              <rect x="16" y="3" width="8" height="8" transform="rotate(45 20 7)" />
+              <rect x="6" y="13" width="8" height="8" transform="rotate(45 10 17)" className="is-on" />
+            </svg>
+          </div>
+          <div className="game-card__body">
+            <div className="eyebrow">MLB · Base-out states</div>
+            <div className="game-card__name">Run Scoring Odds</div>
+            <p className="game-card__desc">
+              The chance a run scores — and how many to expect — with runners on any base and zero, one or two out, from
+              every big-league play since 2000.
+            </p>
+            <span className="game-card__cta">Open →</span>
+          </div>
+        </Link>
+
         <div className="game-card is-soon" aria-disabled="true">
           <div className="game-card__art game-card__art--soon" aria-hidden="true">
             <span className="game-card__count">+1</span>

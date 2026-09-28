@@ -2,7 +2,7 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid*, *Bankroll Management* and *Super Bowl Squares*.
+**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB).
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
 and optional `History`). Update the sheet and the site updates — no redeploy.
@@ -60,6 +60,9 @@ src/
   tools/squares/
     model/              Quarter-score history → box odds and value (tested)
     ui/                 The Super Bowl Squares page and its grid
+  tools/runs/
+    model/              Retrosheet play parser → base-out run odds, steal/bunt math (tested)
+    ui/                 The Run Scoring Odds page and its table
   tools/blackjack/
     engine/             Pure TypeScript — no React. The rules of the game.
       rules.ts          Table rules (6 decks, S17, DAS, 3:2)
@@ -93,3 +96,13 @@ of every NFL game since 1999 (from nflverse play-by-play), plus the quarter-by-q
 of every Super Bowl (I–XXXIII are typed into `src/tools/squares/model/build.ts`; the rest
 come from play-by-play). It downloads ~20 MB per season, so it isn't on a schedule — refresh
 it by hand after a season or a Super Bowl with `npm run update-squares`.
+
+## Run Scoring Odds data
+
+`public/data/runs.json` holds, for every MLB regular season since 2000, how many times a
+half-inning passed through each of the 24 base-out states, how often at least one run scored
+from there, and the runs that followed. `scripts/update-runs.ts` builds it from the Retrosheet
+event files (via the [Chadwick Bureau mirror](https://github.com/chadwickbureau/retrosheet)),
+following the bases and outs through every play. Retrosheet publishes a season a few months
+after it ends, so refresh it by hand once a year with `npm run update-runs`
+(`npm run update-runs -- 2024` prints one season without writing anything).

@@ -12,6 +12,7 @@
     "typecheck": "tsc -b",
     "update-survivor": "tsx scripts/update-survivor.ts",
     "update-squares": "tsx scripts/update-squares.ts",
+    "update-runs": "tsx scripts/update-runs.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "dependencies": {
