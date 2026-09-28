@@ -2,7 +2,7 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid* and *Bankroll Management*.
+**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid*, *Bankroll Management* and *Super Bowl Squares*.
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
 and optional `History`). Update the sheet and the site updates — no redeploy.
@@ -57,6 +57,9 @@ src/
   tools/bankroll/
     model/              Monte Carlo seasons, odds/Kelly math, histogram bins (tested)
     ui/                 The Bankroll Management page, its charts and the bet-size table
+  tools/squares/
+    model/              Quarter-score history → box odds and value (tested)
+    ui/                 The Super Bowl Squares page and its grid
   tools/blackjack/
     engine/             Pure TypeScript — no React. The rules of the game.
       rules.ts          Table rules (6 decks, S17, DAS, 3:2)
@@ -82,3 +85,11 @@ schedule/odds file by `scripts/update-survivor.ts`. A GitHub Action
 commits the file when the numbers change, which triggers a Cloudflare deploy.
 Run it by hand any time with `npm run update-survivor`, or from the repo's
 **Actions** tab → *Update survivor data* → *Run workflow*.
+
+## Super Bowl Squares data
+
+`public/data/squares.json` holds the last digit of both scores at the end of every quarter
+of every NFL game since 1999 (from nflverse play-by-play), plus the quarter-by-quarter score
+of every Super Bowl (I–XXXIII are typed into `src/tools/squares/model/build.ts`; the rest
+come from play-by-play). It downloads ~20 MB per season, so it isn't on a schedule — refresh
+it by hand after a season or a Super Bowl with `npm run update-squares`.
