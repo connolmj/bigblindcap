@@ -195,3 +195,14 @@ a.game-card:hover {
 .mini-squares .is-3 {
   background: oklch(0.55 0.11 150);
 }
+
+.mini-diamond rect {
+  fill: #fff;
+  stroke: var(--rule);
+  stroke-width: 1.2;
+}
+
+.mini-diamond .is-on {
+  fill: oklch(0.55 0.11 150);
+  stroke: oklch(0.55 0.11 150);
+}
