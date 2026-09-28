@@ -61,7 +61,7 @@ src/
     model/              Quarter-score history → box odds and value (tested)
     ui/                 The Super Bowl Squares page and its grid
   tools/runs/
-    model/              Retrosheet play parser → base-out run odds, steal/bunt math (tested)
+    model/              Retrosheet play parser → base-out run odds (tested)
     ui/                 The Run Scoring Odds page and its table
   tools/blackjack/
     engine/             Pure TypeScript — no React. The rules of the game.
