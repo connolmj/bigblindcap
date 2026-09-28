@@ -17,7 +17,12 @@ export interface BoxOdds {
   p: Float64Array[];
   /** Chance the box wins at least one of the four. */
   any: Float64Array;
+  /** Chance the box wins or hits the reverse at least once. */
+  anyRev: Float64Array;
 }
+
+/** The box with the digits swapped: 7–0 → 0–7. Doubles (7–7) are their own reverse. */
+export const reverseOf = (box: number) => (box % 10) * 10 + Math.floor(box / 10);
 
 /** Last digits, 8 per game: Q1 home, Q1 away, half home, half away, Q3…, final… */
 export function parseDigits(s: string): Uint8Array {
@@ -40,34 +45,51 @@ export function boxOdds(digits: Uint8Array): BoxOdds {
   const games = digits.length / 8;
   const p = QUARTERS.map(() => new Float64Array(BOXES));
   const any = new Float64Array(BOXES);
+  const anyRev = new Float64Array(BOXES);
   const w = games ? 0.5 / games : 0;
   const hit = new Set<number>();
+  const hitRev = new Set<number>();
   for (let g = 0; g < games; g++) {
     for (const flip of [false, true]) {
       hit.clear();
+      hitRev.clear();
       for (let q = 0; q < 4; q++) {
         const h = digits[g * 8 + q * 2];
         const a = digits[g * 8 + q * 2 + 1];
         const box = flip ? a * 10 + h : h * 10 + a;
         p[q][box] += w;
         hit.add(box);
+        hitRev.add(box).add(reverseOf(box));
       }
       for (const box of hit) any[box] += w;
+      for (const box of hitRev) anyRev[box] += w;
     }
   }
-  return { games, p, any };
+  return { games, p, any, anyRev };
 }
 
-/** What a box is worth per $1 paid in, when the pot is every box's money and all of it is paid out. */
-export function boxValue(odds: BoxOdds, box: number, split: Split): number {
+/**
+ * What a box is worth per $1 paid in, when the pot is every box's money and all of it is paid out.
+ * `reverse` is the share of each quarter's prize paid to the reverse box (0 = no reverses);
+ * doubles have no reverse, so they keep the whole prize.
+ */
+export function boxValue(odds: BoxOdds, box: number, split: Split, reverse = 0): number {
+  const rev = reverseOf(box);
   let v = 0;
-  for (let q = 0; q < 4; q++) v += split[q] * odds.p[q][box];
+  for (let q = 0; q < 4; q++)
+    v += split[q] * (rev === box ? odds.p[q][box] : (1 - reverse) * odds.p[q][box] + reverse * odds.p[q][rev]);
   return v * BOXES;
 }
 
+/** Chance the box collects something in quarter q — a straight win, or the reverse when reverses pay. */
+export function cashChance(odds: BoxOdds, q: number, box: number, reverses: boolean): number {
+  const rev = reverseOf(box);
+  return odds.p[q][box] + (reverses && rev !== box ? odds.p[q][rev] : 0);
+}
+
 /** Every box's value, best first: [box, value]. */
-export function rankBoxes(odds: BoxOdds, split: Split): [number, number][] {
-  return Array.from({ length: BOXES }, (_, b): [number, number] => [b, boxValue(odds, b, split)]).sort(
+export function rankBoxes(odds: BoxOdds, split: Split, reverse = 0): [number, number][] {
+  return Array.from({ length: BOXES }, (_, b): [number, number] => [b, boxValue(odds, b, split, reverse)]).sort(
     (x, y) => y[1] - x[1] || x[0] - y[0],
   );
 }

@@ -4,7 +4,9 @@ import {
   QUARTERS,
   boxOdds,
   boxValue,
+  cashChance,
   parseDigits,
+  reverseOf,
   rankBoxes,
   superBowlDigits,
   superBowlNumber,
@@ -25,10 +27,14 @@ const SPLITS: { label: string; split: Split }[] = [
   { label: "12.5 · 25 · 12.5 · 50", split: [0.125, 0.25, 0.125, 0.5] },
   { label: "Half & final", split: [0, 0.5, 0, 0.5] },
 ];
+/** Share of each quarter's prize that goes to the reverse box. */
+const REVERSE_PRESETS = [0, 0.1, 0.2, 0.25, 0.5];
 const DIGITS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const boxName = (box: number) => `${Math.floor(box / 10)}–${box % 10}`;
 const fmtX = (v: number) => (v >= 9.95 ? v.toFixed(0) : v.toFixed(1)) + "×";
+/** Grid cells: 12% / 4.1% / <0.1% / 0% */
+const fmtChance = (p: number) => (p <= 0 ? "0%" : p < 0.0005 ? "<0.1%" : (p * 100).toFixed(p < 0.0995 ? 1 : 0) + "%");
 
 function useSquaresData() {
   const [data, setData] = useState<SquaresData | null>(null);
@@ -68,6 +74,7 @@ function Loaded({ data }: { data: SquaresData }) {
   const [splitIdx, setSplitIdx] = useState(1);
   const [box, setBox] = useState(70);
   const [view, setView] = useState<View>("value");
+  const [reverse, setReverse] = useState(0);
 
   const odds = useMemo(
     () => ({
@@ -78,9 +85,12 @@ function Loaded({ data }: { data: SquaresData }) {
   );
   const o = odds[source];
   const split = SPLITS[splitIdx].split;
-  const ranked = useMemo(() => rankBoxes(o, split), [o, split]);
+  const ranked = useMemo(() => rankBoxes(o, split, reverse), [o, split, reverse]);
   const pot = price * BOXES;
-  const value = boxValue(o, box, split);
+  const value = boxValue(o, box, split, reverse);
+  const rev = reverseOf(box);
+  const hasRev = reverse > 0 && rev !== box;
+  const anyCash = reverse > 0 ? o.anyRev[box] : o.any[box];
   const rank = ranked.findIndex(([b]) => b === box) + 1;
   const winners = ranked.filter(([, v]) => v > 1).length;
   const row = Math.floor(box / 10);
@@ -160,6 +170,27 @@ function Loaded({ data }: { data: SquaresData }) {
             ))}
           </p>
         </Field>
+
+        <Field label="Reverses (share of each prize)">
+          <div className="sq__chips">
+            {REVERSE_PRESETS.map((r) => (
+              <button key={r} className={reverse === r ? "sq__chip is-on" : "sq__chip"} onClick={() => setReverse(r)}>
+                {r === 0 ? "Off" : fmtPct(r)}
+              </button>
+            ))}
+          </div>
+          <p className="sq__help">
+            {reverse === 0 ? (
+              "Only the exact box wins. Turn on if your pool also pays the box with the numbers flipped."
+            ) : (
+              <>
+                A {fmtMoney(pot * split[3])} final: 7–0 gets <strong>{fmtMoney(pot * split[3] * (1 - reverse))}</strong>
+                , the reverse 0–7 gets <strong>{fmtMoney(pot * split[3] * reverse)}</strong>. Doubles like 7–7 keep it
+                all.
+              </>
+            )}
+          </p>
+        </Field>
       </section>
 
       <section className="sq__box" aria-label="Your box">
@@ -181,9 +212,9 @@ function Loaded({ data }: { data: SquaresData }) {
             </div>
           </div>
           <div className="sq__stat">
-            <div className="eyebrow">Wins at least once</div>
-            <div className="sq__big">{fmtPct(o.any[box], 1)}</div>
-            <div className="sq__meta">{oneIn(o.any[box])}</div>
+            <div className="eyebrow">{reverse > 0 ? "Cashes at least once" : "Wins at least once"}</div>
+            <div className="sq__big">{fmtPct(anyCash, 1)}</div>
+            <div className="sq__meta">{oneIn(anyCash)}</div>
           </div>
           <div className="sq__stat">
             <div className="eyebrow">Rank</div>
@@ -204,21 +235,33 @@ function Loaded({ data }: { data: SquaresData }) {
             </thead>
             <tbody>
               <tr>
-                <th>Chance</th>
+                <th>{hasRev ? "Chance to cash" : "Chance"}</th>
                 {QUARTERS.map((q, i) => (
-                  <td key={q}>{fmtPct(o.p[i][box], 1)}</td>
+                  <td key={q}>{fmtPct(cashChance(o, i, box, reverse > 0), 1)}</td>
                 ))}
               </tr>
               <tr>
                 <th>Pays</th>
                 {QUARTERS.map((q, i) => (
-                  <td key={q}>{fmtMoney(pot * split[i])}</td>
+                  <td key={q}>{fmtMoney(pot * split[i] * (hasRev ? 1 - reverse : 1))}</td>
                 ))}
               </tr>
+              {hasRev && (
+                <tr>
+                  <th>Reverse pays</th>
+                  {QUARTERS.map((q, i) => (
+                    <td key={q}>{fmtMoney(pot * split[i] * reverse)}</td>
+                  ))}
+                </tr>
+              )}
               <tr>
                 <th>Worth</th>
                 {QUARTERS.map((q, i) => (
-                  <td key={q}>{fmtCents(pot * split[i] * o.p[i][box])}</td>
+                  <td key={q}>
+                    {fmtCents(
+                      pot * split[i] * (hasRev ? (1 - reverse) * o.p[i][box] + reverse * o.p[i][rev] : o.p[i][box]),
+                    )}
+                  </td>
                 ))}
               </tr>
             </tbody>
@@ -241,6 +284,12 @@ function Loaded({ data }: { data: SquaresData }) {
             ? `That's from just ${sbCount} games — one Super Bowl moves a box a lot, and many boxes have never hit. Switch to every NFL game for steadier numbers.`
             : "0, 7, 3 and 4 carry the grid — touchdowns and field goals. 2, 5, 8 and 9 rarely show up at the end of a quarter."}
         </p>
+        {reverse > 0 && (
+          <p>
+            Reverses don't change what a box is worth — a box and its flip have hit equally often, since either team can
+            end up on the rows. They spread the money out: you cash about twice as often, for smaller prizes.
+          </p>
+        )}
       </div>
 
       <section className="sq__section">
@@ -256,10 +305,10 @@ function Loaded({ data }: { data: SquaresData }) {
         <p className="sq__sub">
           {view === "value"
             ? "What each $1 in the box is worth with your payouts. 1.0× is break-even."
-            : `Chance each box wins ${view === 3 ? "the final" : view === 1 ? "at the half" : `after ${QUARTERS[view]}`}, in %.`}{" "}
+            : `Chance each box ${reverse > 0 ? "cashes, straight or reverse," : "wins"} ${view === 3 ? "at the final" : view === 1 ? "at the half" : `after ${QUARTERS[view]}`}.`}{" "}
           Rows are one team's last digit, columns the other's.
         </p>
-        <Grid odds={o} split={split} view={view} box={box} onPick={setBox} />
+        <Grid odds={o} split={split} reverse={reverse} view={view} box={box} onPick={setBox} />
       </section>
 
       <details className="sq__how">
@@ -284,6 +333,11 @@ function Loaded({ data }: { data: SquaresData }) {
           </dd>
           <dt>Win at least once</dt>
           <dd>The chance your box hits in any of the four quarters of a single game.</dd>
+          <dt>Reverses</dt>
+          <dd>
+            Some pools also pay the box with the digits flipped: if the score ends 7–0, box 0–7 gets a share of that
+            quarter's prize. Doubles (0–0, 7–7) have no reverse and keep the whole prize.
+          </dd>
         </dl>
         <p className="sq__disclaimer">
           Past scores, not a forecast. For education and entertainment only. Updated{" "}
@@ -331,18 +385,20 @@ function SuperBowlHits({ data, box }: { data: SquaresData; box: number }) {
 function Grid({
   odds,
   split,
+  reverse,
   view,
   box,
   onPick,
 }: {
   odds: BoxOdds;
   split: Split;
+  reverse: number;
   view: View;
   box: number;
   onPick: (b: number) => void;
 }) {
   const vals = DIGITS.flatMap((r) => DIGITS.map((c) => r * 10 + c)).map((b) =>
-    view === "value" ? boxValue(odds, b, split) : odds.p[view][b],
+    view === "value" ? boxValue(odds, b, split, reverse) : cashChance(odds, view, b, reverse > 0),
   );
   const max = Math.max(...vals);
   return (
@@ -366,11 +422,7 @@ function Grid({
                 return (
                   <td key={c} className={b === box ? "is-you" : undefined} style={{ background: tint(view, v, max) }}>
                     <button onClick={() => onPick(b)} aria-label={`Box ${r}–${c}`} aria-pressed={b === box}>
-                      {view === "value"
-                        ? v.toFixed(v >= 9.95 ? 0 : 1)
-                        : v === 0
-                          ? "0"
-                          : (v * 100).toFixed(v < 0.1 ? 1 : 0)}
+                      {view === "value" ? fmtX(v) : fmtChance(v)}
                     </button>
                   </td>
                 );

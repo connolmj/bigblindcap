@@ -1,6 +1,16 @@
 import { describe, expect, test } from "vitest";
 import { buildSquaresData, csvRows, earlySuperBowls, PbpReducer, type GameScore } from "./build";
-import { BOXES, boxOdds, boxValue, parseDigits, rankBoxes, superBowlDigits, superBowlNumber, type Split } from "./odds";
+import {
+  BOXES,
+  boxOdds,
+  boxValue,
+  cashChance,
+  parseDigits,
+  rankBoxes,
+  superBowlDigits,
+  superBowlNumber,
+  type Split,
+} from "./odds";
 
 const EVEN: Split = [0.25, 0.25, 0.25, 0.25];
 
@@ -123,6 +133,29 @@ describe("box odds", () => {
     const o = boxOdds(parseDigits("12345677" + "98765477"));
     expect(boxValue(o, 77, [0, 0, 0, 1])).toBe(100);
     expect(rankBoxes(o, EVEN)[0][0]).toBe(77);
+  });
+
+  test("reverses: a quarter pays the straight box and its reverse", () => {
+    // 7–0 then 3–1 then 7–0 then 7–7, home first; counted both ways round
+    const o = boxOdds(parseDigits("70317077"));
+    expect(o.any[70]).toBe(0.5);
+    expect(o.anyRev[70]).toBe(1); // hits straight one way round, as the reverse the other
+    expect(cashChance(o, 0, 70, true)).toBe(1);
+    expect(cashChance(o, 0, 70, false)).toBe(0.5);
+    expect(cashChance(o, 3, 77, true)).toBe(1); // doubles are their own reverse
+  });
+
+  test("reverses spread a box's value but don't change it on symmetric odds", () => {
+    const o = boxOdds(parseDigits("70437070" + "33669901"));
+    for (let b = 0; b < BOXES; b++) expect(boxValue(o, b, EVEN, 0.2)).toBeCloseTo(boxValue(o, b, EVEN), 12);
+  });
+
+  test("with lopsided odds, the reverse share moves value to the reverse box", () => {
+    const o = boxOdds(parseDigits("70707070"));
+    o.p[0][70] = 1; // pretend only home-7, away-0 ever happens
+    o.p[0][7] = 0;
+    expect(boxValue(o, 7, [1, 0, 0, 0], 0.2)).toBeCloseTo(20, 12);
+    expect(boxValue(o, 70, [1, 0, 0, 0], 0.2)).toBeCloseTo(80, 12);
   });
 
   test("Super Bowl digits", () => {
