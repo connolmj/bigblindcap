@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { fmtPct } from "../../../tools/bankroll/ui/format";
-import { combineMargins, keyNumbers, type MarginsData, type MarginTable } from "../model/margins";
 import { coinFlipParlay, impliedProb, ODDS_LADDER, profitOn100, riskToWin100, toDecimal, twoWay } from "../model/odds";
-import { MarginChart, ParlayChart } from "./Charts";
+import { ParlayChart } from "./Charts";
 import "./sports-betting.css";
 
 /** −110 / +150 / +102,300 — a true minus sign, like the rest of the site. */
@@ -86,18 +85,6 @@ const BET_TYPES: BetType[] = [
 ];
 
 const TWO_WAY_PRICES = [-105, -110, -115, -120];
-
-function useMarginsData() {
-  const [data, setData] = useState<MarginsData | null>(null);
-  const [error, setError] = useState(false);
-  useEffect(() => {
-    fetch("/data/margins.json", { cache: "no-cache" })
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then(setData)
-      .catch(() => setError(true));
-  }, []);
-  return { data, error };
-}
 
 export default function SportsBettingBasics() {
   return (
@@ -238,7 +225,7 @@ function AmericanOdds() {
   );
 }
 
-// ---------- 3. Spreads and key numbers ----------
+// ---------- 3. Spreads ----------
 
 const COVER_EXAMPLES: { result: string; outcome: string }[] = [
   { result: "Chiefs win by 10", outcome: "Chiefs −6.5 wins" },
@@ -249,7 +236,6 @@ const COVER_EXAMPLES: { result: string; outcome: string }[] = [
 ];
 
 function Spreads() {
-  const { data, error } = useMarginsData();
   return (
     <Section id="spreads" n={3} title="Point spreads">
       <p className="sb__p">
@@ -280,78 +266,8 @@ function Spreads() {
         The half-point (the ".5") means there can't be a tie. On a whole number like −7, a 7-point win is a{" "}
         <strong>push</strong> and everyone gets their money back.
       </p>
-
-      <h3 className="sb__h3">Key numbers</h3>
-      <p className="sb__p">
-        Football is scored in 3s and 7s, so final margins bunch up on a few numbers. That makes some half-points worth
-        far more than others. Moving from −3.5 to −2.5 is a big change. Moving from −5.5 to −4.5 barely matters.
-      </p>
-      {error && <p className="sb__note">Couldn't load the game results. Please refresh in a minute.</p>}
-      {!data && !error && <p className="sb__note">Loading every NFL result…</p>}
-      {data && <KeyNumbers data={data} />}
     </Section>
   );
-}
-
-function KeyNumbers({ data }: { data: MarginsData }) {
-  const first = data.seasons[0].year;
-  const last = data.seasons.at(-1)!.year;
-  const all = useMemo(() => combineMargins(data.seasons, first, last), [data, first, last]);
-  const before = useMemo(() => combineMargins(data.seasons, first, 2014), [data, first]);
-  const after = useMemo(() => combineMargins(data.seasons, 2015, last), [data, last]);
-  const top = keyNumbers(all, 6);
-  const three = all.share[3] ?? 0;
-  const seven = all.share[7] ?? 0;
-
-  return (
-    <>
-      <MarginChart table={all} />
-      <p className="sb__note">
-        Every NFL game, regular season and playoffs, {first}–{last} ({all.games.toLocaleString("en-US")} games). Ties
-        left out. Data: nflverse.
-      </p>
-      <p className="sb__p">
-        About <strong>{fmtPct(three, 0)}</strong> of games are decided by exactly 3 and{" "}
-        <strong>{fmtPct(seven, 0)}</strong> by exactly 7. Nothing else comes close. A line that moves across 3 changes
-        the result of about one game in {Math.round(1 / three)}. That's why books charge more for that half-point, and
-        why a 6-point teaser is only a good deal when it moves a line across both 3 and 7 (for example, a −7.5 favorite
-        teased down to −1.5, or a +1.5 underdog teased up to +7.5).
-      </p>
-      <div className="sb__table-wrap sb__table-wrap--narrow">
-        <table className="sb__table sb__table--num">
-          <caption>Most common final margins</caption>
-          <thead>
-            <tr>
-              <th>Margin</th>
-              <th>
-                {first}–{last}
-              </th>
-              <th>{first}–2014</th>
-              <th>2015–{last}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {top.map((k) => (
-              <tr key={k.margin} className={k.margin === 3 || k.margin === 7 ? "is-mark" : undefined}>
-                <th scope="row">{k.margin}</th>
-                <MarginCell t={all} m={k.margin} />
-                <MarginCell t={before} m={k.margin} />
-                <MarginCell t={after} m={k.margin} />
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p className="sb__note">
-        In 2015 the NFL moved the extra-point kick back to the 15-yard line. More missed kicks and more two-point tries
-        have made 7 a little less common and 6 a little more.
-      </p>
-    </>
-  );
-}
-
-function MarginCell({ t, m }: { t: MarginTable; m: number }) {
-  return <td>{fmtPct(t.share[m] ?? 0, 1)}</td>;
 }
 
 // ---------- 4. The vig ----------
@@ -445,8 +361,8 @@ function Parlays() {
       <p className="sb__p">
         A parlay's payout is each leg's price multiplied together. The vig gets multiplied too. Take a leg that's a true
         50/50 but priced at {fmtAmerican(price)}. As a straight bet, you give up{" "}
-        <strong>${(-one.ev * 100).toFixed(2)}</strong> per $100 on average. String ten of those together and you give up{" "}
-        <strong>${(-ten.ev * 100).toFixed(2)}</strong> per $100.
+        <strong>${(-one.ev * 100).toFixed(2)}</strong> for every $100 you bet, on average. String ten of those together
+        and you give up <strong>${(-ten.ev * 100).toFixed(2)}</strong> per $100.
       </p>
 
       <div className="sb__controls">

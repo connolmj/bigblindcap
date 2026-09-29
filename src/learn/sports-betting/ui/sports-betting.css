@@ -3,8 +3,6 @@
 .sb {
   padding-bottom: 32px;
   --sb-bar: oklch(0.82 0.01 260);
-  --sb-near: oklch(0.62 0.05 150);
-  --sb-key: var(--ink);
   --sb-loss: oklch(0.6 0.15 25);
   --sb-a: oklch(0.55 0.11 150);
   --sb-b: oklch(0.68 0.09 150);
@@ -79,13 +77,6 @@
   font-weight: 500;
   font-size: clamp(22px, 4vw, 28px);
   line-height: 1.15;
-  color: var(--ink);
-}
-
-.sb__h3 {
-  margin: 26px 0 8px;
-  font-size: 15px;
-  font-weight: 600;
   color: var(--ink);
 }
 
@@ -308,11 +299,6 @@
   fill: var(--muted);
 }
 
-.sb-axis--ink {
-  fill: var(--ink);
-  font-weight: 600;
-}
-
 .sb-label {
   font-size: 11px;
   font-weight: 600;
@@ -326,14 +312,6 @@
 .sb-bar {
   fill: var(--sb-bar);
   transition: opacity 0.1s;
-}
-
-.sb-bar.is-near {
-  fill: var(--sb-near);
-}
-
-.sb-bar.is-key {
-  fill: var(--sb-key);
 }
 
 .sb-bar.is-loss {

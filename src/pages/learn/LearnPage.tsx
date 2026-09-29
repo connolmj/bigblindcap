@@ -16,7 +16,7 @@ const GROUPS: { title: string; guides: Guide[] }[] = [
       {
         name: "Sports Betting Basics",
         to: "/learn/fundamentals/sports-betting-basics",
-        desc: "Types of bets, American odds, spreads and key numbers, and how the vig compounds in parlays.",
+        desc: "Types of bets, American odds, point spreads, and how the vig compounds in parlays.",
       },
     ],
   },

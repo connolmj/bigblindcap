@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { fmtPct } from "../../../tools/bankroll/ui/format";
-import type { MarginTable } from "../model/margins";
 import type { ParlayRow } from "../model/odds";
 
 /** Width of an element, kept up to date as it resizes. */
@@ -24,91 +23,6 @@ function bar(x: number, y: number, w: number, h: number, down = false): string {
     return `M${x},${y}h${w}v${h - r}a${r},${r} 0 0 1 ${-r},${r}h${-(w - 2 * r)}a${r},${r} 0 0 1 ${-r},${-r}z`;
   }
   return `M${x},${y + h}v${-(h - r)}a${r},${r} 0 0 1 ${r},${-r}h${w - 2 * r}a${r},${r} 0 0 1 ${r},${r}v${h - r}z`;
-}
-
-// ---------- Key numbers: how often NFL games end by each margin ----------
-
-const MAX_MARGIN = 21;
-const KEY = new Set([3, 7]);
-const NEAR_KEY = new Set([6, 10, 14]);
-
-export function MarginChart({ table }: { table: MarginTable }) {
-  const [ref, W] = useWidth<HTMLDivElement>();
-  const [hover, setHover] = useState<number | null>(null);
-  const H = 230;
-  const M = { top: 22, right: 12, bottom: 34, left: 40 };
-  const iw = W - M.left - M.right;
-  const ih = H - M.top - M.bottom;
-  const margins = Array.from({ length: MAX_MARGIN }, (_, i) => i + 1);
-  const yMax = 0.16;
-  const y = (s: number) => M.top + ih - (Math.min(s, yMax) / yMax) * ih;
-  const step = iw / margins.length;
-  const bw = Math.max(4, step - 3);
-  const x = (m: number) => M.left + (m - 1) * step + (step - bw) / 2;
-  const h = hover != null ? { m: hover, s: table.share[hover] ?? 0 } : null;
-
-  return (
-    <div className="sb-chart" ref={ref}>
-      <svg
-        width={W}
-        height={H}
-        role="img"
-        aria-label={`Share of NFL games decided by each margin, ${table.from}–${table.to}`}
-        onMouseLeave={() => setHover(null)}
-      >
-        {[0, 0.05, 0.1, 0.15].map((t) => (
-          <g key={t}>
-            <line className="sb-grid" x1={M.left} x2={W - M.right} y1={y(t)} y2={y(t)} />
-            <text className="sb-axis" x={M.left - 8} y={y(t)} dy="0.32em" textAnchor="end">
-              {fmtPct(t)}
-            </text>
-          </g>
-        ))}
-        {margins.map((m) => {
-          const s = table.share[m] ?? 0;
-          const top = y(s);
-          const tone = KEY.has(m) ? "is-key" : NEAR_KEY.has(m) ? "is-near" : "";
-          return (
-            <g key={m} onMouseEnter={() => setHover(m)} onClick={() => setHover(m)}>
-              <rect className="sb-hit" x={M.left + (m - 1) * step} y={M.top} width={step} height={ih} />
-              <path
-                className={`sb-bar ${tone}${hover === m ? " is-hover" : ""}`}
-                d={bar(x(m), top, bw, M.top + ih - top)}
-              />
-              {KEY.has(m) && (
-                <text className="sb-label" x={x(m) + bw / 2} y={top - 6} textAnchor="middle">
-                  {fmtPct(s, 1)}
-                </text>
-              )}
-              {(W >= 480 || m % 2 === 1) && (
-                <text
-                  className={KEY.has(m) ? "sb-axis sb-axis--ink" : "sb-axis"}
-                  x={x(m) + bw / 2}
-                  y={M.top + ih + 15}
-                  textAnchor="middle"
-                >
-                  {m}
-                </text>
-              )}
-            </g>
-          );
-        })}
-        <line className="sb-base" x1={M.left} x2={W - M.right} y1={M.top + ih} y2={M.top + ih} />
-        <text className="sb-axis" x={M.left + iw / 2} y={H - 4} textAnchor="middle">
-          Final margin (points)
-        </text>
-      </svg>
-      {h && (
-        // Top right sits over the short bars past 14, so it never covers 3 or 7.
-        <div className="sb-tip" style={{ right: M.right + 6, top: 8 }}>
-          <strong>Won by {h.m}</strong>
-          <span>
-            {fmtPct(h.s, 1)} of games · about 1 in {Math.round(1 / h.s)}
-          </span>
-        </div>
-      )}
-    </div>
-  );
 }
 
 // ---------- Parlays: expected loss per $100 as legs are added ----------
