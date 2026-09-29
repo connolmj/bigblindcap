@@ -13,6 +13,7 @@
     "update-survivor": "tsx scripts/update-survivor.ts",
     "update-squares": "tsx scripts/update-squares.ts",
     "update-runs": "tsx scripts/update-runs.ts",
+    "update-margins": "tsx scripts/update-margins.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "dependencies": {

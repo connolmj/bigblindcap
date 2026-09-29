@@ -1,0 +1,512 @@
+/* Learn → Sports Betting Basics — same editorial style as the tools. */
+
+.sb {
+  padding-bottom: 32px;
+  --sb-bar: oklch(0.82 0.01 260);
+  --sb-near: oklch(0.62 0.05 150);
+  --sb-key: var(--ink);
+  --sb-loss: oklch(0.6 0.15 25);
+  --sb-a: oklch(0.55 0.11 150);
+  --sb-b: oklch(0.68 0.09 150);
+}
+
+.sb__intro {
+  padding: 26px 0 22px;
+}
+
+.sb__intro .eyebrow a {
+  color: var(--muted);
+}
+
+.sb__intro .eyebrow a:hover {
+  color: var(--ink);
+}
+
+.sb__title {
+  margin: 8px 0;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(28px, 5vw, 38px);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.sb__lede {
+  margin: 0;
+  max-width: 620px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.sb__toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+.sb__toc a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--ink);
+}
+
+.sb__toc a:hover {
+  color: var(--accent);
+}
+
+.sb__toc-n {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---------- Sections ---------- */
+
+.sb__section {
+  padding: 18px 0 30px;
+  border-top: 2px solid var(--ink);
+  scroll-margin-top: 12px;
+}
+
+.sb__h2 {
+  margin: 6px 0 12px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(22px, 4vw, 28px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.sb__h3 {
+  margin: 26px 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sb__p {
+  margin: 0 0 12px;
+  max-width: 640px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+.sb__p strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.sb__note {
+  max-width: 640px;
+  margin: 8px 0 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ---------- "The math" drop-downs ---------- */
+
+.sb__math {
+  max-width: 640px;
+  margin: 4px 0 16px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.sb__math summary {
+  padding: 9px 14px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.sb__math p {
+  margin: 0;
+  padding: 0 14px 10px;
+  color: var(--text);
+}
+
+/* ---------- Tables ---------- */
+
+.sb__table-wrap {
+  margin: 6px 0 14px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+  overflow-x: auto;
+}
+
+.sb__table-wrap--narrow {
+  max-width: 560px;
+}
+
+.sb__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sb__table caption {
+  padding: 10px 12px 4px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sb__table th,
+.sb__table td {
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.sb__table tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.sb__table thead th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 1px solid var(--ink);
+  white-space: nowrap;
+}
+
+.sb__table tbody th {
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.sb__table--num th:not(:first-child),
+.sb__table--num td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sb__table tr.is-mark > * {
+  background: oklch(0.95 0.03 150);
+}
+
+.sb__example {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.sb__fav {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.sb__dog {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* The bet-types table turns into stacked cards on a phone. */
+@media (max-width: 600px) {
+  .sb__table--stack thead {
+    display: none;
+  }
+
+  .sb__table--stack,
+  .sb__table--stack tbody,
+  .sb__table--stack tr,
+  .sb__table--stack th,
+  .sb__table--stack td {
+    display: block;
+    width: 100%;
+  }
+
+  .sb__table--stack tr {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .sb__table--stack tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .sb__table--stack th,
+  .sb__table--stack td {
+    padding: 2px 12px;
+    border: none;
+  }
+
+  .sb__table--stack th {
+    font-size: 14px;
+    padding-bottom: 4px;
+  }
+
+  .sb__table--stack td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .sb__table--num {
+    font-size: 12px;
+  }
+
+  .sb__table--num th,
+  .sb__table--num td {
+    padding: 7px 6px;
+  }
+
+  .sb__table--num thead th {
+    white-space: normal;
+    vertical-align: bottom;
+  }
+}
+
+/* ---------- Charts ---------- */
+
+.sb-chart {
+  position: relative;
+  width: 100%;
+  margin: 6px 0 4px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.sb-chart svg {
+  display: block;
+}
+
+.sb-grid {
+  stroke: var(--rule-soft);
+  stroke-width: 1;
+}
+
+.sb-base {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.sb-axis {
+  font-size: 10px;
+  fill: var(--muted);
+}
+
+.sb-axis--ink {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+.sb-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.sb-hit {
+  fill: transparent;
+}
+
+.sb-bar {
+  fill: var(--sb-bar);
+  transition: opacity 0.1s;
+}
+
+.sb-bar.is-near {
+  fill: var(--sb-near);
+}
+
+.sb-bar.is-key {
+  fill: var(--sb-key);
+}
+
+.sb-bar.is-loss {
+  fill: var(--sb-loss);
+}
+
+.sb-bar.is-hover {
+  opacity: 0.75;
+}
+
+.sb-tip {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sb-tip strong {
+  font-weight: 600;
+}
+
+/* ---------- The vig bar ---------- */
+
+.sb-vig {
+  max-width: 640px;
+  margin: 14px 0 18px;
+  padding-top: 22px;
+}
+
+.sb-vig__track {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  height: 44px;
+}
+
+.sb-vig__seg {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sb-vig__seg--a {
+  background: var(--sb-a);
+  border-radius: 6px 0 0 6px;
+}
+
+.sb-vig__seg--b {
+  background: var(--sb-b);
+  border-radius: 0 6px 6px 0;
+}
+
+/* Hatched overlay on everything past 100%. */
+.sb-vig__over {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 0 6px 6px 0;
+  background: repeating-linear-gradient(135deg, oklch(0.6 0.15 25 / 0.85) 0 3px, oklch(0.6 0.15 25 / 0.35) 3px 6px);
+}
+
+.sb-vig__line {
+  position: absolute;
+  top: -20px;
+  bottom: -4px;
+  border-left: 2px solid var(--ink);
+}
+
+.sb-vig__line span {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.sb-vig__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sb-vig__legend strong {
+  color: var(--ink);
+}
+
+.sb-vig__swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
+  vertical-align: -1px;
+  border-radius: 2px;
+  background: var(--sb-loss);
+}
+
+/* ---------- Parlay price picker ---------- */
+
+.sb__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 14px 0 8px;
+}
+
+.sb__control-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.sb-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  padding: 2px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: #fff;
+}
+
+.sb-seg button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sb-seg button.is-on {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- Responsible gambling ---------- */
+
+.sb__help {
+  margin-top: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.sb__help strong {
+  color: var(--ink);
+}
+
+.sb__help a {
+  border-bottom: 1px solid var(--ink);
+}
