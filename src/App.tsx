@@ -9,6 +9,8 @@ import SurvivorPage from "./pages/tools/SurvivorPage";
 import BankrollPage from "./pages/tools/BankrollPage";
 import SquaresPage from "./pages/tools/SquaresPage";
 import RunsPage from "./pages/tools/RunsPage";
+import LearnPage from "./pages/learn/LearnPage";
+import SportsBettingBasicsPage from "./pages/learn/SportsBettingBasicsPage";
 
 export default function App() {
   return (
@@ -24,6 +26,9 @@ export default function App() {
         <Route path="tools/bankroll" element={<BankrollPage />} />
         <Route path="tools/squares" element={<SquaresPage />} />
         <Route path="tools/runs" element={<RunsPage />} />
+        <Route path="learn" element={<LearnPage />} />
+        <Route path="learn/fundamentals" element={<Navigate to="/learn" replace />} />
+        <Route path="learn/fundamentals/sports-betting-basics" element={<SportsBettingBasicsPage />} />
         {/* Old addresses from when this section was called Games */}
         <Route path="games" element={<Navigate to="/tools" replace />} />
         <Route path="games/blackjack" element={<Navigate to="/tools/blackjack" replace />} />

@@ -2,7 +2,8 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB).
+**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
+**Learn**, plain-English guides (*Fundamentals → Sports Betting Basics*).
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
 and optional `History`). Update the sheet and the site updates — no redeploy.
@@ -51,6 +52,10 @@ src/
   pages/sports/         Picks ledger
   pages/portfolio/      Book, allocation donut + holdings, library (add PDFs here)
   pages/tools/          Tools index and page wrappers
+  pages/learn/          Learn index (add a guide by adding a row) and page wrappers
+  learn/sports-betting/
+    model/              American odds, vig/hold, parlay math; NFL final margins for a future page (tested)
+    ui/                 The Sports Betting Basics page and its charts
   tools/survivor/
     model/              Ratings, win %, pick % estimate, season planner (tested)
     ui/                 The Survivor Grid page
@@ -106,3 +111,10 @@ event files (via the [Chadwick Bureau mirror](https://github.com/chadwickbureau/
 following the bases and outs through every play. Retrosheet publishes a season a few months
 after it ends, so refresh it by hand once a year with `npm run update-runs`
 (`npm run update-runs -- 2024` prints one season without writing anything).
+
+## NFL final margins (Learn, coming)
+
+`public/data/margins.json` counts, for every NFL season since 1999, how many finished games
+(regular season and playoffs) were decided by each margin, for a future key-numbers page (nothing reads it yet).
+`scripts/update-margins.ts` builds it from the same nflverse schedule file as the Survivor Grid;
+refresh it by hand after a season with `npm run update-margins`.

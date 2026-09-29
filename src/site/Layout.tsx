@@ -7,6 +7,7 @@ const NAV = [
   { to: "/sports", label: "Sports", end: false },
   { to: "/portfolio", label: "Portfolio", end: false },
   { to: "/tools", label: "Tools", end: false },
+  { to: "/learn", label: "Learn", end: false },
 ];
 
 export default function Layout() {
