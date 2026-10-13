@@ -161,3 +161,8 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+/* Holds the page's place while its code downloads. */
+.site-loading {
+  min-height: 70vh;
+}

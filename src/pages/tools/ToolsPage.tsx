@@ -115,18 +115,13 @@ const CATEGORIES: { id: string; title: string; blurb: string; groups: Group[] }[
             icon: "baccarat",
             desc: "Pick the best bet for the table, call every third card like the dealer, and see the house edge on each bet.",
           },
+          {
+            name: "Craps Strategy",
+            to: "/tools/craps",
+            icon: "craps",
+            desc: "Bet a full layout and roll the dice. Every bet is graded on its house edge, with the better bet and what it saves.",
+          },
         ],
-      },
-    ],
-  },
-  {
-    title: "Craps",
-    tools: [
-      {
-        name: "Bets & Odds",
-        to: "/tools/craps",
-        icon: "craps",
-        desc: "Bet a full layout and roll the dice. Every bet is graded on its house edge, with the better bet and what it saves.",
       },
     ],
   },

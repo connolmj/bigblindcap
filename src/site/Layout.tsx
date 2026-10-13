@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import Logo from "./Logo";
 import "./layout.css";
@@ -39,7 +40,10 @@ export default function Layout() {
         <div className="site-rule" />
 
         <main>
-          <Outlet />
+          {/* Pages load on first visit; keep the space so the footer doesn't jump up meanwhile. */}
+          <Suspense fallback={<div className="site-loading" aria-busy="true" />}>
+            <Outlet />
+          </Suspense>
         </main>
 
         <footer className="site-footer">

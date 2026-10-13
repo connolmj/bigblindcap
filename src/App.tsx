@@ -1,19 +1,23 @@
+import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./site/Layout";
 import HomePage from "./pages/home/HomePage";
-import SportsPage from "./pages/sports/SportsPage";
-import PortfolioPage from "./pages/portfolio/PortfolioPage";
-import ToolsPage from "./pages/tools/ToolsPage";
-import BlackjackPage from "./pages/tools/BlackjackPage";
-import ThreeCardPokerPage from "./pages/tools/ThreeCardPokerPage";
-import BaccaratPage from "./pages/tools/BaccaratPage";
-import CrapsPage from "./pages/tools/CrapsPage";
-import SurvivorPage from "./pages/tools/SurvivorPage";
-import BankrollPage from "./pages/tools/BankrollPage";
-import SquaresPage from "./pages/tools/SquaresPage";
-import RunsPage from "./pages/tools/RunsPage";
-import LearnPage from "./pages/learn/LearnPage";
-import SportsBettingBasicsPage from "./pages/learn/SportsBettingBasicsPage";
+
+// Every other page is its own download, fetched the first time you open it,
+// so visiting one tool doesn't load the code for all the others.
+const SportsPage = lazy(() => import("./pages/sports/SportsPage"));
+const PortfolioPage = lazy(() => import("./pages/portfolio/PortfolioPage"));
+const ToolsPage = lazy(() => import("./pages/tools/ToolsPage"));
+const BlackjackPage = lazy(() => import("./pages/tools/BlackjackPage"));
+const ThreeCardPokerPage = lazy(() => import("./pages/tools/ThreeCardPokerPage"));
+const BaccaratPage = lazy(() => import("./pages/tools/BaccaratPage"));
+const CrapsPage = lazy(() => import("./pages/tools/CrapsPage"));
+const SurvivorPage = lazy(() => import("./pages/tools/SurvivorPage"));
+const BankrollPage = lazy(() => import("./pages/tools/BankrollPage"));
+const SquaresPage = lazy(() => import("./pages/tools/SquaresPage"));
+const RunsPage = lazy(() => import("./pages/tools/RunsPage"));
+const LearnPage = lazy(() => import("./pages/learn/LearnPage"));
+const SportsBettingBasicsPage = lazy(() => import("./pages/learn/SportsBettingBasicsPage"));
 
 export default function App() {
   return (
