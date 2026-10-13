@@ -2,16 +2,21 @@ import { fmtNet } from "../../blackjack/ui/HandView";
 import { fmtEv } from "../engine/explain";
 import { pct, type Stats } from "./stats";
 
+/** Any trainer's stats with these fields will do — baccarat uses this rail too. */
+export type RailStats = Pick<Stats, "decisions" | "correct" | "streak" | "bestStreak" | "hands" | "net" | "cost">;
+
 interface Props {
-  stats: Stats;
+  stats: RailStats;
   onChart: () => void;
   onSettings: () => void;
   sound: boolean;
   onToggleSound: () => void;
+  /** Decimals for "Mistakes cost" (baccarat's mistakes are tiny, so it shows three). */
+  costDigits?: number;
 }
 
 /** Same rail as the blackjack trainer, plus what your mistakes have cost on average. */
-export default function StatsRail({ stats, onChart, onSettings, sound, onToggleSound }: Props) {
+export default function StatsRail({ stats, onChart, onSettings, sound, onToggleSound, costDigits = 2 }: Props) {
   const accuracy = pct(stats.correct, stats.decisions);
   return (
     <div className="rail">
@@ -49,7 +54,7 @@ export default function StatsRail({ stats, onChart, onSettings, sound, onToggleS
       </div>
       <div className="rail__stat" title="Expected units given up by wrong moves, on average">
         <div className="eyebrow">Mistakes cost</div>
-        <div className={`rail__num ${stats.cost > 0 ? "is-loss" : ""}`}>{fmtEv(-stats.cost)}</div>
+        <div className={`rail__num ${stats.cost > 0 ? "is-loss" : ""}`}>{fmtEv(-stats.cost, costDigits)}</div>
         <div className="rail__meta">on average</div>
       </div>
       <div className="rail__tools">
