@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./tools.css";
 
-type Icon = "blackjack" | "counting" | "threecard" | "survivor" | "squares" | "bankroll" | "runs";
+type Icon = "blackjack" | "counting" | "threecard" | "baccarat" | "survivor" | "squares" | "bankroll" | "runs";
 
 interface Tool {
   name: string;
@@ -76,6 +76,17 @@ const GROUPS: { title: string; tools: Tool[] }[] = [
         to: "/tools/three-card-poker",
         icon: "threecard",
         desc: "Practice the one decision in the game, see what every hand is worth, and learn the payouts.",
+      },
+    ],
+  },
+  {
+    title: "Baccarat",
+    tools: [
+      {
+        name: "Bets & Drawing Rules",
+        to: "/tools/baccarat",
+        icon: "baccarat",
+        desc: "Pick the best bet for the table, call every third card like the dealer, and see the house edge on each bet.",
       },
     ],
   },
@@ -165,6 +176,16 @@ function ToolIcon({ icon }: { icon: Icon }) {
               className={i === 2 ? "i-card i-card--top" : "i-card"}
             />
           ))}
+        </svg>
+      );
+    case "baccarat":
+      return (
+        <svg viewBox="0 0 28 28">
+          <rect x="4" y="7" width="9" height="13" rx="1.5" className="i-card" />
+          <rect x="15" y="7" width="9" height="13" rx="1.5" className="i-card i-card--top" />
+          <text x="8.5" y="16.5" className="i-text">
+            9
+          </text>
         </svg>
       );
     case "counting":

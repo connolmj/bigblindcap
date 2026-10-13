@@ -1,0 +1,274 @@
+/* =====================================================================
+   Baccarat trainer. Built on the blackjack trainer's styles (table, cards,
+   buttons, feedback, chart, settings) and Three Card Poker's (chips, the
+   guide). This file adds the three bets' colours and the two-hand table.
+   ===================================================================== */
+
+.bac {
+  --player: oklch(0.52 0.14 255);
+  --banker: oklch(0.55 0.17 25);
+  --tie: oklch(0.56 0.13 155);
+}
+
+/* ---------- Colours for the three bets ---------- */
+
+.actions__btn--player,
+.chip--player,
+.bac-edges__bar--player {
+  --tone: var(--player);
+}
+
+.actions__btn--banker,
+.chip--banker,
+.bac-edges__bar--banker {
+  --tone: var(--banker);
+}
+
+.actions__btn--tie,
+.chip--tie,
+.bac-edges__bar--tie {
+  --tone: var(--tie);
+}
+
+.bac-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bac-actions--bet {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ---------- Table ---------- */
+
+.bac-hands {
+  display: flex;
+  justify-content: center;
+  gap: clamp(16px, 8vw, 80px);
+  width: 100%;
+  min-height: calc(var(--card-w) * 1.4 + 56px);
+}
+
+.bac-hand {
+  min-width: calc(var(--card-w) * 2.4);
+}
+
+.bac-hand.is-win {
+  background: oklch(1 0 0 / 0.07);
+  box-shadow: 0 0 0 2px var(--felt-glow);
+}
+
+.bac-hand.is-win .hand__label {
+  color: var(--felt-glow);
+}
+
+.bac-cards .pcard + .pcard {
+  margin-left: calc(var(--card-w) * 0.1);
+}
+
+/* The third card turns sideways, like at the table. */
+.bac-cards .pcard:nth-child(3) {
+  margin-left: calc(var(--card-w) * 0.3);
+  rotate: 90deg;
+}
+
+.bac-place {
+  position: relative;
+  z-index: 2;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--felt-pill);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--felt-ink);
+}
+
+.bac-banner--late {
+  animation-delay: 0.75s;
+}
+
+.bac-spots {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr 1fr;
+  gap: 8px;
+  width: min(100%, 460px);
+  margin-top: 4px;
+}
+
+.bac-spot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 74px;
+  padding: 8px 4px;
+  border: 1.5px solid var(--felt-soft);
+  border-radius: 14px;
+  transition: background 0.2s;
+}
+
+.bac-spot.is-mine {
+  border-color: var(--felt-ink);
+  background: oklch(1 0 0 / 0.08);
+}
+
+.bac-spot__name {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--felt-soft);
+}
+
+.bac-spot.is-mine .bac-spot__name {
+  color: var(--felt-ink);
+}
+
+.bac-spot.is-win .tcp-spot__result {
+  background: var(--accent);
+  color: #fff;
+}
+
+.bac-spot.is-lose .tcp-spot__result {
+  background: var(--loss);
+  color: #fff;
+}
+
+.bac-spot.is-lose .tcp-chip {
+  opacity: 0.35;
+}
+
+/* ---------- Draw question ---------- */
+
+.bac-ask__q {
+  margin: 12px 0 -4px;
+  font-size: 15px;
+  text-align: center;
+  color: var(--text);
+}
+
+.bac-ask__q b {
+  color: var(--ink);
+}
+
+/* ---------- Feedback extras ---------- */
+
+.bac-edges {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.bac-edges .eyebrow {
+  margin-bottom: 2px;
+}
+
+.bac-edges__row {
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bac-edges__row.is-chosen,
+.bac-edges__row.is-best {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.bac-edges__track {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--rule-soft);
+}
+
+.bac-edges__bar {
+  display: block;
+  height: 100%;
+  min-width: 3px;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--tone) 45%, #fff);
+}
+
+.bac-edges__row.is-best .bac-edges__bar {
+  background: var(--tone);
+}
+
+.bac-edges__num {
+  text-align: right;
+}
+
+.bac-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.bac-hint .eyebrow {
+  margin-right: 6px;
+}
+
+/* ---------- Chart & guide ---------- */
+
+.bac-tableau .chart__corner {
+  width: 60px;
+}
+
+.bac-tableau__stood {
+  font-size: 9px;
+}
+
+.bac-progress__row {
+  grid-template-columns: 140px 1fr 40px;
+}
+
+.bac-rules {
+  max-width: 640px;
+  margin: 0 0 12px;
+  padding-left: 18px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.bac-rules b {
+  color: var(--ink);
+}
+
+.bac-guide-chart {
+  max-width: 640px;
+  margin-top: 6px;
+}
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 560px) {
+  .bac-actions--bet .actions__hint {
+    display: none;
+  }
+
+  .bac-hands {
+    gap: 14px;
+  }
+
+  .bac-hand {
+    min-width: 0;
+  }
+
+  .bac .felt {
+    --card-w: 44px;
+  }
+
+  .bac-progress__row {
+    grid-template-columns: 120px 1fr 36px;
+  }
+
+  .bac-tableau .chart__corner {
+    font-size: 7px;
+  }
+}
