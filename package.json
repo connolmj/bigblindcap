@@ -14,6 +14,7 @@
     "update-squares": "tsx scripts/update-squares.ts",
     "update-runs": "tsx scripts/update-runs.ts",
     "update-margins": "tsx scripts/update-margins.ts",
+    "check-three-card": "tsx scripts/check-three-card.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "dependencies": {
