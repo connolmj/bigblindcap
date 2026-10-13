@@ -1,0 +1,948 @@
+/* =====================================================================
+   Craps trainer. Built on the blackjack trainer's styles (felt themes,
+   buttons, feedback, settings), Three Card Poker's (chips, the guide) and
+   baccarat's (pills, rules list). This file adds the dice and the layout.
+   ===================================================================== */
+
+.crp {
+  --good: oklch(0.56 0.13 155);
+  --bad: oklch(0.6 0.16 32);
+  --die: oklch(0.98 0.005 80);
+  --pip: oklch(0.2 0.02 265);
+}
+
+.chip--good {
+  --tone: var(--good);
+}
+
+.chip--bad {
+  --tone: var(--bad);
+}
+
+/* ---------- The felt ---------- */
+
+.crp-felt {
+  gap: 12px;
+  padding: 14px;
+  border-radius: 26px;
+}
+
+.crp-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 96px;
+}
+
+.crp-throw {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.crp-banner {
+  padding: 7px 16px 8px;
+}
+
+.crp-banner .felt__banner-title {
+  font-size: 18px;
+}
+
+/* ---------- Dice ---------- */
+
+.crp-dice {
+  display: flex;
+  gap: 10px;
+}
+
+.crp-die {
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 6px;
+  border-radius: 9px;
+  background: var(--die);
+  box-shadow:
+    inset 0 -3px 0 oklch(0 0 0 / 0.12),
+    0 6px 12px -4px oklch(0 0 0 / 0.5);
+  animation: crp-tumble 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+.crp-die.is-idle {
+  opacity: 0.35;
+  animation: none;
+}
+
+.crp-die__pip {
+  width: 72%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--pip);
+}
+
+.crp-die__pip.is-blank {
+  visibility: hidden;
+}
+
+@keyframes crp-tumble {
+  0% {
+    opacity: 0;
+    transform: translate(-90px, -30px) rotate(-320deg) scale(0.7);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(6px, 4px) rotate(18deg);
+  }
+  80% {
+    transform: translate(-2px, 0) rotate(-6deg);
+  }
+}
+
+/* Small dice inside spots and the guide don't tumble. */
+.crp-hard .crp-die,
+.crp-ways .crp-die {
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  border-radius: 4px;
+  box-shadow: inset 0 -1px 0 oklch(0 0 0 / 0.15);
+  animation: none;
+}
+
+/* ---------- Roll board and puck ---------- */
+
+.crp-board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-content: center;
+}
+
+.crp-board li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: var(--felt-pill);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--felt-ink);
+}
+
+.crp-board li:first-child {
+  outline: 2px solid var(--felt-glow);
+}
+
+.crp-board li.is-seven {
+  background: var(--loss);
+  color: #fff;
+}
+
+.crp-board li.is-hard {
+  box-shadow: inset 0 0 0 1.5px var(--felt-soft);
+}
+
+.crp-board .crp-board__empty {
+  min-width: 0;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--felt-soft);
+}
+
+.crp-board .crp-board__empty:first-child {
+  outline: none;
+}
+
+.crp-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  text-align: right;
+}
+
+.crp-status__text {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.crp-status__text small {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--felt-soft);
+}
+
+.crp-puck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--felt-ink);
+  background: oklch(0.2 0.01 265);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #fff;
+}
+
+.crp-puck.is-on {
+  background: #fff;
+  border-color: oklch(0.2 0.01 265);
+  color: oklch(0.2 0.01 265);
+}
+
+/* ---------- Layout ---------- */
+
+.crp-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 0.34fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.crp-main,
+.crp-center {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.crp-numbers {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.crp-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  border: 1.5px solid var(--felt-soft);
+  border-radius: 10px;
+}
+
+.crp-box.is-point {
+  border-color: var(--felt-glow);
+  box-shadow: 0 0 0 1px var(--felt-glow);
+}
+
+.crp-box__puck {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  z-index: 3;
+  width: 26px;
+  height: 26px;
+  font-size: 8px;
+  animation: pop 0.3s both;
+}
+
+.crp-box__num {
+  font-family: var(--font-serif);
+  font-size: clamp(18px, 3.4vw, 28px);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.crp-row {
+  display: grid;
+  gap: 8px;
+}
+
+.crp-row--come {
+  grid-template-columns: minmax(0, 0.3fr) minmax(0, 1fr);
+}
+
+.crp-row--field {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.crp-row--line {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.32fr);
+}
+
+.crp-bigs {
+  display: flex;
+  gap: 6px;
+}
+
+.crp-hards,
+.crp-props {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.crp-props {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* ---------- Spots ---------- */
+
+.crp-spot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: 6px 6px 8px;
+  border: 1.5px solid var(--felt-soft);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--felt-ink);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.1s;
+}
+
+.crp-spot:not(:disabled):hover {
+  border-color: var(--felt-ink);
+  background: oklch(1 0 0 / 0.1);
+}
+
+.crp-spot:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.crp-spot:focus-visible {
+  outline: 3px solid var(--felt-glow);
+  outline-offset: 1px;
+}
+
+.crp-spot:disabled {
+  cursor: not-allowed;
+  border-style: dashed;
+  opacity: 0.4;
+}
+
+/* A bet that's already on the table stays readable after its spot closes. */
+.crp-spot.is-mine {
+  border-style: solid;
+  border-color: var(--felt-ink);
+  background: oklch(1 0 0 / 0.08);
+  opacity: 1;
+}
+
+.crp-spot small {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--felt-soft);
+}
+
+.crp-spot__hint {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--felt-soft);
+}
+
+.crp-word {
+  font-family: var(--font-serif);
+  font-size: clamp(15px, 2.6vw, 22px);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.crp-spot--pass,
+.crp-spot--come {
+  min-height: 60px;
+}
+
+.crp-spot--field {
+  min-height: 64px;
+}
+
+.crp-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.crp-field__nums {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.crp-field__nums b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+
+.crp-spot--big {
+  width: 56px;
+  min-height: 64px;
+  border-radius: 10px 10px 28px 10px;
+}
+
+.crp-big {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 500;
+  color: oklch(0.72 0.17 30);
+}
+
+.felt[data-theme="paper"] .crp-big {
+  color: var(--loss);
+}
+
+.crp-spot--mini {
+  min-height: 26px;
+  padding: 3px 4px;
+  border-radius: 7px;
+  font-size: 9px;
+}
+
+.crp-spot--mini .crp-spot__hint {
+  display: none;
+}
+
+.crp-spot--place {
+  min-height: 62px;
+}
+
+.crp-spot--place .crp-spot__hint {
+  font-size: 8px;
+}
+
+.crp-spot--odds {
+  border-style: dotted;
+}
+
+.crp-spot--prop {
+  min-height: 44px;
+  font-size: 12px;
+}
+
+.crp-spot--seven {
+  color: oklch(0.8 0.14 30);
+}
+
+.felt[data-theme="paper"] .crp-spot--seven {
+  color: var(--loss);
+}
+
+.crp-hard {
+  display: flex;
+  gap: 3px;
+}
+
+/* Chips with dollar amounts on them. */
+.crp-chip {
+  position: absolute;
+  bottom: -6px;
+  right: -4px;
+  z-index: 2;
+  width: auto;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 5px;
+  border-width: 2px;
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.crp-chip.is-new {
+  background: oklch(0.55 0.17 25);
+}
+
+.crp-off {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: oklch(0.2 0.01 265);
+  font-size: 8px;
+  color: #fff;
+}
+
+.crp-result {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  z-index: 3;
+  translate: -50% 0;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
+.crp-spot.is-win .crp-result,
+.crp-come.is-win .tcp-spot__result {
+  background: var(--accent);
+  color: #fff;
+}
+
+.crp-spot.is-lose .crp-result,
+.crp-come.is-lose .tcp-spot__result {
+  background: var(--loss);
+  color: #fff;
+}
+
+/* ---------- Come bets on their numbers ---------- */
+
+.crp-comes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.crp-come {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.crp-come__tag {
+  padding: 2px 4px;
+  border-radius: 6px;
+  background: oklch(0.45 0.13 255);
+  color: #fff;
+}
+
+.crp-come.is-dont .crp-come__tag {
+  background: oklch(0.2 0.01 265);
+}
+
+.crp-spot--comeodds {
+  min-height: 22px;
+}
+
+.crp-spot--comeodds .crp-chip {
+  bottom: -4px;
+  height: 18px;
+  min-width: 22px;
+  font-size: 9px;
+}
+
+/* ---------- Action bar ---------- */
+
+.crp-actions {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 12px 0 10px;
+}
+
+.crp-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.crp-chipbtn {
+  --c: oklch(0.55 0.17 25);
+  width: 42px;
+  height: 42px;
+  border: 3px dashed oklch(1 0 0 / 0.85);
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow:
+    0 0 0 2px var(--c),
+    0 3px 6px -2px oklch(0 0 0 / 0.4);
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+
+.crp-chipbtn--10 {
+  --c: oklch(0.5 0.14 255);
+}
+
+.crp-chipbtn--25 {
+  --c: oklch(0.52 0.13 150);
+}
+
+.crp-chipbtn--100 {
+  --c: oklch(0.22 0.01 265);
+}
+
+.crp-chipbtn.is-selected {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 2px var(--c),
+    0 0 0 5px var(--paper),
+    0 0 0 7px var(--ink);
+}
+
+.crp-chipbtn:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.crp-actions__edit {
+  display: flex;
+  gap: 6px;
+}
+
+.crp-actions__edit .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.crp-actions__edit .kbd {
+  margin-left: 4px;
+}
+
+.crp-roll {
+  grid-column: auto;
+  padding: 14px;
+}
+
+/* ---------- Feedback ---------- */
+
+.crp-cost,
+.crp-tip {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.crp-cost b {
+  color: var(--loss);
+}
+
+.crp-cost .eyebrow,
+.crp-tip .eyebrow {
+  margin-right: 6px;
+}
+
+.crp-tip {
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background: color-mix(in oklch, var(--good) 10%, #fff);
+}
+
+.crp-settle small {
+  margin-left: 4px;
+  color: var(--muted);
+}
+
+.crp-settle__total {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.crp-settle__total .is-win {
+  color: var(--accent);
+}
+
+.crp-settle__total .is-loss {
+  color: var(--loss);
+}
+
+.recap__row.is-right > span:first-child,
+.recap__row.is-wrong > span:first-child {
+  font-weight: 700;
+}
+
+/* ---------- Edge chart ---------- */
+
+.crp-chart__rows {
+  display: grid;
+  gap: 2px;
+  margin-top: 14px;
+}
+
+.crp-chart__row {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.9fr) minmax(0, 1.4fr) 56px;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.crp-chart__row.is-marked {
+  background: #fff;
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.crp-chart__name {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.crp-chart__name small {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.crp-chart__track {
+  position: relative;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--rule-soft);
+}
+
+.crp-chart__bar {
+  display: block;
+  height: 100%;
+  min-width: 3px;
+  border-radius: 4px;
+  background: var(--bad);
+}
+
+.crp-chart__row.is-good .crp-chart__bar {
+  background: var(--good);
+}
+
+.crp-chart__line {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: var(--line);
+  width: 0;
+  border-left: 1.5px dashed var(--ink);
+}
+
+.crp-chart__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.crp-chart__row.is-bad .crp-chart__num {
+  color: var(--loss);
+}
+
+/* ---------- Guide ---------- */
+
+.crp-ways {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  align-items: end;
+  gap: 4px;
+  max-width: 640px;
+  margin: 8px 0 6px;
+}
+
+.crp-ways__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.crp-ways__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.crp-ways__pair {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 5px;
+}
+
+.crp-ways__pair.is-hard {
+  background: var(--rule-soft);
+}
+
+.crp-ways .crp-die {
+  --die: #fff;
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.crp-ways__bar {
+  width: 70%;
+  border-radius: 3px 3px 0 0;
+  background: color-mix(in oklch, var(--ink) 25%, #fff);
+}
+
+.crp-ways__col.is-seven .crp-ways__bar {
+  background: var(--loss);
+}
+
+.crp-ways__t {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.crp-ways__n {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.crp-bets td:nth-child(2) {
+  white-space: normal;
+  min-width: 140px;
+}
+
+/* ---------- Phones and narrow screens ---------- */
+
+@media (max-width: 760px) {
+  .crp-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .crp-center {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .crp-center .crp-spot--wide {
+    grid-column: 1 / -1;
+  }
+
+  .crp-props {
+    grid-column: 1 / -1;
+  }
+
+  .crp-hards {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .crp-felt {
+    padding: 10px 8px;
+    border-width: 6px;
+  }
+
+  .crp-top {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 8px;
+  }
+
+  .crp-board {
+    order: 3;
+    justify-content: center;
+  }
+
+  .crp-status {
+    order: -1;
+  }
+
+  .crp-die {
+    width: 40px;
+    height: 40px;
+  }
+
+  .crp-numbers {
+    gap: 3px;
+  }
+
+  .crp-box {
+    padding: 2px;
+  }
+
+  .crp-spot {
+    padding: 4px 2px 6px;
+    letter-spacing: 0.04em;
+  }
+
+  .crp-spot--place .crp-spot__hint {
+    display: none;
+  }
+
+  .crp-row--come,
+  .crp-row--line {
+    grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+  }
+
+  .crp-row--line .crp-spot--odds {
+    order: -1;
+  }
+
+  .crp-spot--big {
+    width: 44px;
+  }
+
+  .crp-actions {
+    grid-template-columns: 1fr auto;
+  }
+
+  .crp-roll {
+    grid-column: 1 / -1;
+  }
+
+  .crp-chipbtn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .crp-chart__row {
+    grid-template-columns: 1fr 56px;
+  }
+
+  .crp-chart__track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .crp-ways .crp-die {
+    width: 11px;
+    height: 11px;
+    padding: 1px;
+    border-radius: 2px;
+  }
+
+  .crp-ways__t {
+    font-size: 14px;
+  }
+
+  .crp-ways__n {
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crp-die,
+  .crp-result,
+  .crp-banner {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+  }
+}

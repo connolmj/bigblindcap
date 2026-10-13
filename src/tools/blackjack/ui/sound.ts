@@ -132,3 +132,23 @@ export function playWrong() {
   tone(c, t, 311.1, 0.18, 0.14, "triangle");
   tone(c, t + 0.14, 233.1, 0.34, 0.14, "triangle");
 }
+
+/** Dice rattling in the shooter's hand, then two quick knocks off the back wall. */
+export function playDice() {
+  const c = ready();
+  if (!c) return;
+  const t = c.currentTime + 0.005;
+  for (let i = 0; i < 5; i++) swish(c, t + i * 0.045 * jitter(0.3), 0.03, 2600 * jitter(0.2), 4200, 0.22);
+  thump(c, t + 0.3, 0.7 * jitter(0.2));
+  thump(c, t + 0.38 * jitter(0.05), 0.5 * jitter(0.2));
+  swish(c, t + 0.42, 0.06, 1800, 3600, 0.18);
+}
+
+/** A chip set down on the felt: a short, bright clack. */
+export function playChip() {
+  const c = ready();
+  if (!c) return;
+  const t = c.currentTime + 0.005;
+  swish(c, t, 0.025, 4200 * jitter(0.1), 7000, 0.3);
+  thump(c, t + 0.01, 0.35);
+}

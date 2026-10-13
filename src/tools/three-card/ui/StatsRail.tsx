@@ -13,10 +13,23 @@ interface Props {
   onToggleSound: () => void;
   /** Decimals for "Mistakes cost" (baccarat's mistakes are tiny, so it shows three). */
   costDigits?: number;
+  /** Shows Net and Mistakes cost in another unit (craps uses dollars). */
+  fmtMoney?: (n: number) => string;
+  /** What a played round is called — "hand" unless you say otherwise. */
+  roundNoun?: [string, string];
 }
 
 /** Same rail as the blackjack trainer, plus what your mistakes have cost on average. */
-export default function StatsRail({ stats, onChart, onSettings, sound, onToggleSound, costDigits = 2 }: Props) {
+export default function StatsRail({
+  stats,
+  onChart,
+  onSettings,
+  sound,
+  onToggleSound,
+  costDigits = 2,
+  fmtMoney,
+  roundNoun = ["hand", "hands"],
+}: Props) {
   const accuracy = pct(stats.correct, stats.decisions);
   return (
     <div className="rail">
@@ -46,15 +59,20 @@ export default function StatsRail({ stats, onChart, onSettings, sound, onToggleS
       <div className="rail__stat">
         <div className="eyebrow">Net</div>
         <div className={`rail__num ${stats.net > 0 ? "is-win" : stats.net < 0 ? "is-loss" : ""}`}>
-          {fmtNet(stats.net)}
+          {fmtMoney ? fmtMoney(stats.net) : fmtNet(stats.net)}
         </div>
         <div className="rail__meta">
-          {stats.hands} {stats.hands === 1 ? "hand" : "hands"}
+          {stats.hands} {stats.hands === 1 ? roundNoun[0] : roundNoun[1]}
         </div>
       </div>
-      <div className="rail__stat" title="Expected units given up by wrong moves, on average">
+      <div
+        className="rail__stat"
+        title={`Expected ${fmtMoney ? "money" : "units"} given up by wrong moves, on average`}
+      >
         <div className="eyebrow">Mistakes cost</div>
-        <div className={`rail__num ${stats.cost > 0 ? "is-loss" : ""}`}>{fmtEv(-stats.cost, costDigits)}</div>
+        <div className={`rail__num ${stats.cost > 0 ? "is-loss" : ""}`}>
+          {fmtMoney ? fmtMoney(-stats.cost) : fmtEv(-stats.cost, costDigits)}
+        </div>
         <div className="rail__meta">on average</div>
       </div>
       <div className="rail__tools">

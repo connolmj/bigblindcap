@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
 import "./tools.css";
 
-type Icon = "blackjack" | "counting" | "threecard" | "baccarat" | "survivor" | "squares" | "bankroll" | "runs";
+type Icon =
+  | "blackjack"
+  | "counting"
+  | "threecard"
+  | "baccarat"
+  | "craps"
+  | "survivor"
+  | "squares"
+  | "bankroll"
+  | "runs";
 
 interface Tool {
   name: string;
@@ -87,6 +96,17 @@ const GROUPS: { title: string; tools: Tool[] }[] = [
         to: "/tools/baccarat",
         icon: "baccarat",
         desc: "Pick the best bet for the table, call every third card like the dealer, and see the house edge on each bet.",
+      },
+    ],
+  },
+  {
+    title: "Craps",
+    tools: [
+      {
+        name: "Bets & Odds",
+        to: "/tools/craps",
+        icon: "craps",
+        desc: "Bet a full layout and roll the dice. Every bet is graded on its house edge, with the better bet and what it saves.",
       },
     ],
   },
@@ -186,6 +206,24 @@ function ToolIcon({ icon }: { icon: Icon }) {
           <text x="8.5" y="16.5" className="i-text">
             9
           </text>
+        </svg>
+      );
+    case "craps":
+      return (
+        <svg viewBox="0 0 28 28">
+          <rect x="3" y="9" width="11" height="11" rx="2" transform="rotate(-12 8.5 14.5)" className="i-card" />
+          <rect
+            x="14"
+            y="7"
+            width="11"
+            height="11"
+            rx="2"
+            transform="rotate(10 19.5 12.5)"
+            className="i-card i-card--top"
+          />
+          <circle cx="8.5" cy="14.5" r="1.3" className="i-ink" />
+          <circle cx="17" cy="10" r="1.1" className="i-ink" />
+          <circle cx="22" cy="15" r="1.1" className="i-ink" />
         </svg>
       );
     case "counting":

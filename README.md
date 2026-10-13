@@ -2,7 +2,7 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy*, *Three Card Poker Strategy*, *Baccarat Strategy*, the *NFL Survivor Grid*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
+**Tools** — *Level 1: Basic Blackjack Strategy*, *Three Card Poker Strategy*, *Baccarat Strategy*, *Craps Strategy*, the *NFL Survivor Grid*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
 **Learn**, plain-English guides (*Fundamentals → Sports Betting Basics*).
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
@@ -104,6 +104,17 @@ src/
     ui/                 Trainer, drawing-rules chart, the guide (rules, payouts, which bet);
                         reuses blackjack's cards/modal/sounds/styles and Three Card Poker's
                         stats bar and guide styles
+
+  tools/craps/
+    engine/             Pure TypeScript, its own dice engine
+      dice.ts           Two dice, the 36 rolls, ways to make each total
+      bets.ts           Every bet: outcome() per roll, exact house edges, odds limits
+      grade.ts          Good bet = under 2% edge; the better bet and what the gap costs
+      table.ts          Place chips → roll → settle, move Come bets, set/clear the point
+      explain.ts        Names, payouts and the "why" for every bet
+    ui/                 Clickable felt with animated dice, house-edge chart, the guide
+                        (rules, dice odds, every bet priced, strategy); reuses the shared
+                        stats bar, modal, sounds and table themes
 
 `npm run check-three-card` checks the Q-6-4 rule against every possible deal (~10 s) and prints
 the house edges written into `paytable.ts`.
