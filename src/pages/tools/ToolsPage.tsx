@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./tools.css";
 
-type Icon = "blackjack" | "counting" | "survivor" | "squares" | "bankroll" | "runs";
+type Icon = "blackjack" | "counting" | "threecard" | "survivor" | "squares" | "bankroll" | "runs";
 
 interface Tool {
   name: string;
@@ -65,6 +65,17 @@ const GROUPS: { title: string; tools: Tool[] }[] = [
         name: "Card Counting",
         icon: "counting",
         desc: "Track the shoe and adjust your play as cards come out.",
+      },
+    ],
+  },
+  {
+    title: "Three Card Poker",
+    tools: [
+      {
+        name: "Play or Fold Strategy",
+        to: "/tools/three-card-poker",
+        icon: "threecard",
+        desc: "Practice the one decision in the game, see what every hand is worth, and learn the payouts.",
       },
     ],
   },
@@ -137,6 +148,23 @@ function ToolIcon({ icon }: { icon: Icon }) {
           <text x="14" y="16" className="i-text">
             A
           </text>
+        </svg>
+      );
+    case "threecard":
+      return (
+        <svg viewBox="0 0 28 28">
+          {[-14, 0, 14].map((r, i) => (
+            <rect
+              key={r}
+              x="10"
+              y="6"
+              width="9"
+              height="13"
+              rx="1.5"
+              transform={`rotate(${r} 14 22)`}
+              className={i === 2 ? "i-card i-card--top" : "i-card"}
+            />
+          ))}
         </svg>
       );
     case "counting":

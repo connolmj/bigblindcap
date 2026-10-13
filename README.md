@@ -2,7 +2,7 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy*, the *NFL Survivor Grid*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
+**Tools** — *Level 1: Basic Blackjack Strategy*, *Three Card Poker Strategy*, the *NFL Survivor Grid*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
 **Learn**, plain-English guides (*Fundamentals → Sports Betting Basics*).
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
@@ -81,6 +81,20 @@ src/
     ui/                 React components + blackjack.css
       useTrainer.ts     The one hook that connects the engine to React
 ```
+
+  tools/three-card/
+    engine/             Pure TypeScript, same split as blackjack (and reuses its cards.ts)
+      hand.ts           3-card rankings (straight beats flush), dealer qualifying
+      paytable.ts       Ante bonus, Pair Plus tables, exact hand counts, house edges
+      strategy.ts       Q-6-4 rule + analyze(): exact Play vs Fold value vs all 18,424 dealer hands
+      explain.ts        The "why" text for every decision
+      round.ts          Deal → play/fold → dealer reveal → settle
+      scenario.ts       "Close calls" dealing vs. a real deck
+    ui/                 Trainer, strategy chart, the guide (rules, payouts, why Q-6-4);
+                        reuses blackjack's PlayingCard, Modal, sounds, storage and blackjack.css
+
+`npm run check-three-card` checks the Q-6-4 rule against every possible deal (~10 s) and prints
+the house edges written into `paytable.ts`.
 
 The engine/UI split is deliberate: Level 2 (card counting) can reuse the engine
 with a persistent shoe instead of a fresh one each hand.

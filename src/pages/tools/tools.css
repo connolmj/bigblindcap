@@ -172,3 +172,7 @@ a.tool-row:hover .tool-row__go {
 .i-heat-3 {
   fill: oklch(0.55 0.11 150);
 }
+
+.i-card--top {
+  fill: var(--ink);
+}

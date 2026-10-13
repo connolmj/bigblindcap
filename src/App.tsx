@@ -5,6 +5,7 @@ import SportsPage from "./pages/sports/SportsPage";
 import PortfolioPage from "./pages/portfolio/PortfolioPage";
 import ToolsPage from "./pages/tools/ToolsPage";
 import BlackjackPage from "./pages/tools/BlackjackPage";
+import ThreeCardPokerPage from "./pages/tools/ThreeCardPokerPage";
 import SurvivorPage from "./pages/tools/SurvivorPage";
 import BankrollPage from "./pages/tools/BankrollPage";
 import SquaresPage from "./pages/tools/SquaresPage";
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="equities" element={<Navigate to="/portfolio" replace />} />
         <Route path="tools" element={<ToolsPage />} />
         <Route path="tools/blackjack" element={<BlackjackPage />} />
+        <Route path="tools/three-card-poker" element={<ThreeCardPokerPage />} />
         <Route path="tools/survivor" element={<SurvivorPage />} />
         <Route path="tools/bankroll" element={<BankrollPage />} />
         <Route path="tools/squares" element={<SquaresPage />} />

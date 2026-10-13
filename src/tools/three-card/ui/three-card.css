@@ -1,0 +1,608 @@
+/* =====================================================================
+   Three Card Poker trainer. Built on the blackjack trainer's table, cards,
+   feedback, chart and settings styles (blackjack.css); this file adds the
+   Play / Fold colours, the betting circles, the "why" panel and the guide.
+   ===================================================================== */
+
+.tcp {
+  --play: oklch(0.56 0.13 155);
+  --fold: oklch(0.6 0.16 32);
+  --dealer-miss: oklch(0.76 0.15 90);
+  --tie: oklch(0.8 0.01 260);
+}
+
+/* ---------- Colours for the two moves ---------- */
+
+.actions__btn--play,
+.chip--play,
+.chart__cell--play {
+  --tone: var(--play);
+}
+
+.actions__btn--fold,
+.chip--fold,
+.chart__cell--fold {
+  --tone: var(--fold);
+}
+
+.tcp-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* ---------- Table ---------- */
+
+.tcp-cards .pcard + .pcard {
+  margin-left: calc(var(--card-w) * 0.12);
+}
+
+.tcp-player {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.tcp-spots {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.tcp-spot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 64px;
+}
+
+.tcp-spot__ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid var(--felt-soft);
+  border-radius: 50%;
+}
+
+.tcp-spot__ring.is-empty {
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+.tcp-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px dashed oklch(1 0 0 / 0.85);
+  background: oklch(0.45 0.13 255);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 2px 4px oklch(0 0 0 / 0.35);
+  animation: pop 0.3s both;
+}
+
+.tcp-spot__label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--felt-soft);
+}
+
+.tcp-spot__result,
+.tcp-spot__note {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--paper);
+  color: var(--ink);
+  animation: pop 0.3s both;
+}
+
+.tcp-spot__note {
+  background: var(--felt-pill);
+  color: var(--felt-soft);
+  font-weight: 600;
+  animation: none;
+}
+
+.tcp-spot__result small {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.tcp-spot.is-win .tcp-spot__result {
+  background: var(--accent);
+  color: #fff;
+}
+
+.tcp-spot.is-lose .tcp-spot__result {
+  background: var(--loss);
+  color: #fff;
+}
+
+.tcp-spot.is-lose .tcp-chip {
+  opacity: 0.35;
+}
+
+/* ---------- The "why": dealer's hands and Play vs Fold ---------- */
+
+.tcp-why {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px 28px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.tcp-why__block .eyebrow {
+  margin-bottom: 8px;
+}
+
+.tcp-split {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.tcp-split__seg {
+  flex-basis: 0;
+  min-width: 2px;
+}
+
+.tcp-split__seg.is-fails,
+.tcp-split__dot.is-fails {
+  background: var(--dealer-miss);
+}
+.tcp-split__seg.is-win,
+.tcp-split__dot.is-win {
+  background: var(--play);
+}
+.tcp-split__seg.is-tie,
+.tcp-split__dot.is-tie {
+  background: var(--tie);
+}
+.tcp-split__seg.is-lose,
+.tcp-split__dot.is-lose {
+  background: var(--fold);
+}
+
+.tcp-split__legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 12px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tcp-split__legend b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.tcp-split__dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+
+.tcp-split__pays {
+  margin-left: 2px;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.tcp-ev {
+  display: grid;
+  gap: 6px;
+}
+
+.tcp-ev__row {
+  display: grid;
+  grid-template-columns: 38px 1fr 64px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tcp-ev__row.is-best {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.tcp-ev__track {
+  position: relative;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--rule-soft);
+}
+
+.tcp-ev__zero {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: 50%;
+  width: 1px;
+  background: var(--muted);
+}
+
+.tcp-ev__bar {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 3px;
+  background: var(--rule);
+}
+
+.tcp-ev__row.is-best .tcp-ev__bar {
+  background: var(--accent);
+}
+
+.tcp-ev__num {
+  text-align: right;
+}
+
+.tcp-why__math {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ---------- Strategy chart ---------- */
+
+.tcp-chart__rule {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.tcp-ladder {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tcp-ladder__row {
+  display: grid;
+  grid-template-columns: 130px 72px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 6px;
+  border-bottom: 1px solid var(--rule-soft);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.tcp-ladder__row .chip {
+  justify-self: start;
+}
+
+.tcp-ladder__row.is-marked {
+  background: #fff;
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.tcp-ladder__name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tcp-ladder__note {
+  color: var(--muted);
+}
+
+.tcp-ladder__mixed {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--play) 22%, #fff) 50%,
+    color-mix(in oklch, var(--fold) 22%, #fff) 50%
+  );
+  color: var(--ink);
+}
+
+.tcp-grid__blank {
+  background: transparent;
+}
+
+/* ---------- Progress ---------- */
+
+.tcp-progress__row {
+  grid-template-columns: 120px 1fr 40px;
+}
+
+/* ---------- Guide: how to play, payouts, rankings, why ---------- */
+
+.tcp-guide {
+  margin-top: 34px;
+}
+
+.tcp-guide__toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding: 12px 0 20px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+}
+
+.tcp-guide__toc a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.tcp-guide__toc-n {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tcp-guide__section {
+  padding: 18px 0 30px;
+  border-top: 2px solid var(--ink);
+  scroll-margin-top: 12px;
+}
+
+.tcp-guide__h2 {
+  margin: 6px 0 12px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(22px, 4vw, 28px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.tcp-guide__h3 {
+  margin: 22px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tcp-guide__p {
+  max-width: 640px;
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.tcp-guide__p b,
+.tcp-steps b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.tcp-guide__note {
+  max-width: 640px;
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.tcp-steps {
+  max-width: 640px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.tcp-steps li {
+  position: relative;
+  padding: 9px 0 9px 36px;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 15px;
+  line-height: 1.5;
+  counter-increment: step;
+}
+
+.tcp-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tcp-table-wrap {
+  max-width: 640px;
+  overflow-x: auto;
+}
+
+.tcp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tcp-table th,
+.tcp-table td {
+  padding: 7px 10px 7px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tcp-table thead th {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom-color: var(--ink);
+}
+
+.tcp-table tbody th {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tcp-table td.is-win {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tcp-table td.is-lose {
+  color: var(--loss);
+}
+
+.tcp-table tfoot th,
+.tcp-table tfoot td {
+  border-bottom: none;
+  border-top: 1px solid var(--ink);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tcp-table tr.is-best th,
+.tcp-table tr.is-best td {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tcp-example {
+  letter-spacing: 0.04em;
+}
+
+/* "Why Q-6-4" ladder: playing's average result per hand, against folding's −1 */
+
+.tcp-ladder-ev {
+  max-width: 640px;
+  margin: 18px 0 6px;
+}
+
+.tcp-ladder-ev__head,
+.tcp-ladder-ev__row {
+  display: grid;
+  grid-template-columns: 64px 1fr 70px;
+  align-items: center;
+  gap: 12px;
+}
+
+.tcp-ladder-ev__head {
+  padding-bottom: 6px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--ink);
+}
+
+.tcp-ladder-ev__axis {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tcp-ladder-ev__head > :last-child,
+.tcp-ladder-ev__num {
+  text-align: right;
+}
+
+.tcp-ladder-ev__row {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 13px;
+}
+
+.tcp-ladder-ev__hand {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tcp-ladder-ev__track {
+  position: relative;
+  height: 16px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--fold) 10%, transparent),
+    color-mix(in oklch, var(--play) 12%, transparent)
+  );
+  border-radius: 4px;
+}
+
+.tcp-ladder-ev__fold {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--ink);
+}
+
+.tcp-ladder-ev__dot {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--fold);
+  box-shadow: 0 0 0 2px var(--paper);
+}
+
+.tcp-ladder-ev__row.is-play .tcp-ladder-ev__dot {
+  background: var(--play);
+}
+
+.tcp-ladder-ev__row.is-play .tcp-ladder-ev__num {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 560px) {
+  .tcp-spots {
+    gap: 8px;
+  }
+
+  .tcp-why {
+    grid-template-columns: 1fr;
+  }
+
+  .tcp-ladder__row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .tcp-ladder__note {
+    grid-column: 1 / -1;
+  }
+
+  .tcp-guide__p,
+  .tcp-steps li {
+    font-size: 14px;
+  }
+
+  .tcp-ladder-ev__head .tcp-ladder-ev__axis span:last-child {
+    text-align: right;
+  }
+}
