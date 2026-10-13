@@ -44,27 +44,6 @@ export default function SettingsPanel({ settings, onChange, onResetStats }: Prop
       </fieldset>
 
       <fieldset className="settings__group">
-        <legend className="eyebrow">Which hands to deal</legend>
-        <div className="settings__options">
-          <Option
-            name="deal"
-            checked={settings.dealMode === "focus"}
-            onSelect={() => onChange({ dealMode: "focus" })}
-            title="Close calls"
-            desc="Lots of Queen-high, plus Jack- and King-high — the hands near the line."
-          />
-          <Option
-            name="deal"
-            checked={settings.dealMode === "realistic"}
-            onSelect={() => onChange({ dealMode: "realistic" })}
-            title="Real deck"
-            desc="Hands come up as often as they would at the table."
-          />
-        </div>
-        <p className="settings__note">Applies from the next hand.</p>
-      </fieldset>
-
-      <fieldset className="settings__group">
         <legend className="eyebrow">Pair Plus side bet</legend>
         <div className="settings__options">
           {(Object.keys(PAIR_PLUS) as PairPlusTable[]).map((t) => (
