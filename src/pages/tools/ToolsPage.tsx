@@ -12,7 +12,8 @@ interface Tool {
 }
 
 interface Group {
-  title: string;
+  /** Sub-heading inside a category; leave out for a plain list. */
+  title?: string;
   tools: Tool[];
 }
 
@@ -80,37 +81,27 @@ const CATEGORIES: { id: string; title: string; blurb: string; groups: Group[] }[
     blurb: "Drills for table games, with the right play and the reason for it.",
     groups: [
       {
-        title: "Blackjack",
+        // One list, no sub-headings: each tool's name says which game it's for.
         tools: [
           {
-            name: "Basic Strategy",
+            name: "Blackjack Basic Strategy",
             to: "/tools/blackjack",
             icon: "blackjack",
             desc: "Play hands and learn the right move — hit, stand, double or split — with the reason why.",
           },
           {
-            name: "Card Counting",
+            name: "Blackjack Card Counting",
             icon: "counting",
             desc: "Track the shoe and adjust your play as cards come out.",
           },
-        ],
-      },
-      {
-        title: "Three Card Poker",
-        tools: [
           {
-            name: "Play or Fold Strategy",
+            name: "Three Card Poker Strategy",
             to: "/tools/three-card-poker",
             icon: "threecard",
-            desc: "Practice the one decision in the game, see what every hand is worth, and learn the payouts.",
+            desc: "Practice the one decision in the game — play or fold — see what every hand is worth, and learn the payouts.",
           },
-        ],
-      },
-      {
-        title: "Baccarat",
-        tools: [
           {
-            name: "Bets & Drawing Rules",
+            name: "Baccarat Strategy",
             to: "/tools/baccarat",
             icon: "baccarat",
             desc: "Pick the best bet for the table, call every third card like the dealer, and see the house edge on each bet.",
@@ -142,9 +133,9 @@ export default function ToolsPage() {
         <section key={c.id} id={c.id} className="tools__category">
           <h2 className="tools__category-title">{c.title}</h2>
           <p className="tools__category-blurb">{c.blurb}</p>
-          {c.groups.map((g) => (
-            <section key={g.title} className="tools__group">
-              <h3 className="tools__group-title eyebrow">{g.title}</h3>
+          {c.groups.map((g, i) => (
+            <section key={g.title ?? i} className="tools__group">
+              {g.title && <h3 className="tools__group-title eyebrow">{g.title}</h3>}
               <ul className="tools__list">
                 {g.tools.map((t) => (
                   <li key={t.name}>
