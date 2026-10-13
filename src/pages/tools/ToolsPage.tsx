@@ -20,82 +20,102 @@ interface Tool {
   to?: string;
 }
 
-/** Add a tool by adding a row here — groups show in this order. */
-const GROUPS: { title: string; tools: Tool[] }[] = [
+interface Group {
+  /** Sub-heading inside a category; leave out for a plain list. */
+  title?: string;
+  tools: Tool[];
+}
+
+/**
+ * Add a tool by adding a row here. Categories show in this order, then the
+ * groups inside each one.
+ */
+const CATEGORIES: { id: string; title: string; blurb: string; groups: Group[] }[] = [
   {
-    title: "Betting",
-    tools: [
+    id: "general",
+    title: "General Betting",
+    blurb: "The math behind any bet: sizing, swings and staying in the game.",
+    groups: [
       {
-        name: "Bankroll Management",
-        to: "/tools/bankroll",
-        icon: "bankroll",
-        desc: "Thousands of simulated seasons at your win rate and bet size — how often a winner still ends down.",
+        title: "Bankroll",
+        tools: [
+          {
+            name: "Bankroll Management",
+            to: "/tools/bankroll",
+            icon: "bankroll",
+            desc: "Thousands of simulated seasons at your win rate and bet size — how often a winner still ends down.",
+          },
+        ],
       },
     ],
   },
   {
-    title: "NFL",
-    tools: [
+    id: "sports",
+    title: "Sports Betting",
+    blurb: "League-specific odds, pools and contests.",
+    groups: [
       {
-        name: "Survivor Grid",
-        to: "/tools/survivor",
-        icon: "survivor",
-        desc: "Every team's odds each week, pick popularity, future value and a season planner.",
+        title: "NFL",
+        tools: [
+          {
+            name: "Survivor Grid",
+            to: "/tools/survivor",
+            icon: "survivor",
+            desc: "Every team's odds each week, pick popularity, future value and a season planner.",
+          },
+          {
+            name: "Super Bowl Squares",
+            to: "/tools/squares",
+            icon: "squares",
+            desc: "How often every box has hit each quarter, and what yours is worth against what you paid.",
+          },
+        ],
       },
       {
-        name: "Super Bowl Squares",
-        to: "/tools/squares",
-        icon: "squares",
-        desc: "How often every box has hit each quarter, and what yours is worth against what you paid.",
-      },
-    ],
-  },
-  {
-    title: "MLB",
-    tools: [
-      {
-        name: "Run Scoring Odds",
-        to: "/tools/runs",
-        icon: "runs",
-        desc: "Chance a run scores, and runs expected, for every base-out situation since 2000.",
-      },
-    ],
-  },
-  {
-    title: "Blackjack",
-    tools: [
-      {
-        name: "Basic Strategy",
-        to: "/tools/blackjack",
-        icon: "blackjack",
-        desc: "Play hands and learn the right move — hit, stand, double or split — with the reason why.",
-      },
-      {
-        name: "Card Counting",
-        icon: "counting",
-        desc: "Track the shoe and adjust your play as cards come out.",
+        title: "MLB",
+        tools: [
+          {
+            name: "Run Scoring Odds",
+            to: "/tools/runs",
+            icon: "runs",
+            desc: "Chance a run scores, and runs expected, for every base-out situation since 2000.",
+          },
+        ],
       },
     ],
   },
   {
-    title: "Three Card Poker",
-    tools: [
+    id: "casino",
+    title: "Casino Games",
+    blurb: "Drills for table games, with the right play and the reason for it.",
+    groups: [
       {
-        name: "Play or Fold Strategy",
-        to: "/tools/three-card-poker",
-        icon: "threecard",
-        desc: "Practice the one decision in the game, see what every hand is worth, and learn the payouts.",
-      },
-    ],
-  },
-  {
-    title: "Baccarat",
-    tools: [
-      {
-        name: "Bets & Drawing Rules",
-        to: "/tools/baccarat",
-        icon: "baccarat",
-        desc: "Pick the best bet for the table, call every third card like the dealer, and see the house edge on each bet.",
+        // One list, no sub-headings: each tool's name says which game it's for.
+        tools: [
+          {
+            name: "Blackjack Basic Strategy",
+            to: "/tools/blackjack",
+            icon: "blackjack",
+            desc: "Play hands and learn the right move — hit, stand, double or split — with the reason why.",
+          },
+          {
+            name: "Blackjack Card Counting",
+            icon: "counting",
+            desc: "Track the shoe and adjust your play as cards come out.",
+          },
+          {
+            name: "Three Card Poker Strategy",
+            to: "/tools/three-card-poker",
+            icon: "threecard",
+            desc: "Practice the one decision in the game — play or fold — see what every hand is worth, and learn the payouts.",
+          },
+          {
+            name: "Baccarat Strategy",
+            to: "/tools/baccarat",
+            icon: "baccarat",
+            desc: "Pick the best bet for the table, call every third card like the dealer, and see the house edge on each bet.",
+          },
+        ],
       },
     ],
   },
@@ -121,16 +141,30 @@ export default function ToolsPage() {
         <p className="tools__lede">Free tools and drills for the math behind the bets. No sign-up.</p>
       </div>
 
-      {GROUPS.map((g) => (
-        <section key={g.title} className="tools__group">
-          <h2 className="tools__group-title eyebrow">{g.title}</h2>
-          <ul className="tools__list">
-            {g.tools.map((t) => (
-              <li key={t.name}>
-                <ToolRow tool={t} />
-              </li>
-            ))}
-          </ul>
+      <nav className="tools__jump" aria-label="Tool categories">
+        {CATEGORIES.map((c) => (
+          <a key={c.id} href={`#${c.id}`}>
+            {c.title}
+          </a>
+        ))}
+      </nav>
+
+      {CATEGORIES.map((c) => (
+        <section key={c.id} id={c.id} className="tools__category">
+          <h2 className="tools__category-title">{c.title}</h2>
+          <p className="tools__category-blurb">{c.blurb}</p>
+          {c.groups.map((g, i) => (
+            <section key={g.title ?? i} className="tools__group">
+              {g.title && <h3 className="tools__group-title eyebrow">{g.title}</h3>}
+              <ul className="tools__list">
+                {g.tools.map((t) => (
+                  <li key={t.name}>
+                    <ToolRow tool={t} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
         </section>
       ))}
     </div>

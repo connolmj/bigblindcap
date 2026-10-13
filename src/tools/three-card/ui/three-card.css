@@ -29,6 +29,21 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* ---------- Deal toggle (above the table) ---------- */
+
+.deal-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 0 0 12px;
+}
+
+.deal-toggle__desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
 /* ---------- Table ---------- */
 
 .tcp-cards .pcard + .pcard {

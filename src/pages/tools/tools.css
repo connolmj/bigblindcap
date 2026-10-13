@@ -16,6 +16,47 @@
   color: var(--muted);
 }
 
+/* ---------- Categories: General Betting, Sports Betting, Casino Games ---------- */
+
+.tools__jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: -6px 0 18px;
+  font-size: 13px;
+}
+
+.tools__jump a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
+.tools__jump a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tools__category {
+  padding: 16px 0 10px;
+  border-top: 2px solid var(--ink);
+  scroll-margin-top: 12px;
+}
+
+.tools__category-title {
+  margin: 0 0 4px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(22px, 4vw, 28px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.tools__category-blurb {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 /* ---------- The list: one row per tool, grouped ---------- */
 
 .tools__group {

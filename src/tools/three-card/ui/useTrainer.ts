@@ -46,6 +46,16 @@ export function useTrainer(): Trainer {
     }
   }, [round, roundId]);
 
+  // Switching which hands to deal takes effect at once if you haven't acted on this hand yet.
+  const lastMode = useRef(settings.dealMode);
+  useEffect(() => {
+    if (lastMode.current === settings.dealMode) return;
+    lastMode.current = settings.dealMode;
+    if (round.phase !== "decide") return;
+    setRound(deal(settings));
+    setRoundId((id) => id + 1);
+  }, [settings.dealMode]);
+
   // The dealer's cards turn over one at a time so you can watch.
   useEffect(() => {
     if (round.phase !== "reveal") return;
