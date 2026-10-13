@@ -5,6 +5,7 @@ import { setSoundEnabled, unlockAudio } from "../../blackjack/ui/sound";
 import type { HandValue } from "../engine/hand";
 import type { Action } from "../engine/strategy";
 import ActionBar from "./ActionBar";
+import DealToggle from "./DealToggle";
 import Feedback from "./Feedback";
 import Guide from "./Guide";
 import Progress from "./Progress";
@@ -105,6 +106,8 @@ export default function ThreeCardTrainer() {
           onSettings={() => setDialog("settings")}
         />
       </div>
+
+      <DealToggle value={settings.dealMode} onChange={(dealMode) => trainer.updateSettings({ dealMode })} />
 
       <Table key={trainer.roundId} round={round} theme={settings.theme} />
 
