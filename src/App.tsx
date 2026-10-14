@@ -17,6 +17,7 @@ const BankrollPage = lazy(() => import("./pages/tools/BankrollPage"));
 const SquaresPage = lazy(() => import("./pages/tools/SquaresPage"));
 const RunsPage = lazy(() => import("./pages/tools/RunsPage"));
 const NflNumbersPage = lazy(() => import("./pages/tools/NflNumbersPage"));
+const ShelfPage = lazy(() => import("./pages/shelf/ShelfPage"));
 const LearnPage = lazy(() => import("./pages/learn/LearnPage"));
 const SportsBettingBasicsPage = lazy(() => import("./pages/learn/SportsBettingBasicsPage"));
 
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="tools/squares" element={<SquaresPage />} />
         <Route path="tools/runs" element={<RunsPage />} />
         <Route path="tools/nfl-numbers" element={<NflNumbersPage />} />
+        <Route path="shelf" element={<ShelfPage />} />
         <Route path="learn" element={<LearnPage />} />
         <Route path="learn/fundamentals" element={<Navigate to="/learn" replace />} />
         <Route path="learn/fundamentals/sports-betting-basics" element={<SportsBettingBasicsPage />} />

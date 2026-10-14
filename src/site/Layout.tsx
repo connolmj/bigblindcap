@@ -9,6 +9,7 @@ const NAV = [
   { to: "/portfolio", label: "Portfolio", end: false },
   { to: "/tools", label: "Tools", end: false },
   { to: "/learn", label: "Learn", end: false },
+  { to: "/shelf", label: "Shelf", end: false },
 ];
 
 export default function Layout() {
