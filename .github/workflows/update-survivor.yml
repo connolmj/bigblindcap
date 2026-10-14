@@ -1,5 +1,6 @@
-# Refreshes the NFL Survivor Grid data (public/data/survivor.json) from nflverse.
-# If the numbers changed, commits the new file to main, and Cloudflare redeploys.
+# Refreshes the NFL Survivor Grid data (public/data/survivor.json) and the NFL Key Numbers
+# data (public/data/nfl-numbers.json) from nflverse.
+# If the numbers changed, commits the new files to main, and Cloudflare redeploys.
 name: Update survivor data
 
 on:
@@ -34,14 +35,17 @@ jobs:
       - name: Rebuild survivor data
         run: npx tsx scripts/update-survivor.ts
 
+      - name: Rebuild NFL key numbers data
+        run: npx tsx scripts/update-nfl-numbers.ts
+
       - name: Commit if changed
         run: |
-          if git diff --quiet -- public/data/survivor.json; then
+          if git diff --quiet -- public/data/survivor.json public/data/nfl-numbers.json; then
             echo "No changes to commit."
             exit 0
           fi
           git config user.name "survivor-data-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/survivor.json
+          git add public/data/survivor.json public/data/nfl-numbers.json
           git commit -m "Update survivor data ($(date -u +'%Y-%m-%d %H:%M UTC'))"
           git push
