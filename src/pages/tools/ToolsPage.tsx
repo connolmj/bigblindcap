@@ -10,7 +10,8 @@ type Icon =
   | "survivor"
   | "squares"
   | "bankroll"
-  | "runs";
+  | "runs"
+  | "numbers";
 
 interface Tool {
   name: string;
@@ -68,6 +69,12 @@ const CATEGORIES: { id: string; title: string; blurb: string; groups: Group[] }[
             to: "/tools/squares",
             icon: "squares",
             desc: "How often every box has hit each quarter, and what yours is worth against what you paid.",
+          },
+          {
+            name: "Key Numbers & Trends",
+            to: "/tools/nfl-numbers",
+            icon: "numbers",
+            desc: "How close games finish, how favorites and underdogs do at every spread, home field, totals, division games — and how it's all changed since 1999.",
           },
         ],
       },
@@ -302,6 +309,21 @@ function ToolIcon({ icon }: { icon: Icon }) {
         <svg viewBox="0 0 28 28">
           {[4, 8, 14, 18, 13, 7].map((h, i) => (
             <rect key={i} x={4 + i * 3.5} y={24 - h} width="2.6" height={h} className={i < 2 ? "i-loss" : "i-on"} />
+          ))}
+        </svg>
+      );
+    case "numbers":
+      return (
+        <svg viewBox="0 0 28 28">
+          {[5, 3, 15, 4, 6, 3, 10, 4].map((h, i) => (
+            <rect
+              key={i}
+              x={4 + i * 2.6}
+              y={23 - h}
+              width="2"
+              height={h}
+              className={i === 2 || i === 6 ? "i-ink" : "i-on"}
+            />
           ))}
         </svg>
       );
