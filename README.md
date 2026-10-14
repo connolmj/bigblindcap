@@ -3,7 +3,8 @@
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
 **Tools** — *Level 1: Basic Blackjack Strategy*, *Three Card Poker Strategy*, *Baccarat Strategy*, *Craps Strategy*, the *NFL Survivor Grid*, *NFL Key Numbers & Trends*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
-**Learn**, plain-English guides (*Fundamentals → Sports Betting Basics*).
+**Learn**, plain-English guides (*Fundamentals → Sports Betting Basics*), and
+**Shelf**, the books, videos and podcasts I recommend.
 
 Sports and Portfolio read live from the Google Sheet (tabs: picks, `Equities`,
 and optional `History`). Update the sheet and the site updates — no redeploy.
@@ -53,6 +54,7 @@ src/
   pages/portfolio/      Book, allocation donut + holdings, library (add PDFs here)
   pages/tools/          Tools index and page wrappers
   pages/learn/          Learn index (add a guide by adding a row) and page wrappers
+  pages/shelf/          Recommended books, videos and podcasts (add one by adding a row)
   learn/sports-betting/
     model/              American odds, vig/hold, parlay math (tested)
     ui/                 The Sports Betting Basics page and its charts
