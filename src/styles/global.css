@@ -60,12 +60,14 @@ button {
   white-space: nowrap;
 }
 
-/* Up / down colouring for numbers */
-.is-win {
+/* Up / down colouring for numbers. The doubled class outranks a page's own
+   one-class colour (.sports__big, .hold__ret…), whose stylesheet loads after
+   this one now that pages load on demand. */
+.is-win.is-win {
   color: var(--accent);
 }
 
-.is-loss {
+.is-loss.is-loss {
   color: var(--loss);
 }
 
