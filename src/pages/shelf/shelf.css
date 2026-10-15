@@ -59,3 +59,7 @@
   font-size: 13px;
   color: var(--muted);
 }
+
+.shelf__list a {
+  white-space: nowrap;
+}
