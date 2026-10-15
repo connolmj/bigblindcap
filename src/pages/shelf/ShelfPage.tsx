@@ -102,7 +102,7 @@ const VOICES: Voice[] = [
   {
     name: "Naval Ravikant",
     why: "Wealth, leverage, judgment and happiness.",
-    links: [{ label: "YouTube (from 1:23:46)", href: "https://www.youtube.com/watch?v=1-TZqOsVCNM&t=5026s" }],
+    links: [{ label: "YouTube", href: "https://www.youtube.com/watch?v=1-TZqOsVCNM" }],
   },
   {
     name: "Stanley Druckenmiller",
