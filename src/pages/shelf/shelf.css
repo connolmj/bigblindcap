@@ -1,52 +1,65 @@
-/* Shelf reuses the Tools list styles; these are the extras. */
+.shelf__intro {
+  padding: 26px 0 8px;
+}
 
-.shelf__cover {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 44px;
-  border-radius: 2px 4px 4px 2px;
-  border-left: 4px solid oklch(0.55 0.11 150);
-  background: var(--ink);
-  color: var(--paper);
+.shelf__title {
+  margin: 8px 0 8px;
   font-family: var(--font-serif);
-  font-size: 13px;
-  letter-spacing: 0.02em;
-}
-
-.shelf__author {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--muted);
-}
-
-.shelf__voice {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
-  padding: 12px 6px;
-}
-
-.shelf__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.shelf__link {
-  padding: 4px 9px;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: #fff;
-  font-size: 12px;
-  white-space: nowrap;
+  font-weight: 500;
+  font-size: clamp(26px, 5vw, 36px);
   color: var(--ink);
 }
 
-.shelf__link:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.shelf__lede {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.shelf__section {
+  padding-top: 18px;
+}
+
+.shelf__heading {
+  margin: 0 0 4px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.shelf__group {
+  margin: 14px 0 6px;
+}
+
+.shelf__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shelf__list li {
+  padding: 5px 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.shelf__name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shelf__by {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.shelf__why {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.shelf__list a {
+  white-space: nowrap;
 }
