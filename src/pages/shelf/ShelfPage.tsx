@@ -1,4 +1,3 @@
-import "../tools/tools.css";
 import "./shelf.css";
 
 interface Book {
@@ -103,7 +102,7 @@ const VOICES: Voice[] = [
   {
     name: "Naval Ravikant",
     why: "Wealth, leverage, judgment and happiness.",
-    links: [{ label: "YouTube · from 1:23:46", href: "https://www.youtube.com/watch?v=1-TZqOsVCNM&t=5026s" }],
+    links: [{ label: "YouTube (from 1:23:46)", href: "https://www.youtube.com/watch?v=1-TZqOsVCNM&t=5026s" }],
   },
   {
     name: "Stanley Druckenmiller",
@@ -127,50 +126,28 @@ const VOICES: Voice[] = [
   },
 ];
 
-/** Two-letter cover mark from the title, skipping a leading "The". */
-function initials(title: string) {
-  const words = title.replace(/^The\s+/i, "").split(/\s+/);
-  return (words[0][0] + (words[1]?.[0] ?? "")).toUpperCase();
-}
-
 export default function ShelfPage() {
   return (
-    <div className="tools shelf">
-      <div className="tools__intro">
+    <div className="shelf">
+      <div className="shelf__intro">
         <div className="eyebrow">Shelf</div>
-        <h1 className="tools__title">What shaped my thinking</h1>
-        <p className="tools__lede">The books, interviews and podcasts I recommend most. Added to as I go.</p>
+        <h1 className="shelf__title">What shaped my thinking</h1>
+        <p className="shelf__lede">The books, interviews and podcasts I recommend most. Added to as I go.</p>
       </div>
 
-      <nav className="tools__jump" aria-label="Sections">
-        <a href="#books">Books</a>
-        <a href="#watch">Watch &amp; listen</a>
-      </nav>
-
-      <section id="books" className="tools__category">
-        <h2 className="tools__category-title">Books</h2>
-        <p className="tools__category-blurb">The ones I'd hand you first.</p>
+      <section className="shelf__section">
+        <h2 className="shelf__heading">Books</h2>
         {BOOKS.map((g) => (
-          <div key={g.title} className="tools__group">
-            <h3 className="tools__group-title eyebrow">{g.title}</h3>
-            <ul className="tools__list">
+          <div key={g.title}>
+            <h3 className="shelf__group eyebrow">{g.title}</h3>
+            <ul className="shelf__list">
               {g.books.map((b) => (
                 <li key={b.title}>
-                  <a className="tool-row" href={b.href} target="_blank" rel="noreferrer">
-                    <span className="shelf__cover" aria-hidden="true">
-                      {initials(b.title)}
-                    </span>
-                    <span className="tool-row__text">
-                      <span className="tool-row__name">
-                        {b.title}
-                        <span className="shelf__author">{b.author}</span>
-                      </span>
-                      <span className="tool-row__desc">{b.why}</span>
-                    </span>
-                    <span className="tool-row__go" aria-hidden="true">
-                      ↗
-                    </span>
-                  </a>
+                  <a className="underlined" href={b.href} target="_blank" rel="noreferrer">
+                    {b.title}
+                  </a>{" "}
+                  <span className="shelf__by">by {b.author}</span>
+                  <span className="shelf__why">{b.why}</span>
                 </li>
               ))}
             </ul>
@@ -178,23 +155,21 @@ export default function ShelfPage() {
         ))}
       </section>
 
-      <section id="watch" className="tools__category">
-        <h2 className="tools__category-title">Watch &amp; listen</h2>
-        <p className="tools__category-blurb">Interviews and podcasts worth the time.</p>
-        <ul className="tools__list">
+      <section className="shelf__section">
+        <h2 className="shelf__heading">Watch &amp; listen</h2>
+        <ul className="shelf__list">
           {VOICES.map((v) => (
-            <li key={v.name} className="shelf__voice">
-              <span className="tool-row__text">
-                <span className="tool-row__name">{v.name}</span>
-                <span className="tool-row__desc">{v.why}</span>
-              </span>
-              <span className="shelf__links">
-                {v.links.map((l) => (
-                  <a key={l.href} className="shelf__link" href={l.href} target="_blank" rel="noreferrer">
-                    {l.label} ↗
+            <li key={v.name}>
+              <strong className="shelf__name">{v.name}</strong>
+              {v.links.map((l, i) => (
+                <span key={l.href}>
+                  {i === 0 ? " — " : " · "}
+                  <a className="underlined" href={l.href} target="_blank" rel="noreferrer">
+                    {l.label}
                   </a>
-                ))}
-              </span>
+                </span>
+              ))}
+              <span className="shelf__why">{v.why}</span>
             </li>
           ))}
         </ul>
