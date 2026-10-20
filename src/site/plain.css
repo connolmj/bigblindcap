@@ -1,8 +1,10 @@
-.shelf__intro {
+/* Simple list pages (Shelf, Tools): headings, linked names, one line of description. */
+
+.plain__intro {
   padding: 26px 0 8px;
 }
 
-.shelf__title {
+.plain__title {
   margin: 8px 0 8px;
   font-family: var(--font-serif);
   font-weight: 500;
@@ -10,17 +12,17 @@
   color: var(--ink);
 }
 
-.shelf__lede {
+.plain__lede {
   margin: 0;
   font-size: 14px;
   color: var(--muted);
 }
 
-.shelf__section {
+.plain__section {
   padding-top: 18px;
 }
 
-.shelf__heading {
+.plain__heading {
   margin: 0 0 4px;
   font-family: var(--font-serif);
   font-weight: 500;
@@ -28,38 +30,42 @@
   color: var(--ink);
 }
 
-.shelf__group {
+.plain__group {
   margin: 14px 0 6px;
 }
 
-.shelf__list {
+.plain__list {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.shelf__list li {
+.plain__list li {
   padding: 5px 0;
   font-size: 15px;
   line-height: 1.45;
 }
 
-.shelf__name {
+.plain__name {
   font-weight: 600;
   color: var(--ink);
 }
 
-.shelf__by {
+.plain__by {
   font-size: 13px;
   color: var(--muted);
 }
 
-.shelf__why {
+.plain__why {
   display: block;
   font-size: 13px;
   color: var(--muted);
 }
 
-.shelf__list a {
+.plain__list a {
   white-space: nowrap;
+}
+
+.plain__soon {
+  color: var(--muted);
 }

@@ -1,4 +1,4 @@
-import "./shelf.css";
+import "../../site/plain.css";
 
 interface Book {
   title: string;
@@ -128,26 +128,26 @@ const VOICES: Voice[] = [
 
 export default function ShelfPage() {
   return (
-    <div className="shelf">
-      <div className="shelf__intro">
+    <div className="plain">
+      <div className="plain__intro">
         <div className="eyebrow">Shelf</div>
-        <h1 className="shelf__title">What shaped my thinking</h1>
-        <p className="shelf__lede">The books, interviews and podcasts I recommend most. Added to as I go.</p>
+        <h1 className="plain__title">What shaped my thinking</h1>
+        <p className="plain__lede">The books, interviews and podcasts I recommend most. Added to as I go.</p>
       </div>
 
-      <section className="shelf__section">
-        <h2 className="shelf__heading">Books</h2>
+      <section className="plain__section">
+        <h2 className="plain__heading">Books</h2>
         {BOOKS.map((g) => (
           <div key={g.title}>
-            <h3 className="shelf__group eyebrow">{g.title}</h3>
-            <ul className="shelf__list">
+            <h3 className="plain__group eyebrow">{g.title}</h3>
+            <ul className="plain__list">
               {g.books.map((b) => (
                 <li key={b.title}>
                   <a className="underlined" href={b.href} target="_blank" rel="noreferrer">
                     {b.title}
                   </a>{" "}
-                  <span className="shelf__by">by {b.author}</span>
-                  <span className="shelf__why">{b.why}</span>
+                  <span className="plain__by">by {b.author}</span>
+                  <span className="plain__why">{b.why}</span>
                 </li>
               ))}
             </ul>
@@ -155,12 +155,12 @@ export default function ShelfPage() {
         ))}
       </section>
 
-      <section className="shelf__section">
-        <h2 className="shelf__heading">Watch &amp; listen</h2>
-        <ul className="shelf__list">
+      <section className="plain__section">
+        <h2 className="plain__heading">Watch &amp; listen</h2>
+        <ul className="plain__list">
           {VOICES.map((v) => (
             <li key={v.name}>
-              <strong className="shelf__name">{v.name}</strong>
+              <strong className="plain__name">{v.name}</strong>
               {v.links.map((l, i) => (
                 <span key={l.href}>
                   {i === 0 ? " — " : " · "}
@@ -169,7 +169,7 @@ export default function ShelfPage() {
                   </a>
                 </span>
               ))}
-              <span className="shelf__why">{v.why}</span>
+              <span className="plain__why">{v.why}</span>
             </li>
           ))}
         </ul>
