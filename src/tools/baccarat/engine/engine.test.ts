@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { seededRng } from "../../blackjack/engine/cards";
-import { drawGroup, whyBet, whyDraw } from "./explain";
+import { betNote, stepText, whyDraw } from "./explain";
 import { cardPoints, isNatural, total } from "./hand";
 import { parseCards as c } from "./notation";
 import { bestBet, betReturn, exactOdds, payout } from "./payouts";
-import { callDraw, currentSpot, placeBet, startRound } from "./round";
+import { currentSpot, drawStep, finish, placeBet, startRound } from "./round";
 import { bankerDraws, correctDraw, playerDraws } from "./rules";
-import { prepareShoe } from "./scenario";
 
 /** A shoe whose deal order is Player, Banker, Player, Banker, then the rest. */
 const shoe = (player: [string, string], banker: [string, string], ...rest: string[]) =>
@@ -90,19 +88,18 @@ describe("a round", () => {
     expect(r.natural).toBe(true);
     expect(r.winner).toBe("player");
     expect(r.net).toBe(1);
-    expect(r.decisions).toHaveLength(1);
+    expect(r.steps).toEqual([{ kind: "natural", side: "player", player: 9, banker: 7 }]);
   });
 
-  it("follows the real rule even when you call it wrong", () => {
-    // Player 2+3 = 5, Banker K+5 = 5. Player draws a 4 → 9; Banker 5 vs 4 draws.
+  it("plays each third card by the rule", () => {
+    // Player 2+3 = 5, Banker K+5 = 5. Player draws a 4 → 9; Banker 5 vs 4 draws a 3 → 8.
     let r = placeBet(startRound(shoe(["2", "3"], ["K", "5"], "4", "3"), "standard"), "banker");
-    expect(r.decisions[0]).toMatchObject({ kind: "bet", correct: true, cost: 0 });
     expect(currentSpot(r)).toEqual({ side: "player", total: 5, playerThird: null });
-    r = callDraw(r, "stand"); // wrong — the Player draws anyway
-    expect(r.decisions[1]).toMatchObject({ chosen: "stand", right: "draw", correct: false });
+    r = drawStep(r);
     expect(r.player).toHaveLength(3);
+    expect(r.steps[0]).toMatchObject({ kind: "draw", action: "draw", spot: { side: "player", total: 5 } });
     expect(currentSpot(r)).toEqual({ side: "banker", total: 5, playerThird: 4 });
-    r = callDraw(r, "draw");
+    r = drawStep(r);
     expect(r.banker).toHaveLength(3);
     expect(r.phase).toBe("settled");
     expect(total(r.player)).toBe(9);
@@ -110,10 +107,12 @@ describe("a round", () => {
     expect(r.net).toBe(-1);
   });
 
-  it("charges the edge difference for a worse bet", () => {
-    const r = placeBet(startRound(shoe(["2", "3"], ["K", "5"]), "standard"), "tie");
-    const d = r.decisions[0];
-    expect(d.kind === "bet" && d.cost).toBeCloseTo(0.1436 - 0.01058, 3);
+  it("stands when the rule says so", () => {
+    // Player 6 stands; Banker 5 with Player standing draws.
+    const r = finish(placeBet(startRound(shoe(["3", "3"], ["K", "5"], "2"), "standard"), "player"));
+    expect(r.steps.map((s) => s.kind === "draw" && s.action)).toEqual(["stand", "draw"]);
+    expect(r.player).toHaveLength(2);
+    expect(total(r.banker)).toBe(7);
   });
 });
 
@@ -122,19 +121,11 @@ describe("explanations", () => {
     expect(whyDraw({ side: "banker", total: 3, playerThird: 8 }, "stand")).toContain(
       "unless the Player's third card is an 8",
     );
-    expect(whyBet("player", "player", "none")).toContain("no-commission");
-    expect(drawGroup({ side: "banker", total: 6, playerThird: null })).toBe("bankerStood");
-  });
-});
-
-describe("prepareShoe", () => {
-  it("mostly skips naturals in tough-spots mode", () => {
-    const rng = seededRng(5);
-    let naturals = 0;
-    for (let i = 0; i < 300; i++) {
-      const [p1, b1, p2, b2] = prepareShoe("focus", rng);
-      if (isNatural([p1, p2]) || isNatural([b1, b2])) naturals++;
-    }
-    expect(naturals / 300).toBeLessThan(0.15); // ~34% from a real shoe
+    expect(betNote("player", "none")).toContain("lowest on this table");
+    expect(betNote("tie", "standard")).toContain("8 to 1");
+    expect(
+      stepText({ kind: "draw", spot: { side: "player", total: 4, playerThird: null }, action: "draw", card: c("K")[0] })
+        .title,
+    ).toBe("Player 4 — draws a K (counts 0)");
   });
 });

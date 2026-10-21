@@ -1,11 +1,12 @@
 /**
- * The "why" behind each call. Bet numbers come from exactOdds(); draw
- * reasons quote the rule and a way to remember it.
+ * The "why" behind each step of a hand. Bet numbers come from exactOdds();
+ * draw reasons quote the rule and a way to remember it.
  */
-import { BET_LABEL, betReturn, exactOdds, TIE_PAYS, type Bet, type Commission } from "./payouts";
+import type { Card } from "../../blackjack/engine/cards";
+import { cardPoints } from "./hand";
+import { BET_LABEL, bestBet, betReturn, exactOdds, TIE_PAYS, type Bet, type Commission } from "./payouts";
+import type { Step } from "./round";
 import type { DrawAction, DrawSpot } from "./rules";
-
-export const DRAW_LABEL: Record<DrawAction, string> = { draw: "Draw", stand: "Stand" };
 
 export const pct = (x: number, digits = 2) => `${(x * 100).toFixed(digits)}%`;
 
@@ -14,21 +15,6 @@ export function spotLabel(spot: DrawSpot): string {
   if (spot.side === "player") return `Player ${spot.total}`;
   if (spot.playerThird === null) return `Banker ${spot.total}, Player stood`;
   return `Banker ${spot.total} vs Player's 3rd card ${spot.playerThird}`;
-}
-
-/** What a draw call is filed under in the progress panel. */
-export type Group = "bet" | "player" | "bankerStood" | "bankerThird";
-
-export const GROUP_LABEL: Record<Group, string> = {
-  bet: "Choosing the bet",
-  player: "Player draws",
-  bankerStood: "Banker, Player stood",
-  bankerThird: "Banker vs 3rd card",
-};
-
-export function drawGroup(spot: DrawSpot): Group {
-  if (spot.side === "player") return "player";
-  return spot.playerThird === null ? "bankerStood" : "bankerThird";
 }
 
 export function whyDraw(spot: DrawSpot, right: DrawAction): string {
@@ -68,27 +54,48 @@ export const BANKER_HINT = "Banker 3: all but 8 · 4: 2–7 · 5: 4–7 · 6: 6�
 
 const pointWord = (v: number) => (v === 0 ? "a 0 (10 or picture card)" : v === 8 ? "an 8" : `a ${v}`);
 
-export function whyBet(chosen: Bet, best: Bet, commission: Commission): string {
+/** A neutral note on the bet you placed: what it pays, how often it wins, and its house edge here. */
+export function betNote(bet: Bet, commission: Commission): string {
   const o = exactOdds();
   const edge = (b: Bet) => pct(-betReturn(b, commission));
-  const lead = chosen === best ? `${BET_LABEL[best]} is the best bet here.` : `${BET_LABEL[best]} is the better bet.`;
+  const best = bestBet(commission);
+  if (bet === "tie") {
+    return (
+      `Tie pays ${TIE_PAYS} to 1 and comes in ${pct(o.tie, 1)} of the time, about once every ${Math.round(1 / o.tie)} hands. ` +
+      `That's a ${edge("tie")} house edge, more than ten times ${BET_LABEL[best]}'s ${edge(best)}.`
+    );
+  }
+  const wins = bet === "banker" ? o.banker : o.player;
+  const lowest =
+    bet === best ? " — the lowest on this table" : `, a little more than ${BET_LABEL[best]}'s ${edge(best)}`;
+  const pays =
+    bet === "player"
+      ? "pays 1 to 1"
+      : commission === "standard"
+        ? "pays 0.95 to 1 after the 5% commission"
+        : "pays 1 to 1, but a winning 6 pays half";
+  return `${BET_LABEL[bet]} wins ${pct(wins, 1)} of hands and ${pays}. House edge ${edge(bet)}${lowest}.`;
+}
 
-  if (chosen === "tie") {
-    return (
-      `Tie pays ${TIE_PAYS} to 1 but hits only ${pct(o.tie, 1)} of the time — fair odds would be about ${(1 / o.tie - 1).toFixed(1)} to 1. ` +
-      `That gap is a ${edge("tie")} house edge, more than ten times the main bets. ${lead}`
-    );
+/** One line for each step of the hand: what the rule said, and why. */
+export function stepText(step: Step): { title: string; why: string } {
+  if (step.kind === "natural") {
+    const who =
+      step.side === "both"
+        ? `Both hands have naturals, ${step.player} and ${step.banker}`
+        : step.side === "player"
+          ? `Player has a natural ${step.player}`
+          : `Banker has a natural ${step.banker}`;
+    return { title: `${who} — nobody draws.`, why: "An 8 or 9 on the first two cards ends the hand." };
   }
-  if (commission === "standard") {
-    return (
-      `${lead} The Banker wins ${pct(o.banker, 1)} of hands to the Player's ${pct(o.player, 1)}, because it draws last ` +
-      `and its rule depends on the Player's third card. The 5% commission takes back most of that edge, not all: ` +
-      `Banker costs ${edge("banker")} of each bet, Player ${edge("player")}.`
-    );
-  }
-  return (
-    `${lead} On a no-commission table, a Banker win with 6 pays only half — and that happens on ${pct(o.bankerSix, 1)} of hands. ` +
-    `That costs more than the 5% commission it replaces, so Banker's edge rises to ${edge("banker")} and ` +
-    `Player's ${edge("player")} is now the smaller one.`
-  );
+  const who = step.spot.side === "player" ? "Player" : "Banker";
+  const did = step.action === "draw" ? `draws ${cardWord(step.card)}` : "stands";
+  return { title: `${who} ${step.spot.total} — ${did}`, why: whyDraw(step.spot, step.action) };
+}
+
+/** "a 7", "an Ace", "a K (counts 0)" */
+function cardWord(card?: Card): string {
+  if (!card) return "";
+  const name = card.rank === "A" ? "an Ace" : card.rank === "8" ? "an 8" : `a ${card.rank}`;
+  return cardPoints(card) === 0 ? `${name} (counts 0)` : name;
 }

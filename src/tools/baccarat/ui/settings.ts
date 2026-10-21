@@ -1,12 +1,12 @@
-import type { TableTheme } from "../../blackjack/ui/settings";
+import type { Speed, TableTheme } from "../../blackjack/ui/settings";
 import type { Commission } from "../engine/payouts";
-import type { DealMode } from "../engine/scenario";
 
 export interface Settings {
   theme: TableTheme;
-  dealMode: DealMode;
   commission: Commission;
+  /** How fast the third cards come out. */
+  speed: Speed;
   sound: boolean;
 }
 
-export const DEFAULT_SETTINGS: Settings = { theme: "felt", dealMode: "focus", commission: "standard", sound: true };
+export const DEFAULT_SETTINGS: Settings = { theme: "felt", commission: "standard", speed: "normal", sound: true };
