@@ -14,9 +14,6 @@ import { EMPTY_STATS, recordHand, type Stats } from "./stats";
 const STATS_KEY = "bbc.baccarat.v2.stats";
 const SETTINGS_KEY = "bbc.baccarat.settings";
 
-/** Wait for the opening four cards to land before the first third-card rule plays. */
-const OPENING_DEAL = 800;
-
 export interface Trainer {
   round: RoundState;
   /** Increments every deal — used as a React key to reset animations. */
