@@ -43,7 +43,13 @@ export default function Feedback({ round, onShowChart }: Props) {
         {round.steps.map((s, i) => (
           <StepRow key={i} step={s} />
         ))}
-        {round.phase !== "settled" && <li className="bac-steps__row is-pending">Dealing…</li>}
+        {round.phase !== "settled" && (
+          <li className="bac-steps__row is-pending">
+            {round.phase === "playerDraw"
+              ? "Next: the Player's third-card rule…"
+              : "Next: the Banker's third-card rule…"}
+          </li>
+        )}
       </ol>
     </div>
   );
@@ -55,7 +61,8 @@ function StepRow({ step }: { step: Step }) {
   const showHint =
     step.kind === "draw" && step.spot.side === "banker" && step.spot.playerThird !== null && step.spot.total >= 3;
   return (
-    <li className={`bac-steps__row bac-steps__row--${side}`}>
+    // A natural is known on the deal; hold its line until the four cards have landed, with the result.
+    <li className={`bac-steps__row bac-steps__row--${side}${step.kind === "natural" ? " is-late" : ""}`}>
       <span className="bac-steps__title">{title}</span>
       <span className="bac-steps__why">
         {why}

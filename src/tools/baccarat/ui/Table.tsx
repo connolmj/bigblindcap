@@ -5,13 +5,13 @@ import type { TableTheme } from "../../blackjack/ui/settings";
 import { total } from "../engine/hand";
 import { BET_LABEL, type Bet } from "../engine/payouts";
 import type { RoundState } from "../engine/round";
+import { OPENING_CARD_GAP as DEAL_STEP } from "./settings";
 
 interface Props {
   round: RoundState;
   theme: TableTheme;
 }
 
-const DEAL_STEP = 160; // ms between cards on the opening deal
 const SPOTS: Bet[] = ["player", "tie", "banker"];
 
 export default function Table({ round, theme }: Props) {
@@ -107,7 +107,10 @@ function ResultBanner({ round }: { round: RoundState }) {
   if (round.winner === "banker" && round.bet === "banker" && net < 1)
     detail += round.commission === "standard" ? " Less 5% commission." : " A winning 6 pays half.";
   return (
-    <div className={`felt__banner is-${tone}${round.natural ? " bac-banner--late" : ""}`} role="status">
+    <div
+      className={`felt__banner is-${tone} ${round.natural ? "bac-banner--natural" : "bac-banner--late"}`}
+      role="status"
+    >
       <div className="felt__banner-title">{title}</div>
       <div className="felt__banner-detail">
         {detail.trim()} <strong>{fmtNet(net)}</strong>
