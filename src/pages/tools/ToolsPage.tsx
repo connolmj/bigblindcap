@@ -82,7 +82,8 @@ const CATEGORIES: { title: string; groups: Group[] }[] = [
           },
           {
             name: "Blackjack Card Counting",
-            desc: "Track the shoe and adjust your play as cards come out.",
+            to: "/tools/card-counting",
+            desc: "Keep the Hi-Lo count through a real shoe, bet off the true count, and learn the plays the count changes.",
           },
           {
             name: "Three Card Poker Strategy",
@@ -92,7 +93,7 @@ const CATEGORIES: { title: string; groups: Group[] }[] = [
           {
             name: "Baccarat Strategy",
             to: "/tools/baccarat",
-            desc: "Pick the best bet for the table, call every third card like the dealer, and see the house edge on each bet.",
+            desc: "Bet and play hands at an 8-deck table, with each bet's house edge and the drawing rule behind every third card.",
           },
           {
             name: "Craps Strategy",

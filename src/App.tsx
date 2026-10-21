@@ -9,6 +9,7 @@ const SportsPage = lazy(() => import("./pages/sports/SportsPage"));
 const PortfolioPage = lazy(() => import("./pages/portfolio/PortfolioPage"));
 const ToolsPage = lazy(() => import("./pages/tools/ToolsPage"));
 const BlackjackPage = lazy(() => import("./pages/tools/BlackjackPage"));
+const CardCountingPage = lazy(() => import("./pages/tools/CardCountingPage"));
 const ThreeCardPokerPage = lazy(() => import("./pages/tools/ThreeCardPokerPage"));
 const BaccaratPage = lazy(() => import("./pages/tools/BaccaratPage"));
 const CrapsPage = lazy(() => import("./pages/tools/CrapsPage"));
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="equities" element={<Navigate to="/portfolio" replace />} />
         <Route path="tools" element={<ToolsPage />} />
         <Route path="tools/blackjack" element={<BlackjackPage />} />
+        <Route path="tools/card-counting" element={<CardCountingPage />} />
         <Route path="tools/three-card-poker" element={<ThreeCardPokerPage />} />
         <Route path="tools/baccarat" element={<BaccaratPage />} />
         <Route path="tools/craps" element={<CrapsPage />} />
