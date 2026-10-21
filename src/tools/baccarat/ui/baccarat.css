@@ -84,8 +84,13 @@
   color: var(--felt-ink);
 }
 
+/* The result waits for the last card to land: the opening four on a natural, the third card otherwise. */
+.bac-banner--natural {
+  animation-delay: 1.9s;
+}
+
 .bac-banner--late {
-  animation-delay: 0.75s;
+  animation-delay: 0.6s;
 }
 
 .bac-spots {
@@ -231,6 +236,10 @@
 
 .bac-steps__row--banker {
   --tone: var(--banker);
+}
+
+.bac-steps__row.is-late {
+  animation-delay: 1.9s;
 }
 
 .bac-steps__row.is-pending {

@@ -3,20 +3,16 @@
  * Components read from it and call its functions; the rules live in ../engine.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DEALER_DELAY } from "../../blackjack/ui/settings";
 import { load, save } from "../../blackjack/ui/storage";
 import type { Bet } from "../engine/payouts";
 import { drawStep, finish, placeBet, startRound, type RoundState } from "../engine/round";
 import { prepareShoe } from "../engine/scenario";
-import { DEFAULT_SETTINGS, type Settings } from "./settings";
+import { DEFAULT_SETTINGS, OPENING_PAUSE, STEP_DELAY, type Settings } from "./settings";
 import { EMPTY_STATS, recordHand, type Stats } from "./stats";
 
 // v2: the trainer stopped grading draw calls, so the stats changed shape.
 const STATS_KEY = "bbc.baccarat.v2.stats";
 const SETTINGS_KEY = "bbc.baccarat.settings";
-
-/** Wait for the opening four cards to land before the first third-card rule plays. */
-const OPENING_DEAL = 800;
 
 export interface Trainer {
   round: RoundState;
@@ -60,11 +56,11 @@ export function useTrainer(): Trainer {
     );
   }, [settings.commission]);
 
-  // The third-card rules play out one at a time, like a dealer working the hand.
+  // The third-card rules play out one at a time, slowly enough to follow, like a dealer working the hand.
   useEffect(() => {
     if (!drawing(round)) return;
     const first = round.steps.length === 0;
-    const t = setTimeout(() => setRound(drawStep), DEALER_DELAY[settings.speed] + (first ? OPENING_DEAL : 0));
+    const t = setTimeout(() => setRound(drawStep), first ? OPENING_PAUSE : STEP_DELAY[settings.speed]);
     return () => clearTimeout(t);
   }, [round, settings.speed]);
 
