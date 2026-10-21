@@ -69,7 +69,7 @@ function HowToPlay() {
         </li>
         <li>
           <b>Third cards.</b> Otherwise the Player hand may take a third card, then the Banker hand. Nobody decides: the
-          dealer follows fixed rules (section 3). The trainer has you call each one so you learn them.
+          dealer follows fixed rules (section 3), and the table here shows you which one applied at each card.
         </li>
         <li>
           <b>Closest to 9 wins.</b> On a tie, Player and Banker bets push and Tie bets win.

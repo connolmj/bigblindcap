@@ -2,7 +2,7 @@
 
 The whole site as one React + TypeScript app: **Home** (total book), **Sports**
 (picks ledger), **Portfolio** (stocks, crypto & cash positions, research library) and
-**Tools** — *Level 1: Basic Blackjack Strategy*, *Three Card Poker Strategy*, *Baccarat Strategy*, *Craps Strategy*, the *NFL Survivor Grid*, *NFL Key Numbers & Trends*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
+**Tools** — *Level 1: Basic Blackjack Strategy*, *Level 2: Blackjack Card Counting*, *Three Card Poker Strategy*, *Baccarat Strategy*, *Craps Strategy*, the *NFL Survivor Grid*, *NFL Key Numbers & Trends*, *Bankroll Management*, *Super Bowl Squares* and *Run Scoring Odds* (MLB) — and
 **Learn**, plain-English guides (*Fundamentals → Sports Betting Basics*), and
 **Shelf**, the books, videos and podcasts I recommend.
 
@@ -73,6 +73,9 @@ src/
   tools/runs/
     model/              Retrosheet play parser → base-out run odds (tested)
     ui/                 The Run Scoring Odds page and its table
+  tools/counting/
+    engine/             Hi-Lo count, true count, bet ramp, count plays, a shoe that lasts many hands (tested)
+    ui/                 The Card Counting page (reuses the blackjack table, cards and engine)
   tools/blackjack/
     engine/             Pure TypeScript — no React. The rules of the game.
       rules.ts          Table rules (6 decks, S17, DAS, 3:2)
@@ -103,9 +106,9 @@ src/
       hand.ts           Card points, totals, naturals
       rules.ts          The drawing rules (tableau) for Player and Banker
       payouts.ts        Bets, commission rules, exact 8-deck odds and house edges
-      round.ts          Bet → deal → Player draw call → Banker draw call → settle
-      explain.ts        The "why" for each bet and draw call
-      scenario.ts       "Tough spots" dealing vs. a real shoe
+      round.ts          Bet → deal → Player's rule → Banker's rule → settle (the table plays the rules)
+      explain.ts        What each bet pays and costs, and which rule each third card followed
+      scenario.ts       A freshly shuffled 8-deck shoe each hand
     ui/                 Trainer, drawing-rules chart, the guide (rules, payouts, which bet);
                         reuses blackjack's cards/modal/sounds/styles and Three Card Poker's
                         stats bar and guide styles
@@ -124,8 +127,8 @@ src/
 `npm run check-three-card` checks the Q-6-4 rule against every possible deal (~10 s) and prints
 the house edges written into `paytable.ts`.
 
-The engine/UI split is deliberate: Level 2 (card counting) can reuse the engine
-with a persistent shoe instead of a fresh one each hand.
+The engine/UI split is deliberate: Level 2 (card counting, `tools/counting/`) reuses the
+blackjack engine with a shoe that lasts many hands and a count-aware strategy.
 
 ## NFL Survivor Grid data
 

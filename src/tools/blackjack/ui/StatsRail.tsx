@@ -2,7 +2,8 @@ import { fmtNet } from "./HandView";
 import { pct, type Stats } from "./stats";
 
 interface Props {
-  stats: Stats;
+  /** Any trainer's stats with these fields will do — card counting uses this rail too. */
+  stats: Pick<Stats, "decisions" | "correct" | "streak" | "bestStreak" | "hands" | "net">;
   onChart: () => void;
   onSettings: () => void;
   sound: boolean;
@@ -66,13 +67,13 @@ export default function StatsRail({ stats, onChart, onSettings, sound, onToggleS
   );
 }
 
-const ChartIcon = () => (
+export const ChartIcon = () => (
   <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
     <path d="M2 2h12v12H2zM2 6h12M2 10h12M6 2v12M10 2v12" fill="none" stroke="currentColor" strokeWidth="1.3" />
   </svg>
 );
 
-const GearIcon = () => (
+export const GearIcon = () => (
   <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
     <circle cx="8" cy="8" r="2.3" fill="none" stroke="currentColor" strokeWidth="1.3" />
     <path
@@ -84,7 +85,7 @@ const GearIcon = () => (
   </svg>
 );
 
-const SpeakerIcon = ({ on }: { on: boolean }) => (
+export const SpeakerIcon = ({ on }: { on: boolean }) => (
   <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
     <path d="M2.5 6h2.5l3.5-3v10l-3.5-3H2.5z" fill="currentColor" />
     {on ? (

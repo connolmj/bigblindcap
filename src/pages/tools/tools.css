@@ -16,48 +16,7 @@
   color: var(--muted);
 }
 
-/* ---------- Categories: General Betting, Sports Betting, Casino Games ---------- */
-
-.tools__jump {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 18px;
-  margin: -6px 0 18px;
-  font-size: 13px;
-}
-
-.tools__jump a {
-  color: var(--ink);
-  border-bottom: 1px solid var(--rule);
-}
-
-.tools__jump a:hover {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-
-.tools__category {
-  padding: 16px 0 10px;
-  border-top: 2px solid var(--ink);
-  scroll-margin-top: 12px;
-}
-
-.tools__category-title {
-  margin: 0 0 4px;
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: clamp(22px, 4vw, 28px);
-  line-height: 1.15;
-  color: var(--ink);
-}
-
-.tools__category-blurb {
-  margin: 0 0 16px;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* ---------- The list: one row per tool, grouped ---------- */
+/* ---------- The list: one row per guide, grouped (Learn) ---------- */
 
 .tools__group {
   padding-bottom: 22px;
@@ -90,23 +49,6 @@
 a.tool-row:hover {
   color: inherit;
   background: #fff;
-}
-
-.tool-row__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--rule);
-  border-radius: 9px;
-  background: #fff;
-}
-
-.tool-row__icon svg {
-  width: 28px;
-  height: 28px;
 }
 
 .tool-row__text {
@@ -155,65 +97,4 @@ a.tool-row:hover .tool-row__go {
 
 .tool-row.is-soon {
   opacity: 0.65;
-}
-
-/* ---------- Row icons ---------- */
-
-.i-on {
-  fill: oklch(0.55 0.11 150);
-}
-
-.i-off {
-  fill: var(--rule);
-}
-
-.i-ink {
-  fill: var(--ink);
-}
-
-.i-loss {
-  fill: oklch(0.6 0.15 25);
-}
-
-.i-base {
-  fill: #fff;
-  stroke: var(--muted);
-  stroke-width: 1;
-}
-
-.i-card {
-  fill: #fff;
-  stroke: var(--ink);
-  stroke-width: 1.2;
-}
-
-.i-text {
-  font: 700 10px var(--font-sans);
-  text-anchor: middle;
-  fill: var(--ink);
-}
-
-.i-text--muted {
-  font-size: 12px;
-  fill: var(--muted);
-}
-
-.i-heat-0 {
-  fill: var(--rule-soft);
-}
-
-.i-heat-1 {
-  fill: oklch(0.85 0.06 150);
-}
-
-.i-heat-2 {
-  fill: oklch(0.72 0.1 150);
-}
-
-.i-heat-3 {
-  fill: oklch(0.55 0.11 150);
-}
-
-.i-card--top {
-  fill: var(--ink);
 }

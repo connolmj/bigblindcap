@@ -10,7 +10,10 @@
 import { cardValue, type Card } from "./cards";
 import { handTotal, isNatural, isPair } from "./hand";
 import { RULES } from "./rules";
-import { recommend, type Action, type Recommendation } from "./strategy";
+import { recommend, type Action, type Recommendation, type Situation } from "./strategy";
+
+/** Picks the right play for a situation. Basic strategy unless you pass another (the card-counting trainer does). */
+export type Advisor = (s: Situation) => Recommendation;
 
 export type HandStatus = "playing" | "stood" | "bust";
 export type Outcome = "blackjack" | "win" | "push" | "lose";
@@ -62,21 +65,21 @@ function draw(state: RoundState): [Card, Card[]] {
   return [state.shoe[0], state.shoe.slice(1)];
 }
 
-function newHand(cards: Card[], fromSplit = false, splitAces = false): PlayerHand {
-  return { cards, bet: 1, doubled: false, fromSplit, splitAces, status: "playing" };
+function newHand(cards: Card[], bet: number, fromSplit = false, splitAces = false): PlayerHand {
+  return { cards, bet, doubled: false, fromSplit, splitAces, status: "playing" };
 }
 
 /**
  * Deal a new round from `shoe`, in real casino order: you, dealer up,
- * you, dealer hole. Then check for naturals.
+ * you, dealer hole. Then check for naturals. `bet` is the units wagered.
  */
-export function startRound(shoe: Card[]): RoundState {
+export function startRound(shoe: Card[], bet = 1): RoundState {
   const [p1, up, p2, hole, ...rest] = shoe;
   let state: RoundState = {
     shoe: rest,
     dealer: [up, hole],
     holeRevealed: false,
-    hands: [newHand([p1, p2])],
+    hands: [newHand([p1, p2], bet)],
     active: 0,
     phase: "player",
     decisions: [],
@@ -117,11 +120,11 @@ export function legalActions(state: RoundState): Record<Action, boolean> {
   return { hit: playing, stand: playing, double: canDouble(state), split: canSplit(state) };
 }
 
-/** What basic strategy says for the hand you're on right now. */
-export function currentRecommendation(state: RoundState): Recommendation | undefined {
+/** What basic strategy (or `advise`) says for the hand you're on right now. */
+export function currentRecommendation(state: RoundState, advise: Advisor = recommend): Recommendation | undefined {
   const hand = activeHand(state);
   if (!hand) return undefined;
-  return recommend({
+  return advise({
     cards: hand.cards,
     dealerUp: state.dealer[0],
     canDouble: canDouble(state),
@@ -129,12 +132,12 @@ export function currentRecommendation(state: RoundState): Recommendation | undef
   });
 }
 
-/** Take an action on the active hand. Grades it against basic strategy first. */
-export function applyAction(state: RoundState, action: Action): RoundState {
+/** Take an action on the active hand. Grades it against basic strategy (or `advise`) first. */
+export function applyAction(state: RoundState, action: Action, advise: Advisor = recommend): RoundState {
   const hand = activeHand(state);
   if (!hand || !legalActions(state)[action]) return state;
 
-  const recommendation = currentRecommendation(state)!;
+  const recommendation = currentRecommendation(state, advise)!;
   const decision: Decision = {
     handIndex: state.active,
     cards: hand.cards,
@@ -170,8 +173,8 @@ export function applyAction(state: RoundState, action: Action): RoundState {
       const aces = hand.cards[0].rank === "A";
       const [c1, shoe1] = draw(next);
       const [c2, shoe2] = draw({ ...next, shoe: shoe1 });
-      const first = newHand([hand.cards[0], c1], true, aces);
-      const second = newHand([hand.cards[1], c2], true, aces);
+      const first = newHand([hand.cards[0], c1], hand.bet, true, aces);
+      const second = newHand([hand.cards[1], c2], hand.bet, true, aces);
       // Split aces get one card each and are done. Any split hand that lands on 21 is done too.
       for (const h of [first, second]) {
         if (aces || handTotal(h.cards).total === 21) h.status = "stood";

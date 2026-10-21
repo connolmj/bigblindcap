@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { THEMES } from "../../blackjack/ui/settings";
+import { THEMES, type Speed } from "../../blackjack/ui/settings";
 import { betReturn, COMMISSION_NAME, type Commission } from "../engine/payouts";
 import type { Settings } from "./settings";
 
@@ -13,6 +13,12 @@ const COMMISSION_DESC: Record<Commission, string> = {
   standard: "Banker wins pay 0.95 to 1.",
   none: "Banker wins pay 1 to 1, except a winning 6 pays half.",
 };
+
+const SPEEDS: { id: Speed; label: string }[] = [
+  { id: "relaxed", label: "Relaxed" },
+  { id: "normal", label: "Normal" },
+  { id: "fast", label: "Fast" },
+];
 
 const edges = (c: Commission) =>
   `Banker ${(-betReturn("banker", c) * 100).toFixed(2)}% · Player ${(-betReturn("player", c) * 100).toFixed(2)}%`;
@@ -57,28 +63,23 @@ export default function SettingsPanel({ settings, onChange, onResetStats }: Prop
             />
           ))}
         </div>
-        <p className="settings__note">This changes which bet is best.</p>
+        <p className="settings__note">This changes which bet has the lowest house edge.</p>
       </fieldset>
 
       <fieldset className="settings__group">
-        <legend className="eyebrow">Which hands to deal</legend>
-        <div className="settings__options">
-          <Option
-            name="deal"
-            checked={settings.dealMode === "focus"}
-            onSelect={() => onChange({ dealMode: "focus" })}
-            title="Tough spots"
-            desc="Fewer naturals, more Banker 3–6 hands where the Player's third card decides."
-          />
-          <Option
-            name="deal"
-            checked={settings.dealMode === "realistic"}
-            onSelect={() => onChange({ dealMode: "realistic" })}
-            title="Real shoe"
-            desc="An 8-deck shoe — about a third of hands end in a natural."
-          />
+        <legend className="eyebrow">Dealing speed</legend>
+        <div className="segmented">
+          {SPEEDS.map((sp) => (
+            <button
+              key={sp.id}
+              className={settings.speed === sp.id ? "segmented__btn is-selected" : "segmented__btn"}
+              onClick={() => onChange({ speed: sp.id })}
+              aria-pressed={settings.speed === sp.id}
+            >
+              {sp.label}
+            </button>
+          ))}
         </div>
-        <p className="settings__note">Applies from the next hand.</p>
       </fieldset>
 
       <fieldset className="settings__group">
@@ -101,7 +102,7 @@ export default function SettingsPanel({ settings, onChange, onResetStats }: Prop
         <legend className="eyebrow">Your stats</legend>
         {confirming ? (
           <div className="settings__confirm">
-            <span>Reset streaks, accuracy and history?</span>
+            <span>Reset your results and the scoreboard?</span>
             <button
               className="btn btn--danger"
               onClick={() => {

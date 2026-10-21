@@ -3,17 +3,20 @@
  * Components read from it and call its functions; the rules live in ../engine.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { playCorrect, playWrong } from "../../blackjack/ui/sound";
+import { DEALER_DELAY } from "../../blackjack/ui/settings";
 import { load, save } from "../../blackjack/ui/storage";
 import type { Bet } from "../engine/payouts";
-import { callDraw, placeBet, startRound, type RoundState } from "../engine/round";
-import type { DrawAction } from "../engine/rules";
+import { drawStep, finish, placeBet, startRound, type RoundState } from "../engine/round";
 import { prepareShoe } from "../engine/scenario";
 import { DEFAULT_SETTINGS, type Settings } from "./settings";
-import { EMPTY_STATS, recordDecision, recordHand, type Stats } from "./stats";
+import { EMPTY_STATS, recordHand, type Stats } from "./stats";
 
-const STATS_KEY = "bbc.baccarat.stats";
+// v2: the trainer stopped grading draw calls, so the stats changed shape.
+const STATS_KEY = "bbc.baccarat.v2.stats";
 const SETTINGS_KEY = "bbc.baccarat.settings";
+
+/** Wait for the opening four cards to land before the first third-card rule plays. */
+const OPENING_DEAL = 800;
 
 export interface Trainer {
   round: RoundState;
@@ -22,13 +25,15 @@ export interface Trainer {
   stats: Stats;
   settings: Settings;
   bet: (bet: Bet) => void;
-  draw: (action: DrawAction) => void;
+  /** Play the rest of the hand now instead of waiting for each card. */
+  skip: () => void;
   nextHand: () => void;
   updateSettings: (patch: Partial<Settings>) => void;
   resetStats: () => void;
 }
 
-const deal = (s: Settings) => startRound(prepareShoe(s.dealMode), s.commission);
+const deal = (s: Settings) => startRound(prepareShoe(), s.commission);
+const drawing = (r: RoundState) => r.phase === "playerDraw" || r.phase === "bankerDraw";
 
 export function useTrainer(): Trainer {
   const [settings, setSettings] = useState<Settings>(() => load(SETTINGS_KEY, DEFAULT_SETTINGS));
@@ -44,7 +49,7 @@ export function useTrainer(): Trainer {
   useEffect(() => {
     if (round.phase === "settled" && recorded.current !== roundId) {
       recorded.current = roundId;
-      setStats((s) => recordHand(s, round.net ?? 0));
+      setStats((s) => recordHand(s, round.bet!, round.winner!, round.net ?? 0));
     }
   }, [round, roundId]);
 
@@ -55,27 +60,22 @@ export function useTrainer(): Trainer {
     );
   }, [settings.commission]);
 
-  const apply = useCallback((next: RoundState) => {
-    const decision = next.decisions[next.decisions.length - 1];
-    setRound(next);
-    setStats((s) => recordDecision(s, decision));
-    if (decision.correct) playCorrect();
-    else playWrong();
-  }, []);
+  // The third-card rules play out one at a time, like a dealer working the hand.
+  useEffect(() => {
+    if (!drawing(round)) return;
+    const first = round.steps.length === 0;
+    const t = setTimeout(() => setRound(drawStep), DEALER_DELAY[settings.speed] + (first ? OPENING_DEAL : 0));
+    return () => clearTimeout(t);
+  }, [round, settings.speed]);
 
   const bet = useCallback(
     (b: Bet) => {
-      if (round.phase === "bet") apply(placeBet(round, b));
+      if (round.phase === "bet") setRound(placeBet(round, b));
     },
-    [round, apply],
+    [round],
   );
 
-  const draw = useCallback(
-    (action: DrawAction) => {
-      if (round.phase === "playerDraw" || round.phase === "bankerDraw") apply(callDraw(round, action));
-    },
-    [round, apply],
-  );
+  const skip = useCallback(() => setRound((r) => (drawing(r) ? finish(r) : r)), []);
 
   const nextHand = useCallback(() => {
     if (round.phase !== "settled") return;
@@ -86,5 +86,5 @@ export function useTrainer(): Trainer {
   const updateSettings = useCallback((patch: Partial<Settings>) => setSettings((s) => ({ ...s, ...patch })), []);
   const resetStats = useCallback(() => setStats(EMPTY_STATS), []);
 
-  return { round, roundId, stats, settings, bet, draw, nextHand, updateSettings, resetStats };
+  return { round, roundId, stats, settings, bet, skip, nextHand, updateSettings, resetStats };
 }

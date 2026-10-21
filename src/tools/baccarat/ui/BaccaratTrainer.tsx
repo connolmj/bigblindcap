@@ -2,35 +2,31 @@ import { useEffect, useRef, useState } from "react";
 import "../../blackjack/ui/blackjack.css";
 import Modal from "../../blackjack/ui/Modal";
 import { setSoundEnabled, unlockAudio } from "../../blackjack/ui/sound";
-import StatsRail from "../../three-card/ui/StatsRail";
 import "../../three-card/ui/three-card.css";
 import type { Bet } from "../engine/payouts";
-import { currentSpot } from "../engine/round";
-import type { DrawAction, DrawSpot } from "../engine/rules";
+import type { DrawSpot } from "../engine/rules";
 import ActionBar from "./ActionBar";
 import Feedback from "./Feedback";
 import Guide from "./Guide";
 import Progress from "./Progress";
 import SettingsPanel from "./SettingsPanel";
+import StatsRail from "./StatsRail";
 import TableauChart from "./TableauChart";
 import Table from "./Table";
 import { useTrainer } from "./useTrainer";
 import "./baccarat.css";
 
 const KEY_TO_BET: Record<string, Bet> = { p: "player", b: "banker", t: "tie" };
-const KEY_TO_DRAW: Record<string, DrawAction> = { d: "draw", s: "stand" };
 
 export default function BaccaratTrainer() {
   const trainer = useTrainer();
   const { round, stats, settings } = trainer;
   const [dialog, setDialog] = useState<"chart" | "settings" | null>(null);
   const [chartSpot, setChartSpot] = useState<DrawSpot | undefined>();
-  const spot = currentSpot(round);
 
-  // Points the chart at your most recent draw call, even from an earlier hand —
-  // never the one you're on (no peeking!).
+  // Points the chart at the last third-card rule the table played.
   const lastCall = useRef<DrawSpot | undefined>(undefined);
-  const lastDraw = [...round.decisions].reverse().find((d) => d.kind === "draw");
+  const lastDraw = [...round.steps].reverse().find((s) => s.kind === "draw");
   if (lastDraw?.kind === "draw") lastCall.current = lastDraw.spot;
   const openChart = () => {
     setChartSpot(lastCall.current);
@@ -48,19 +44,19 @@ export default function BaccaratTrainer() {
     };
   }, []);
 
-  // After each call, make sure the result box is on screen — scrolling down
+  // As the hand plays out, keep the story box on screen — scrolling down
   // just enough, but never past the stats bar.
   const railRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const rail = railRef.current;
     const fb = feedbackRef.current;
-    if (!rail || !fb || round.decisions.length === 0) return;
+    if (!rail || !fb || round.phase === "bet") return;
     const overflow = fb.getBoundingClientRect().bottom + 12 - window.innerHeight;
     const room = rail.getBoundingClientRect().top - 8;
     const by = Math.min(overflow, room);
     if (by > 0) window.scrollBy({ top: by, behavior: "smooth" });
-  }, [round.decisions.length, round.phase]);
+  }, [round.steps.length, round.phase]);
 
   // Keyboard shortcuts. A ref keeps the listener pointed at the latest handlers.
   const handlers = useRef({ trainer, openChart, dialog });
@@ -76,12 +72,11 @@ export default function BaccaratTrainer() {
       const phase = trainer.round.phase;
       if (phase === "bet" && KEY_TO_BET[key]) {
         trainer.bet(KEY_TO_BET[key]);
-      } else if ((phase === "playerDraw" || phase === "bankerDraw") && KEY_TO_DRAW[key]) {
-        trainer.draw(KEY_TO_DRAW[key]);
-      } else if ((key === " " || key === "enter") && phase === "settled") {
+      } else if ((key === " " || key === "enter") && phase !== "bet") {
         if (target.closest("button")) return; // the focused button handles it
         e.preventDefault();
-        trainer.nextHand();
+        if (phase === "settled") trainer.nextHand();
+        else trainer.skip();
       } else if (key === "c") {
         openChart();
       } else if (key === "m") {
@@ -98,8 +93,8 @@ export default function BaccaratTrainer() {
         <div className="eyebrow">Tools · Baccarat</div>
         <h1 className="bj__title">Baccarat Strategy</h1>
         <p className="bj__lede">
-          Pick the right bet, then call every third card the way the dealer has to. After each call you'll see whether
-          it was right, and why.
+          Bet Player, Banker or Tie, then watch the hand play out. The dealer follows fixed drawing rules, and the table
+          shows you which one applied at each card.
         </p>
         <p className="bj__rules">
           8 decks · {settings.commission === "standard" ? "5% commission on Banker" : "No commission · Banker 6 pays ½"}{" "}
@@ -110,7 +105,6 @@ export default function BaccaratTrainer() {
       <div ref={railRef}>
         <StatsRail
           stats={stats}
-          costDigits={3}
           sound={settings.sound}
           onToggleSound={() => trainer.updateSettings({ sound: !settings.sound })}
           onChart={openChart}
@@ -122,10 +116,9 @@ export default function BaccaratTrainer() {
 
       <ActionBar
         phase={round.phase}
-        spot={spot}
         commission={round.commission}
         onBet={trainer.bet}
-        onDraw={trainer.draw}
+        onSkip={trainer.skip}
         onNext={trainer.nextHand}
       />
 
@@ -135,9 +128,8 @@ export default function BaccaratTrainer() {
 
       <p className="bj__keys">
         Keyboard: <span className="kbd">P</span> Player · <span className="kbd">B</span> Banker ·{" "}
-        <span className="kbd">T</span> Tie · <span className="kbd">D</span> draw · <span className="kbd">S</span> stand
-        · <span className="kbd">Space</span> next hand · <span className="kbd">C</span> chart ·{" "}
-        <span className="kbd">M</span> sound
+        <span className="kbd">T</span> Tie · <span className="kbd">Space</span> skip ahead / next hand ·{" "}
+        <span className="kbd">C</span> chart · <span className="kbd">M</span> sound
       </p>
 
       <Progress stats={stats} />

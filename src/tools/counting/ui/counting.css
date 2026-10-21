@@ -1,0 +1,323 @@
+/* =====================================================================
+   Card counting trainer (Level 2). Built on the blackjack trainer's styles
+   (table, cards, buttons, feedback, chart, settings) and Three Card Poker's
+   (the guide). This file adds the shoe bar, the count box and the bets.
+   ===================================================================== */
+
+.cc {
+  --up: oklch(0.56 0.13 155);
+  --down: oklch(0.6 0.16 32);
+}
+
+/* ---------- Shoe bar, above the table ---------- */
+
+.cc-shoe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 4px 0 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cc-shoe__bar {
+  position: relative;
+  flex: 0 1 220px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--rule-soft);
+}
+
+.cc-shoe__dealt {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 4px;
+  background: var(--ink);
+  transition: width 0.3s;
+}
+
+.cc-shoe__cut {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 3px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--down);
+}
+
+.cc-shoe__text b {
+  color: var(--ink);
+}
+
+/* ---------- Table extras ---------- */
+
+.cc-table {
+  position: relative;
+}
+
+.cc-place {
+  position: relative;
+  z-index: 2;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--felt-pill);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--felt-ink);
+}
+
+/* Training wheels: the count, pinned to the table's top corner. */
+.cc-live {
+  position: absolute;
+  top: 44px;
+  right: 16px;
+  z-index: 3;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: 0 4px 12px -6px oklch(0 0 0 / 0.5);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cc-live b {
+  color: var(--ink);
+}
+
+/* ---------- Count box and bets ---------- */
+
+.cc-ask {
+  margin: 12px 0 10px;
+}
+
+.cc-ask__q {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 15px;
+  text-align: center;
+  color: var(--ink);
+}
+
+.cc-count-form {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cc-step,
+.cc-count-input {
+  height: 54px;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius);
+  background: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cc-step {
+  width: 54px;
+  cursor: pointer;
+}
+
+.cc-step:hover {
+  border-color: var(--ink);
+}
+
+.cc-count-input {
+  width: 92px;
+  text-align: center;
+  font-family: inherit;
+}
+
+.cc-count-input:focus {
+  outline: 3px solid color-mix(in oklch, var(--ink) 25%, transparent);
+  border-color: var(--ink);
+}
+
+.cc-check {
+  flex: 0 1 220px;
+  padding: 0 18px;
+  animation: none;
+}
+
+.cc-bets {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 0;
+}
+
+.cc-bet {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding: 14px 8px;
+}
+
+/* ---------- Feedback extras ---------- */
+
+.cc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.cc-tag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.cc-mini {
+  min-width: 34px;
+  padding: 4px 5px;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--ink);
+}
+
+.cc-mini.is-red {
+  color: oklch(0.52 0.19 25);
+}
+
+.cc-tag__n {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cc-tag__n--up {
+  color: var(--up);
+}
+
+.cc-tag__n--down {
+  color: var(--down);
+}
+
+.cc-tag__n--zero {
+  color: var(--muted);
+}
+
+.cc-badge {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  vertical-align: 1px;
+}
+
+/* ---------- Cheat sheet ---------- */
+
+.cc-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cc-values__cell {
+  --tone: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--tone) 12%, #fff);
+}
+
+.cc-values__cell--up {
+  --tone: var(--up);
+}
+
+.cc-values__cell--down {
+  --tone: var(--down);
+}
+
+.cc-values__n {
+  font-size: 20px;
+  font-weight: 700;
+  color: color-mix(in oklch, var(--tone) 80%, #000);
+}
+
+.cc-values__cards {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.cc-ramp td {
+  font-weight: 600;
+}
+
+.cc-plays {
+  columns: 2 240px;
+  column-gap: 24px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.cc-plays li.is-marked {
+  font-weight: 700;
+  color: var(--ink);
+  background: color-mix(in oklch, var(--gold) 30%, transparent);
+}
+
+/* ---------- Progress & guide ---------- */
+
+.cc-progress__row {
+  grid-template-columns: 120px 1fr 40px;
+}
+
+.cc-rules {
+  max-width: 640px;
+  margin: 0 0 12px;
+  padding-left: 18px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.cc-rules b {
+  color: var(--ink);
+}
+
+.cc-guide-chart {
+  max-width: 640px;
+  margin-top: 6px;
+}
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 560px) {
+  .cc-bets {
+    gap: 6px;
+  }
+
+  .cc-bet {
+    padding: 12px 4px;
+  }
+
+  .cc-bet .actions__kbd {
+    display: none;
+  }
+
+  .cc-check .kbd {
+    display: none;
+  }
+
+  .cc-live {
+    top: 40px;
+    right: 10px;
+  }
+}

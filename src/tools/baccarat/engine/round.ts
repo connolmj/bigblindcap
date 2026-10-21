@@ -1,20 +1,23 @@
 /**
  * One hand of baccarat as a state machine:
- *   you bet → four cards → you call the Player's draw → you call the Banker's → settle.
+ *   you bet → four cards → the Player's third-card rule → the Banker's → settle.
  *
- * Your draw calls are graded, but the dealer always follows the real rule,
- * so the hand plays out exactly as it would at a casino.
+ * Your bet is the only choice in baccarat. Everything after it follows the
+ * drawing rules exactly, the way a dealer plays it, and each step is kept so
+ * the table can show which rule applied.
  */
 import type { Card } from "../../blackjack/engine/cards";
 import { cardPoints, isNatural, total } from "./hand";
-import { bestBet, betReturn, payout, type Bet, type Commission, type Winner } from "./payouts";
-import { correctDraw, type DrawAction, type DrawSpot } from "./rules";
+import { payout, type Bet, type Commission, type Winner } from "./payouts";
+import { correctDraw, type DrawAction, type DrawSpot, type Side } from "./rules";
 
+/** "playerDraw" and "bankerDraw" are whose rule is up next; the table plays them on a timer. */
 export type Phase = "bet" | "playerDraw" | "bankerDraw" | "settled";
 
-export type Decision =
-  | { kind: "bet"; chosen: Bet; best: Bet; correct: boolean; commission: Commission; cost: number }
-  | { kind: "draw"; spot: DrawSpot; chosen: DrawAction; right: DrawAction; correct: boolean };
+/** What happened at one point in the hand. */
+export type Step =
+  | { kind: "natural"; side: Side | "both"; player: number; banker: number }
+  | { kind: "draw"; spot: DrawSpot; action: DrawAction; card?: Card };
 
 export interface RoundState {
   shoe: Card[];
@@ -25,7 +28,7 @@ export interface RoundState {
   player: Card[];
   banker: Card[];
   phase: Phase;
-  decisions: Decision[];
+  steps: Step[];
   natural: boolean;
   winner: Winner | null;
   net: number | null;
@@ -40,7 +43,7 @@ export function startRound(shoe: Card[], commission: Commission): RoundState {
     player: [],
     banker: [],
     phase: "bet",
-    decisions: [],
+    steps: [],
     natural: false,
     winner: null,
     net: null,
@@ -49,35 +52,25 @@ export function startRound(shoe: Card[], commission: Commission): RoundState {
 
 export function placeBet(round: RoundState, bet: Bet): RoundState {
   if (round.phase !== "bet") return round;
-  const best = bestBet(round.commission);
-  const decision: Decision = {
-    kind: "bet",
-    chosen: bet,
-    best,
-    correct: bet === best,
-    commission: round.commission,
-    cost: betReturn(best, round.commission) - betReturn(bet, round.commission),
-  };
   const s = round.shoe;
   const p = round.pos;
   // Deal order: Player, Banker, Player, Banker.
   const player = [s[p], s[p + 2]];
   const banker = [s[p + 1], s[p + 3]];
-  const natural = isNatural(player) || isNatural(banker);
-  const next: RoundState = {
-    ...round,
-    bet,
-    player,
-    banker,
-    pos: p + 4,
-    natural,
-    phase: "playerDraw",
-    decisions: [decision],
+  const pn = isNatural(player);
+  const bn = isNatural(banker);
+  const next: RoundState = { ...round, bet, player, banker, pos: p + 4, phase: "playerDraw" };
+  if (!pn && !bn) return next;
+  const step: Step = {
+    kind: "natural",
+    side: pn && bn ? "both" : pn ? "player" : "banker",
+    player: total(player),
+    banker: total(banker),
   };
-  return natural ? settle(next) : next;
+  return settle({ ...next, natural: true, steps: [step] });
 }
 
-/** The spot you're being asked about right now, if any. */
+/** The spot whose rule is up next, if any. */
 export function currentSpot(round: RoundState): DrawSpot | null {
   if (round.phase === "playerDraw") return { side: "player", total: total(round.player), playerThird: null };
   if (round.phase === "bankerDraw") {
@@ -87,19 +80,26 @@ export function currentSpot(round: RoundState): DrawSpot | null {
   return null;
 }
 
-export function callDraw(round: RoundState, chosen: DrawAction): RoundState {
+/** Play the next third-card rule: draw or stand, whichever the rule says. */
+export function drawStep(round: RoundState): RoundState {
   const spot = currentSpot(round);
   if (!spot) return round;
-  const right = correctDraw(spot);
-  const decisions: Decision[] = [...round.decisions, { kind: "draw", spot, chosen, right, correct: chosen === right }];
-  const card = round.shoe[round.pos];
-  const drew = right === "draw";
-  const pos = drew ? round.pos + 1 : round.pos;
+  const action = correctDraw(spot);
+  const card = action === "draw" ? round.shoe[round.pos] : undefined;
+  const steps: Step[] = [...round.steps, { kind: "draw", spot, action, card }];
+  const pos = card ? round.pos + 1 : round.pos;
 
   if (spot.side === "player") {
-    return { ...round, decisions, pos, player: drew ? [...round.player, card] : round.player, phase: "bankerDraw" };
+    return { ...round, steps, pos, player: card ? [...round.player, card] : round.player, phase: "bankerDraw" };
   }
-  return settle({ ...round, decisions, pos, banker: drew ? [...round.banker, card] : round.banker });
+  return settle({ ...round, steps, pos, banker: card ? [...round.banker, card] : round.banker });
+}
+
+/** Play out the rest of the hand at once (tests, and "skip ahead"). */
+export function finish(round: RoundState): RoundState {
+  let r = round;
+  while (r.phase === "playerDraw" || r.phase === "bankerDraw") r = drawStep(r);
+  return r;
 }
 
 function settle(round: RoundState): RoundState {
